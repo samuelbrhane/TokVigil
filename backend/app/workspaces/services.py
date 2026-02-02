@@ -5,13 +5,13 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Session
 
-from .models import Workspace, Environment, ApiKey
-from .schemas import WorkspaceCreate, WorkspaceUpdate, EnvironmentCreate, ApiKeyCreate
+from app.workspaces.models import Workspace, Environment, ApiKey
+from app.workspaces.schemas import WorkspaceCreate, WorkspaceUpdate, EnvironmentCreate, ApiKeyCreate
 
 
-# = Workspace
-def create_workspace(db: Session, data: WorkspaceCreate) -> Workspace:
-    workspace = Workspace(name=data.name)
+# == Workspace
+def create_workspace(db: Session, data: WorkspaceCreate, owner_id: int) -> Workspace:
+    workspace = Workspace(name=data.name, owner_id=owner_id)
     db.add(workspace)
     db.commit()
     db.refresh(workspace)
@@ -25,21 +25,23 @@ def create_workspace(db: Session, data: WorkspaceCreate) -> Workspace:
     return workspace
 
 
-def get_workspace(db: Session, workspace_id: int) -> Optional[Workspace]:
+def get_workspace(db: Session, workspace_id: int, owner_id: int) -> Optional[Workspace]:
     return db.query(Workspace).filter(
         Workspace.id == workspace_id,
+        Workspace.owner_id == owner_id,
         Workspace.is_deleted == False
     ).first()
 
 
-def get_workspaces(db: Session, skip: int = 0, limit: int = 100) -> List[Workspace]:
+def get_workspaces(db: Session, owner_id: int, skip: int = 0, limit: int = 100) -> List[Workspace]:
     return db.query(Workspace).filter(
+        Workspace.owner_id == owner_id,
         Workspace.is_deleted == False
     ).offset(skip).limit(limit).all()
 
 
-def update_workspace(db: Session, workspace_id: int, data: WorkspaceUpdate) -> Optional[Workspace]:
-    workspace = get_workspace(db, workspace_id)
+def update_workspace(db: Session, workspace_id: int, owner_id: int, data: WorkspaceUpdate) -> Optional[Workspace]:
+    workspace = get_workspace(db, workspace_id, owner_id)
     if not workspace:
         return None
     
@@ -53,8 +55,8 @@ def update_workspace(db: Session, workspace_id: int, data: WorkspaceUpdate) -> O
     return workspace
 
 
-def delete_workspace(db: Session, workspace_id: int) -> bool:
-    workspace = get_workspace(db, workspace_id)
+def delete_workspace(db: Session, workspace_id: int, owner_id: int) -> bool:
+    workspace = get_workspace(db, workspace_id, owner_id)
     if not workspace:
         return False
     
@@ -64,12 +66,8 @@ def delete_workspace(db: Session, workspace_id: int) -> bool:
     return True
 
 
-# == Environment 
-def create_environment(db: Session, workspace_id: int, data: EnvironmentCreate) -> Optional[Environment]:
-    workspace = get_workspace(db, workspace_id)
-    if not workspace:
-        return None
-    
+# == Environment
+def create_environment(db: Session, workspace_id: int, data: EnvironmentCreate) -> Environment:
     env = Environment(workspace_id=workspace_id, name=data.name)
     db.add(env)
     db.commit()
@@ -84,10 +82,8 @@ def get_environments(db: Session, workspace_id: int) -> List[Environment]:
     ).all()
 
 
-# == API Key 
-
+# == API Key
 def generate_api_key(environment_name: str) -> tuple[str, str, str]:
-    """Generate API key, returns (full_key, key_hash, key_prefix)."""
     prefix = "auc_live_" if environment_name == "production" else "auc_test_"
     random_part = secrets.token_hex(24)
     full_key = f"{prefix}{random_part}"
@@ -99,11 +95,6 @@ def generate_api_key(environment_name: str) -> tuple[str, str, str]:
 
 
 def create_api_key(db: Session, workspace_id: int, data: ApiKeyCreate) -> Optional[tuple[ApiKey, str]]:
-    """Create API key, returns (api_key_object, full_key)."""
-    workspace = get_workspace(db, workspace_id)
-    if not workspace:
-        return None
-    
     environment = db.query(Environment).filter(
         Environment.id == data.environment_id,
         Environment.workspace_id == workspace_id,
@@ -136,7 +127,6 @@ def get_api_keys(db: Session, workspace_id: int) -> List[ApiKey]:
 
 
 def verify_api_key(db: Session, key: str) -> Optional[ApiKey]:
-    """Verify API key and return the ApiKey object if valid."""
     key_hash = hashlib.sha256(key.encode()).hexdigest()
     
     api_key = db.query(ApiKey).filter(
