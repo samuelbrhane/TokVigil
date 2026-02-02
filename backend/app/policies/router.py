@@ -1,8 +1,50 @@
-from fastapi import APIRouter
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
+from app.db.session import get_db
+from app.policies import services
+from app.policies.schemas import PolicyCreate, PolicyUpdate, PolicyResponse
 
 router = APIRouter()
 
 
-@router.get("")
-async def list_policies():
-    return {"message": "Policies endpoint"}
+@router.post("/{workspace_id}", response_model=PolicyResponse, status_code=status.HTTP_201_CREATED)
+def create_policy(workspace_id: int, data: PolicyCreate, db: Session = Depends(get_db)):
+    """Create a new policy for a workspace."""
+    policy = services.create_policy(db, workspace_id, data)
+    return policy
+
+
+@router.get("/{workspace_id}", response_model=List[PolicyResponse])
+def list_policies(workspace_id: int, db: Session = Depends(get_db)):
+    """List all policies for a workspace."""
+    return services.get_policies(db, workspace_id)
+
+
+@router.get("/{workspace_id}/{policy_id}", response_model=PolicyResponse)
+def get_policy(workspace_id: int, policy_id: int, db: Session = Depends(get_db)):
+    """Get a specific policy."""
+    policy = services.get_policy(db, policy_id, workspace_id)
+    if not policy:
+        raise HTTPException(status_code=404, detail="Policy not found")
+    return policy
+
+
+@router.put("/{workspace_id}/{policy_id}", response_model=PolicyResponse)
+def update_policy(workspace_id: int, policy_id: int, data: PolicyUpdate, db: Session = Depends(get_db)):
+    """Update a policy."""
+    policy = services.update_policy(db, policy_id, workspace_id, data)
+    if not policy:
+        raise HTTPException(status_code=404, detail="Policy not found")
+    return policy
+
+
+@router.delete("/{workspace_id}/{policy_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_policy(workspace_id: int, policy_id: int, db: Session = Depends(get_db)):
+    """Delete a policy (soft delete)."""
+    deleted = services.delete_policy(db, policy_id, workspace_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Policy not found")
+    return None
