@@ -1,8 +1,5 @@
 """
 Application configuration using Pydantic Settings.
-
-This is similar to Django's settings.py but uses environment variables
-and Pydantic for validation and type safety.
 """
 
 from functools import lru_cache
@@ -14,11 +11,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """
     Application settings loaded from environment variables.
-    
-    Similar to Django settings, but:
-    - Type-safe with Pydantic
-    - Auto-loads from .env file
-    - Validates on startup
     """
     
     # Application
@@ -30,13 +22,13 @@ class Settings(BaseSettings):
     # API
     api_v1_prefix: str = "/api/v1"
     
-    # Database (like Django's DATABASES setting)
+    # Database
     database_url: str
     
-    # Redis (like Django's CACHES setting)
+    # Redis 
     redis_url: str = "redis://localhost:6379/0"
     
-    # CORS (like Django's CORS_ALLOWED_ORIGINS)
+    # CORS
     cors_origins: str = "http://localhost:3000"
     
     @property
@@ -63,12 +55,9 @@ class Settings(BaseSettings):
 def get_settings() -> Settings:
     """
     Get cached settings instance.
-    
-    Using lru_cache ensures settings are only loaded once,
-    similar to how Django loads settings at startup.
     """
     return Settings()
 
 
-# Quick access (like Django's from django.conf import settings)
+# Quick access
 settings = get_settings()
