@@ -2,22 +2,22 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
+from app.core.auth import get_api_key_auth, AuthenticatedRequest
 from app.evaluate import services
 from app.evaluate.schemas import EvaluateRequest, EvaluateResponse
 
 router = APIRouter()
 
 
-@router.post("/{workspace_id}", response_model=EvaluateResponse)
+@router.post("", response_model=EvaluateResponse)
 def evaluate(
-    workspace_id: int,
     data: EvaluateRequest,
+    auth: AuthenticatedRequest = Depends(get_api_key_auth),
     db: Session = Depends(get_db)
 ):
     """
     Evaluate if an AI request should be allowed.
     
-    SDK calls this before making LLM request.
-    Returns decision with reason code and current usage state.
+    Requires X-API-Key header.
     """
-    return services.evaluate_request(db, workspace_id, data)
+    return services.evaluate_request(db, auth.workspace_id, data)
