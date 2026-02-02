@@ -1,37 +1,15 @@
-"""
-API v1 Router.
-"""
-
 from fastapi import APIRouter
 
-from app.workspaces import router as workspaces
-from app.policies import router as policies
-from app.evaluate import router as evaluate
-from app.usage import router as usage
+from app.auth.router import router as auth_router
+from app.workspaces.router import router as workspaces_router
+from app.policies.router import router as policies_router
+from app.usage.router import router as usage_router
+from app.evaluate.router import router as evaluate_router
 
 api_router = APIRouter()
 
-# Include all endpoint routers
-api_router.include_router(
-    workspaces.router,
-    prefix="/workspaces",
-    tags=["Workspaces"],
-)
-
-api_router.include_router(
-    policies.router,
-    prefix="/policies",
-    tags=["Policies"],
-)
-
-api_router.include_router(
-    evaluate.router,
-    prefix="/evaluate",
-    tags=["Evaluation"],
-)
-
-api_router.include_router(
-    usage.router,
-    prefix="/usage",
-    tags=["Usage"],
-)
+api_router.include_router(auth_router, prefix="/auth", tags=["Auth"])
+api_router.include_router(workspaces_router, prefix="/workspaces", tags=["Workspaces"])
+api_router.include_router(policies_router, prefix="/policies", tags=["Policies"])
+api_router.include_router(usage_router, prefix="/usage", tags=["Usage"])
+api_router.include_router(evaluate_router, prefix="/evaluate", tags=["Evaluation"])
