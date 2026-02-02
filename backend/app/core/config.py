@@ -9,9 +9,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """
-    Application settings loaded from environment variables.
-    """
     
     # Application
     app_name: str = "AI Usage Control"
@@ -37,13 +34,13 @@ class Settings(BaseSettings):
     
     # JWT Token settings
     access_token_expire_minutes: int = 30
-    algorithm: str = "HS256"
+    refresh_token_expire_days: int = 7
+    jwt_algorithm: str = "HS256"
     
     # Rate limiting
     rate_limit_evaluate_per_minute: int = 1000
     rate_limit_usage_per_minute: int = 1000
     
-    # Pydantic settings config
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -53,11 +50,7 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    """
-    Get cached settings instance.
-    """
     return Settings()
 
 
-# Quick access
 settings = get_settings()
