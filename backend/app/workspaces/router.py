@@ -5,17 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.workspaces import services
-from app.workspaces.schemas import (
-    WorkspaceCreate,
-    WorkspaceUpdate,
-    WorkspaceResponse,
-    WorkspaceDetailResponse,
-    EnvironmentCreate,
-    EnvironmentResponse,
-    ApiKeyCreate,
-    ApiKeyResponse,
-    ApiKeyCreatedResponse,
-)
+from app.workspaces.schemas import *
 
 router = APIRouter()
 
