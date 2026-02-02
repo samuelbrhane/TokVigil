@@ -5,7 +5,7 @@
 
 # Default target
 help:
-	@echo "AI Usage Control - Backend"
+	@echo "Tokenfence - Backend"
 	@echo ""
 	@echo "Usage: make [target]"
 	@echo ""
