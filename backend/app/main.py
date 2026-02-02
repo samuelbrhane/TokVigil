@@ -28,11 +28,11 @@ async def lifespan(app: FastAPI):
 # Create FastAPI app
 app = FastAPI(
     title=settings.app_name,
-    description="Application-layer AI usage control platform",
+    description="AI usage control platform - manage limits, budgets, and policies for your AI applications",
     version="0.1.0",
     openapi_url=f"{settings.api_v1_prefix}/openapi.json",
-    docs_url="/docs",      
-    redoc_url="/redoc",    
+    docs_url="/docs",
+    redoc_url="/redoc",
     lifespan=lifespan,
 )
 
