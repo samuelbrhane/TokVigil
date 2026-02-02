@@ -1,14 +1,5 @@
 """
 API v1 Router.
-
-This is like Django's urls.py - combines all endpoint routers.
-
-Django equivalent:
-    urlpatterns = [
-        path('workspaces/', include('workspaces.urls')),
-        path('policies/', include('policies.urls')),
-        ...
-    ]
 """
 
 from fastapi import APIRouter
@@ -17,7 +8,7 @@ from app.api.v1.endpoints import health, workspaces, policies, evaluate, usage
 
 api_router = APIRouter()
 
-# Include all endpoint routers (like Django's include())
+# Include all endpoint routers
 api_router.include_router(
     health.router,
     prefix="/health",
