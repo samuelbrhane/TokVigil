@@ -20,6 +20,7 @@ from app.workspaces.models import *
 from app.policies.models import *
 from app.evaluate.models import *
 from app.usage.models import *
+from app.auth.models import *
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.database_url)
