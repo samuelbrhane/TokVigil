@@ -1,7 +1,5 @@
 """
 Pytest configuration and fixtures.
-
-Similar to Django's TestCase and test utilities.
 """
 
 import pytest
@@ -22,8 +20,6 @@ from app.main import app
 def client():
     """
     Create a test client for the FastAPI app.
-    
-    Similar to Django's Client() or APIClient().
     """
     with TestClient(app) as test_client:
         yield test_client
