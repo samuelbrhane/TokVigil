@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
+from app.core.auth import get_current_user
+from app.auth.models import User
 from app.workspaces import services
 from app.workspaces.schemas import *
 
@@ -12,40 +14,62 @@ router = APIRouter()
 
 # == Workspace 
 @router.post("", response_model=WorkspaceResponse, status_code=status.HTTP_201_CREATED)
-def create_workspace(data: WorkspaceCreate, db: Session = Depends(get_db)):
+def create_workspace(
+    data: WorkspaceCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Create a new workspace with default environments."""
-    workspace = services.create_workspace(db, data)
+    workspace = services.create_workspace(db, data, current_user.id)
     return workspace
 
 
 @router.get("", response_model=List[WorkspaceResponse])
-def list_workspaces(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """List all workspaces."""
-    return services.get_workspaces(db, skip=skip, limit=limit)
+def list_workspaces(
+    current_user: User = Depends(get_current_user),
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """List workspaces owned by current user."""
+    return services.get_workspaces(db, current_user.id, skip=skip, limit=limit)
 
 
 @router.get("/{workspace_id}", response_model=WorkspaceDetailResponse)
-def get_workspace(workspace_id: int, db: Session = Depends(get_db)):
+def get_workspace(
+    workspace_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Get workspace by ID with environments."""
-    workspace = services.get_workspace(db, workspace_id)
+    workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
     return workspace
 
 
 @router.put("/{workspace_id}", response_model=WorkspaceResponse)
-def update_workspace(workspace_id: int, data: WorkspaceUpdate, db: Session = Depends(get_db)):
+def update_workspace(
+    workspace_id: int,
+    data: WorkspaceUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Update workspace."""
-    workspace = services.update_workspace(db, workspace_id, data)
+    workspace = services.update_workspace(db, workspace_id, current_user.id, data)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
     return workspace
 
 
 @router.delete("/{workspace_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_workspace(workspace_id: int, db: Session = Depends(get_db)):
+def delete_workspace(
+    workspace_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Delete workspace (soft delete)."""
-    deleted = services.delete_workspace(db, workspace_id)
+    deleted = services.delete_workspace(db, workspace_id, current_user.id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Workspace not found")
     return None
@@ -53,39 +77,62 @@ def delete_workspace(workspace_id: int, db: Session = Depends(get_db)):
 
 # == Environment
 @router.get("/{workspace_id}/environments", response_model=List[EnvironmentResponse])
-def list_environments(workspace_id: int, db: Session = Depends(get_db)):
+def list_environments(
+    workspace_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """List environments for a workspace."""
-    workspace = services.get_workspace(db, workspace_id)
+    workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
     return services.get_environments(db, workspace_id)
 
 
 @router.post("/{workspace_id}/environments", response_model=EnvironmentResponse, status_code=status.HTTP_201_CREATED)
-def create_environment(workspace_id: int, data: EnvironmentCreate, db: Session = Depends(get_db)):
+def create_environment(
+    workspace_id: int,
+    data: EnvironmentCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Create a new environment."""
-    environment = services.create_environment(db, workspace_id, data)
-    if not environment:
+    workspace = services.get_workspace(db, workspace_id, current_user.id)
+    if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
+    environment = services.create_environment(db, workspace_id, data)
     return environment
 
 
 # == API Key 
 @router.get("/{workspace_id}/api-keys", response_model=List[ApiKeyResponse])
-def list_api_keys(workspace_id: int, db: Session = Depends(get_db)):
+def list_api_keys(
+    workspace_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """List API keys for a workspace."""
-    workspace = services.get_workspace(db, workspace_id)
+    workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
     return services.get_api_keys(db, workspace_id)
 
 
 @router.post("/{workspace_id}/api-keys", response_model=ApiKeyCreatedResponse, status_code=status.HTTP_201_CREATED)
-def create_api_key(workspace_id: int, data: ApiKeyCreate, db: Session = Depends(get_db)):
+def create_api_key(
+    workspace_id: int,
+    data: ApiKeyCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Create a new API key. The full key is only shown once."""
+    workspace = services.get_workspace(db, workspace_id, current_user.id)
+    if not workspace:
+        raise HTTPException(status_code=404, detail="Workspace not found")
+    
     result = services.create_api_key(db, workspace_id, data)
     if not result:
-        raise HTTPException(status_code=404, detail="Workspace or environment not found")
+        raise HTTPException(status_code=404, detail="Environment not found")
     
     api_key, full_key = result
     return ApiKeyCreatedResponse(
@@ -102,8 +149,17 @@ def create_api_key(workspace_id: int, data: ApiKeyCreate, db: Session = Depends(
 
 
 @router.delete("/{workspace_id}/api-keys/{api_key_id}", status_code=status.HTTP_204_NO_CONTENT)
-def revoke_api_key(workspace_id: int, api_key_id: int, db: Session = Depends(get_db)):
+def revoke_api_key(
+    workspace_id: int,
+    api_key_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Revoke an API key."""
+    workspace = services.get_workspace(db, workspace_id, current_user.id)
+    if not workspace:
+        raise HTTPException(status_code=404, detail="Workspace not found")
+    
     revoked = services.revoke_api_key(db, workspace_id, api_key_id)
     if not revoked:
         raise HTTPException(status_code=404, detail="API key not found")
