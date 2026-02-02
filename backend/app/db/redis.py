@@ -1,7 +1,5 @@
 """
 Redis connection for caching and rate limiting.
-
-Similar to Django's cache backend setup.
 """
 
 import redis.asyncio as redis
@@ -9,16 +7,13 @@ from typing import Optional
 
 from app.core.config import settings
 
-# Redis connection pool (lazy initialized)
+# Redis connection pool
 _redis_pool: Optional[redis.Redis] = None
 
 
 async def get_redis() -> redis.Redis:
     """
     Get Redis connection.
-    
-    Similar to Django's cache.get_client().
-    Used as FastAPI dependency.
     """
     global _redis_pool
     
