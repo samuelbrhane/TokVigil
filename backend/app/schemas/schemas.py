@@ -83,7 +83,7 @@ class PolicyResponse(PolicyBase):
 
 # Policy evaluation schemas
 class PolicyEvaluationRequest(BaseModel):
-    workspace_id: str
+    workspace_id: Optional[str] = None  # Will be filled by the server based on API key
     model: str
     operation: str = "chat.completion"
     estimated_tokens: Optional[int] = None
@@ -99,7 +99,7 @@ class PolicyEvaluationResponse(BaseModel):
 
 # Usage log schemas
 class UsageLogCreate(BaseModel):
-    workspace_id: str
+    workspace_id: Optional[str] = None  # Will be filled by the server based on API key
     model: str
     operation: str
     prompt_tokens: int = 0
