@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.policies import services
-from app.policies.schemas import PolicyCreate, PolicyUpdate, PolicyResponse
+from app.policies.schemas import *
 
 router = APIRouter()
 
