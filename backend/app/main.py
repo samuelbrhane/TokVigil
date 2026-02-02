@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.db.redis import close_redis
-from backend.app.router import api_router
+from app.router import api_router
 
 
 @asynccontextmanager

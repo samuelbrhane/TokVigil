@@ -4,17 +4,14 @@ API v1 Router.
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import health, workspaces, policies, evaluate, usage
+from app.workspaces import router as workspaces
+from app.policies import router as policies
+from app.evaluate import router as evaluate
+from app.usage import router as usage
 
 api_router = APIRouter()
 
 # Include all endpoint routers
-api_router.include_router(
-    health.router,
-    prefix="/health",
-    tags=["Health"],
-)
-
 api_router.include_router(
     workspaces.router,
     prefix="/workspaces",
