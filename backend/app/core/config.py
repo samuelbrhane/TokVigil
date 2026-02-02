@@ -11,7 +11,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     
     # Application
-    app_name: str = "AI Usage Control"
+    app_name: str = "Tokenfence"
     app_env: str = "development"
     debug: bool = False
     secret_key: str
