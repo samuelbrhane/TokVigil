@@ -37,9 +37,34 @@ def create_audit_log(
 def get_audit_logs(
     db: Session,
     workspace_id: int,
-    limit: int = 50,
-    offset: int = 0
-) -> List[AuditLog]:
-    return db.query(AuditLog).filter(
+    page: int = 1,
+    page_size: int = 20,
+    action: str = None,
+    resource_type: str = None,
+    user_email: str = None
+) -> dict:
+    query = db.query(AuditLog).filter(
         AuditLog.workspace_id == workspace_id
-    ).order_by(AuditLog.created_at.desc()).offset(offset).limit(limit).all()
+    )
+    
+    if action:
+        query = query.filter(AuditLog.action == action)
+    if resource_type:
+        query = query.filter(AuditLog.resource_type == resource_type)
+    if user_email:
+        query = query.filter(AuditLog.user_email == user_email)
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    items = query.order_by(AuditLog.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
