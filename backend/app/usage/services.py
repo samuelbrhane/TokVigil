@@ -31,7 +31,7 @@ def log_usage(
         input_tokens=data.input_tokens,
         output_tokens=data.output_tokens,
         total_tokens=data.input_tokens + data.output_tokens,
-        estimated_cost_usd=data.estimated_cost_usd,
+        estimated_cost_usd=data.estimated_cost_usd or 0.0,
         actual_cost_usd=data.actual_cost_usd,
         status=data.status,
         reason_code=data.reason_code,
