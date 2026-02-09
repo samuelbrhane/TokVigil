@@ -1,36 +1,70 @@
-"""
-Redis connection for caching and rate limiting.
-"""
-
-import redis.asyncio as redis
-from typing import Optional
-
+import json
+from typing import Optional, Any
+from redis import Redis
 from app.core.config import settings
 
-# Redis connection pool
-_redis_pool: Optional[redis.Redis] = None
+redis_client: Optional[Redis] = None
 
 
-async def get_redis() -> redis.Redis:
-    """
-    Get Redis connection.
-    """
-    global _redis_pool
-    
-    if _redis_pool is None:
-        _redis_pool = redis.from_url(
-            settings.redis_url,
-            encoding="utf-8",
-            decode_responses=True,
-        )
-    
-    return _redis_pool
+def get_redis() -> Optional[Redis]:
+    global redis_client
+    if redis_client is None:
+        try:
+            redis_client = Redis.from_url(settings.redis_url, decode_responses=True)
+            redis_client.ping()
+        except Exception as e:
+            print(f"Redis connection failed: {e}")
+            return None
+    return redis_client
 
 
-async def close_redis():
-    """Close Redis connection on shutdown."""
-    global _redis_pool
-    
-    if _redis_pool is not None:
-        await _redis_pool.close()
-        _redis_pool = None
+def cache_get(key: str) -> Optional[Any]:
+    """Get value from cache."""
+    client = get_redis()
+    if not client:
+        return None
+    try:
+        value = client.get(key)
+        if value:
+            return json.loads(value)
+        return None
+    except Exception:
+        return None
+
+
+def cache_set(key: str, value: Any, ttl: int = 60) -> bool:
+    """Set value in cache with TTL (seconds)."""
+    client = get_redis()
+    if not client:
+        return False
+    try:
+        client.setex(key, ttl, json.dumps(value))
+        return True
+    except Exception:
+        return False
+
+
+def cache_delete(key: str) -> bool:
+    """Delete key from cache."""
+    client = get_redis()
+    if not client:
+        return False
+    try:
+        client.delete(key)
+        return True
+    except Exception:
+        return False
+
+
+def cache_delete_pattern(pattern: str) -> bool:
+    """Delete all keys matching pattern."""
+    client = get_redis()
+    if not client:
+        return False
+    try:
+        keys = client.keys(pattern)
+        if keys:
+            client.delete(*keys)
+        return True
+    except Exception:
+        return False
