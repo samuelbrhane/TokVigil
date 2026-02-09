@@ -20,4 +20,4 @@ def evaluate(
     
     Requires X-API-Key header.
     """
-    return services.evaluate_request(db, auth.workspace_id, data)
+    return services.evaluate_request(db, auth.workspace_id, auth.environment_id, data)
