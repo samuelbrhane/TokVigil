@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.policies.models import Policy
 from app.policies.schemas import PolicyCreate, PolicyUpdate
+from app.db.redis import cache_get, cache_set, cache_delete_pattern
 
 
 def create_policy(db: Session, workspace_id: int, data: PolicyCreate) -> Policy:
@@ -27,6 +28,7 @@ def create_policy(db: Session, workspace_id: int, data: PolicyCreate) -> Policy:
     db.add(policy)
     db.commit()
     db.refresh(policy)
+    invalidate_policy_cache(workspace_id)
     return policy
 
 
@@ -56,6 +58,7 @@ def update_policy(db: Session, policy_id: int, workspace_id: int, data: PolicyUp
     
     db.commit()
     db.refresh(policy)
+    invalidate_policy_cache(workspace_id)
     return policy
 
 
@@ -67,6 +70,7 @@ def delete_policy(db: Session, policy_id: int, workspace_id: int) -> bool:
     policy.is_deleted = True
     policy.deleted_at = datetime.utcnow()
     db.commit()
+    invalidate_policy_cache(workspace_id)
     return True
 
 
@@ -77,27 +81,26 @@ def find_matching_policy(
     feature: Optional[str] = None,
     user_id: Optional[str] = None
 ) -> Optional[Policy]:
-    """
-    Find the best matching policy for a request.
-    Priority: user_id match > feature match > plan match > default
-    Higher priority value wins when multiple match.
-    """
-    query = db.query(Policy).filter(
+    
+    # Try cache first
+    cache_key = f"policy:{workspace_id}:{plan}:{feature}:{user_id}"
+    cached = cache_get(cache_key)
+    if cached is not None:
+        if cached == "none":
+            return None
+        return db.query(Policy).filter(Policy.id == cached["id"]).first()
+    
+    # Query database
+    policies = db.query(Policy).filter(
         Policy.workspace_id == workspace_id,
         Policy.is_active == True,
         Policy.is_deleted == False
-    )
-    
-    # Get all potentially matching policies
-    policies = query.all()
+    ).all()
     
     best_match = None
     best_score = -1
     
     for policy in policies:
-        score = policy.priority
-        
-        # Check if policy applies to this request
         if policy.user_id and policy.user_id != user_id:
             continue
         if policy.plan and policy.plan != plan:
@@ -105,7 +108,7 @@ def find_matching_policy(
         if policy.feature and policy.feature != feature:
             continue
         
-        # Add specificity bonus
+        score = policy.priority
         if policy.user_id == user_id and user_id:
             score += 1000
         if policy.feature == feature and feature:
@@ -117,4 +120,15 @@ def find_matching_policy(
             best_score = score
             best_match = policy
     
+    # Cache result
+    if best_match:
+        cache_set(cache_key, {"id": best_match.id}, ttl=60)
+    else:
+        cache_set(cache_key, "none", ttl=60)
+    
     return best_match
+
+
+def invalidate_policy_cache(workspace_id: int):
+    """Clear all cached policies for a workspace."""
+    cache_delete_pattern(f"policy:{workspace_id}:*")
