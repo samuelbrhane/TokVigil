@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional, Dict, Any, List
 from pydantic import BaseModel, ConfigDict
+from app.core.pagination import PaginatedResponse
 
 
 class UsageLogRequest(BaseModel):
@@ -62,3 +63,11 @@ class UsageByGroup(BaseModel):
     requests: int
     tokens: int
     cost_usd: float
+    
+    
+
+class PaginatedUsageResponse(PaginatedResponse[UsageRecordResponse]):
+    pass
+
+class PaginatedUsageByGroupResponse(PaginatedResponse[UsageByGroup]):
+    pass
