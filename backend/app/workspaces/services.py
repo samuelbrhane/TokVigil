@@ -7,10 +7,16 @@ from sqlalchemy.orm import Session
 
 from app.workspaces.models import Workspace, Environment, ApiKey
 from app.workspaces.schemas import WorkspaceCreate, WorkspaceUpdate, EnvironmentCreate, ApiKeyCreate
+from app.audit.services import create_audit_log
 
 
 # == Workspace
-def create_workspace(db: Session, data: WorkspaceCreate, owner_id: int) -> Workspace:
+def create_workspace(
+    db: Session,
+    data: WorkspaceCreate,
+    owner_id: int,
+    user_email: str = None
+) -> Workspace:
     workspace = Workspace(name=data.name, owner_id=owner_id)
     db.add(workspace)
     db.commit()
@@ -21,6 +27,18 @@ def create_workspace(db: Session, data: WorkspaceCreate, owner_id: int) -> Works
         env = Environment(workspace_id=workspace.id, name=env_name)
         db.add(env)
     db.commit()
+    
+    create_audit_log(
+        db=db,
+        action="CREATED",
+        resource_type="WORKSPACE",
+        user_id=owner_id,
+        user_email=user_email,
+        workspace_id=workspace.id,
+        resource_id=workspace.id,
+        resource_name=workspace.name,
+        new_values={"name": data.name}
+    )
     
     return workspace
 
@@ -40,10 +58,18 @@ def get_workspaces(db: Session, owner_id: int, skip: int = 0, limit: int = 100) 
     ).offset(skip).limit(limit).all()
 
 
-def update_workspace(db: Session, workspace_id: int, owner_id: int, data: WorkspaceUpdate) -> Optional[Workspace]:
+def update_workspace(
+    db: Session,
+    workspace_id: int,
+    owner_id: int,
+    data: WorkspaceUpdate,
+    user_email: str = None
+) -> Optional[Workspace]:
     workspace = get_workspace(db, workspace_id, owner_id)
     if not workspace:
         return None
+    
+    old_values = {"name": workspace.name, "is_active": workspace.is_active}
     
     if data.name is not None:
         workspace.name = data.name
@@ -52,26 +78,77 @@ def update_workspace(db: Session, workspace_id: int, owner_id: int, data: Worksp
     
     db.commit()
     db.refresh(workspace)
+    
+    create_audit_log(
+        db=db,
+        action="UPDATED",
+        resource_type="WORKSPACE",
+        user_id=owner_id,
+        user_email=user_email,
+        workspace_id=workspace_id,
+        resource_id=workspace_id,
+        resource_name=workspace.name,
+        old_values=old_values,
+        new_values=data.model_dump(exclude_unset=True)
+    )
+    
     return workspace
 
 
-def delete_workspace(db: Session, workspace_id: int, owner_id: int) -> bool:
+def delete_workspace(
+    db: Session,
+    workspace_id: int,
+    owner_id: int,
+    user_email: str = None
+) -> bool:
     workspace = get_workspace(db, workspace_id, owner_id)
     if not workspace:
         return False
     
+    workspace_name = workspace.name
     workspace.is_deleted = True
     workspace.deleted_at = datetime.utcnow()
     db.commit()
+    
+    create_audit_log(
+        db=db,
+        action="DELETED",
+        resource_type="WORKSPACE",
+        user_id=owner_id,
+        user_email=user_email,
+        workspace_id=workspace_id,
+        resource_id=workspace_id,
+        resource_name=workspace_name
+    )
+    
     return True
 
 
 # == Environment
-def create_environment(db: Session, workspace_id: int, data: EnvironmentCreate) -> Environment:
+def create_environment(
+    db: Session,
+    workspace_id: int,
+    data: EnvironmentCreate,
+    user_id: int = None,
+    user_email: str = None
+) -> Environment:
     env = Environment(workspace_id=workspace_id, name=data.name)
     db.add(env)
     db.commit()
     db.refresh(env)
+    
+    create_audit_log(
+        db=db,
+        action="CREATED",
+        resource_type="ENVIRONMENT",
+        user_id=user_id,
+        user_email=user_email,
+        workspace_id=workspace_id,
+        resource_id=env.id,
+        resource_name=env.name,
+        new_values={"name": data.name}
+    )
+    
     return env
 
 
@@ -84,7 +161,7 @@ def get_environments(db: Session, workspace_id: int) -> List[Environment]:
 
 # == API Key
 def generate_api_key(environment_name: str) -> tuple[str, str, str]:
-    prefix = "auc_live_" if environment_name == "production" else "auc_test_"
+    prefix = "tf_live_" if environment_name == "production" else "tf_test_"
     random_part = secrets.token_hex(24)
     full_key = f"{prefix}{random_part}"
     
@@ -94,7 +171,13 @@ def generate_api_key(environment_name: str) -> tuple[str, str, str]:
     return full_key, key_hash, key_prefix
 
 
-def create_api_key(db: Session, workspace_id: int, data: ApiKeyCreate) -> Optional[tuple[ApiKey, str]]:
+def create_api_key(
+    db: Session,
+    workspace_id: int,
+    data: ApiKeyCreate,
+    user_id: int = None,
+    user_email: str = None
+) -> Optional[tuple[ApiKey, str]]:
     environment = db.query(Environment).filter(
         Environment.id == data.environment_id,
         Environment.workspace_id == workspace_id,
@@ -115,6 +198,18 @@ def create_api_key(db: Session, workspace_id: int, data: ApiKeyCreate) -> Option
     db.add(api_key)
     db.commit()
     db.refresh(api_key)
+    
+    create_audit_log(
+        db=db,
+        action="CREATED",
+        resource_type="API_KEY",
+        user_id=user_id,
+        user_email=user_email,
+        workspace_id=workspace_id,
+        resource_id=api_key.id,
+        resource_name=api_key.name,
+        new_values={"name": data.name, "environment_id": data.environment_id, "key_prefix": key_prefix}
+    )
     
     return api_key, full_key
 
@@ -142,7 +237,13 @@ def verify_api_key(db: Session, key: str) -> Optional[ApiKey]:
     return api_key
 
 
-def revoke_api_key(db: Session, workspace_id: int, api_key_id: int) -> bool:
+def revoke_api_key(
+    db: Session,
+    workspace_id: int,
+    api_key_id: int,
+    user_id: int = None,
+    user_email: str = None
+) -> bool:
     api_key = db.query(ApiKey).filter(
         ApiKey.id == api_key_id,
         ApiKey.workspace_id == workspace_id,
@@ -152,6 +253,19 @@ def revoke_api_key(db: Session, workspace_id: int, api_key_id: int) -> bool:
     if not api_key:
         return False
     
+    api_key_name = api_key.name
     api_key.is_active = False
     db.commit()
+    
+    create_audit_log(
+        db=db,
+        action="REVOKED",
+        resource_type="API_KEY",
+        user_id=user_id,
+        user_email=user_email,
+        workspace_id=workspace_id,
+        resource_id=api_key_id,
+        resource_name=api_key_name
+    )
+    
     return True
