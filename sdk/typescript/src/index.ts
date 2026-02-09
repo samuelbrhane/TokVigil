@@ -1,5 +1,5 @@
 export { TokenFence } from "./client";
-export {
+export type {
   TokenFenceConfig,
   EvaluateParams,
   EvaluateResult,
