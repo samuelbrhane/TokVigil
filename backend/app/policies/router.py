@@ -9,6 +9,7 @@ from app.auth.models import User
 from app.workspaces.services import get_workspace
 from app.policies import services
 from app.policies.schemas import *
+from app.core.exceptions import WorkspaceNotFoundError, PolicyNotFoundError
 
 router = APIRouter()
 
@@ -23,7 +24,7 @@ def create_policy(
     """Create a new policy for a workspace."""
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     return services.create_policy(db, workspace_id, data, current_user.id, current_user.email)
 
 
@@ -41,7 +42,7 @@ def list_policies(
     """List all policies for a workspace."""
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     return services.get_policies(db, workspace_id, page, page_size, plan, feature, is_active)
 
 
@@ -55,10 +56,10 @@ def get_policy(
     """Get a specific policy."""
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     policy = services.get_policy(db, policy_id, workspace_id)
     if not policy:
-        raise HTTPException(status_code=404, detail="Policy not found")
+        raise PolicyNotFoundError()
     return policy
 
 
@@ -73,10 +74,10 @@ def update_policy(
     """Update a policy."""
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     policy = services.update_policy(db, policy_id, workspace_id, data, current_user.id, current_user.email)
     if not policy:
-        raise HTTPException(status_code=404, detail="Policy not found")
+        raise PolicyNotFoundError()
     return policy
 
 
@@ -90,8 +91,8 @@ def delete_policy(
     """Delete a policy (soft delete)."""
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     deleted = services.delete_policy(db, policy_id, workspace_id, current_user.id, current_user.email)
     if not deleted:
-        raise HTTPException(status_code=404, detail="Policy not found")
+        raise PolicyNotFoundError()
     return None
