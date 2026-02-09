@@ -7,22 +7,23 @@ from app.workspaces.services import verify_api_key
 from app.workspaces.models import ApiKey
 from app.auth.services import decode_token, get_user_by_id
 from app.auth.models import User
+from app.core.rate_limit import check_rate_limit
+from app.workspaces.models import Workspace
 
 
-# == API Key Auth (for SDK) 
+# == API Key Auth (for SDK)
 class AuthenticatedRequest:
-    """Contains workspace and environment info from API key."""
-    def __init__(self, api_key: ApiKey):
+    def __init__(self, api_key: ApiKey, rate_limit_info: dict = None):
         self.workspace_id = api_key.workspace_id
         self.environment_id = api_key.environment_id
         self.api_key_id = api_key.id
+        self.rate_limit_info = rate_limit_info
 
 
 async def get_api_key_auth(
     x_api_key: str = Header(..., description="API Key for authentication"),
     db: Session = Depends(get_db)
 ) -> AuthenticatedRequest:
-    """Validates API key from header. Used by SDK endpoints."""
     if not x_api_key:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -37,11 +38,16 @@ async def get_api_key_auth(
             detail="Invalid API key"
         )
     
-    return AuthenticatedRequest(api_key)
+    
+    workspace = db.query(Workspace).filter(Workspace.id == api_key.workspace_id).first()
+    owner = db.query(User).filter(User.id == workspace.owner_id).first()
+    
+    rate_limit_info = check_rate_limit(api_key.id, owner.plan)
+    
+    return AuthenticatedRequest(api_key, rate_limit_info)
 
 
 # == JWT Auth (for Dashboard) 
-
 security = HTTPBearer()
 
 
@@ -49,7 +55,6 @@ async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ) -> User:
-    """Validates JWT token from Authorization header. Used by dashboard endpoints."""
     token = credentials.credentials
     
     payload = decode_token(token)
