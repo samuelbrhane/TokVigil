@@ -69,7 +69,7 @@ def update_policy(
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
-    policy = services.update_policy(db, policy_id, workspace_id, data)
+    policy = services.update_policy(db, policy_id, workspace_id, data, current_user.id, current_user.email)
     if not policy:
         raise HTTPException(status_code=404, detail="Policy not found")
     return policy
@@ -86,7 +86,7 @@ def delete_policy(
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
-    deleted = services.delete_policy(db, policy_id, workspace_id)
+    deleted = services.delete_policy(db, policy_id, workspace_id, current_user.id, current_user.email)
     if not deleted:
         raise HTTPException(status_code=404, detail="Policy not found")
     return None
