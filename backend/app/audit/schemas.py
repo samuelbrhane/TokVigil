@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional, Any
 from pydantic import BaseModel, ConfigDict
+from app.core.pagination import PaginatedResponse
 
 
 class AuditLogResponse(BaseModel):
@@ -18,3 +19,8 @@ class AuditLogResponse(BaseModel):
     created_at: datetime
     
     model_config = ConfigDict(from_attributes=True)
+    
+    
+
+class PaginatedAuditLogResponse(PaginatedResponse[AuditLogResponse]):
+    pass
