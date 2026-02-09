@@ -1,5 +1,3 @@
-from typing import Optional
-
 from sqlalchemy.orm import Session
 
 from app.core.constants import get_model_pricing
@@ -24,6 +22,7 @@ def estimate_tokens_from_text(text: str) -> int:
 def evaluate_request(
     db: Session,
     workspace_id: int,
+    environment_id: int,
     data: EvaluateRequest
 ) -> EvaluateResponse:
     
@@ -53,8 +52,8 @@ def evaluate_request(
     output_tokens = data.estimated_output_tokens or 500
     estimated_cost = estimate_cost(data.model, input_tokens, output_tokens)
     
-    usage_today = get_user_usage_today(db, workspace_id, data.user_id)
-    usage_month = get_user_usage_month(db, workspace_id, data.user_id)
+    usage_today = get_user_usage_today(db, workspace_id, environment_id, data.user_id)
+    usage_month = get_user_usage_month(db, workspace_id, environment_id, data.user_id)
     
     limit_state = LimitState(
         requests_today=usage_today["requests_today"],
