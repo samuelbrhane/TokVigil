@@ -37,11 +37,12 @@ dev = [
     "responses>=0.23.0",
 ]
 
+
 [project.urls]
 Homepage = "https://tokenfence.io"
 Documentation = "https://docs.tokenfence.io"
-Repository = "https://github.com/tokenfence/tokenfence-python"
-Issues = "https://github.com/tokenfence/tokenfence-python/issues"
+Repository = "https://github.com/samuelbrhane/tokenfence"
+Issues = "https://github.com/samuelbrhane/tokenfence/issues"
 
 [tool.setuptools.packages.find]
 include = ["tokenfence*"]
