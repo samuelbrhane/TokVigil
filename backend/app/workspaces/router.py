@@ -20,8 +20,7 @@ def create_workspace(
     db: Session = Depends(get_db)
 ):
     """Create a new workspace with default environments."""
-    workspace = services.create_workspace(db, data, current_user.id)
-    return workspace
+    return services.create_workspace(db, data, current_user.id, current_user.email)
 
 
 @router.get("", response_model=List[WorkspaceResponse])
@@ -56,7 +55,7 @@ def update_workspace(
     db: Session = Depends(get_db)
 ):
     """Update workspace."""
-    workspace = services.update_workspace(db, workspace_id, current_user.id, data)
+    workspace = services.update_workspace(db, workspace_id, current_user.id, data, current_user.email)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
     return workspace
@@ -69,7 +68,7 @@ def delete_workspace(
     db: Session = Depends(get_db)
 ):
     """Delete workspace (soft delete)."""
-    deleted = services.delete_workspace(db, workspace_id, current_user.id)
+    deleted = services.delete_workspace(db, workspace_id, current_user.id, current_user.email)
     if not deleted:
         raise HTTPException(status_code=404, detail="Workspace not found")
     return None
@@ -100,8 +99,7 @@ def create_environment(
     workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
-    environment = services.create_environment(db, workspace_id, data)
-    return environment
+    return services.create_environment(db, workspace_id, data, current_user.id, current_user.email)
 
 
 # == API Key 
@@ -130,7 +128,7 @@ def create_api_key(
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
     
-    result = services.create_api_key(db, workspace_id, data)
+    result = services.create_api_key(db, workspace_id, data, current_user.id, current_user.email)
     if not result:
         raise HTTPException(status_code=404, detail="Environment not found")
     
@@ -160,7 +158,7 @@ def revoke_api_key(
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
     
-    revoked = services.revoke_api_key(db, workspace_id, api_key_id)
+    revoked = services.revoke_api_key(db, workspace_id, api_key_id, current_user.id, current_user.email)
     if not revoked:
         raise HTTPException(status_code=404, detail="API key not found")
     return None
