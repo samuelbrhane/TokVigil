@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
-
+from app.core.pagination import PaginatedResponse
 
 # == Workspace 
 class WorkspaceCreate(BaseModel):
@@ -69,3 +69,7 @@ class ApiKeyCreatedResponse(ApiKeyResponse):
 class WorkspaceDetailResponse(WorkspaceResponse):
     """Workspace with environments and api keys."""
     environments: List[EnvironmentResponse] = []
+    
+
+class PaginatedWorkspaceResponse(PaginatedResponse[WorkspaceResponse]):
+    pass
