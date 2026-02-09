@@ -8,8 +8,7 @@ from app.core.auth import get_current_user
 from app.auth.models import User
 from app.workspaces.services import get_workspace
 from app.policies import services
-from app.policies.schemas import PolicyCreate, PolicyUpdate, PolicyResponse
-from app.policies.schemas import PaginatedPolicyResponse
+from app.policies.schemas import *
 
 router = APIRouter()
 

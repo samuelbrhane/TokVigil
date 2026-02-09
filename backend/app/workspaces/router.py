@@ -8,7 +8,6 @@ from app.core.auth import get_current_user
 from app.auth.models import User
 from app.workspaces import services
 from app.workspaces.schemas import *
-from app.workspaces.schemas import PaginatedWorkspaceResponse
 
 router = APIRouter()
 
