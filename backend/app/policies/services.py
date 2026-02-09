@@ -60,11 +60,42 @@ def get_policy(db: Session, policy_id: int, workspace_id: int) -> Optional[Polic
     ).first()
 
 
-def get_policies(db: Session, workspace_id: int) -> List[Policy]:
-    return db.query(Policy).filter(
+def get_policies(
+    db: Session,
+    workspace_id: int,
+    page: int = 1,
+    page_size: int = 20,
+    plan: str = None,
+    feature: str = None,
+    is_active: bool = None
+) -> dict:
+    query = db.query(Policy).filter(
         Policy.workspace_id == workspace_id,
         Policy.is_deleted == False
-    ).order_by(Policy.priority.desc()).all()
+    )
+    
+    # Filtering
+    if plan:
+        query = query.filter(Policy.plan == plan)
+    if feature:
+        query = query.filter(Policy.feature == feature)
+    if is_active is not None:
+        query = query.filter(Policy.is_active == is_active)
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    items = query.order_by(Policy.priority.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
 
 
 def update_policy(
