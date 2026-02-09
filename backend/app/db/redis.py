@@ -68,3 +68,14 @@ def cache_delete_pattern(pattern: str) -> bool:
         return True
     except Exception:
         return False
+    
+    
+def close_redis():
+    """Close Redis connection."""
+    global redis_client
+    if redis_client:
+        try:
+            redis_client.close()
+            redis_client = None
+        except Exception:
+            pass
