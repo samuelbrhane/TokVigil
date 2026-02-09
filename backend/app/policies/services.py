@@ -6,9 +6,10 @@ from sqlalchemy.orm import Session
 from app.policies.models import Policy
 from app.policies.schemas import PolicyCreate, PolicyUpdate
 from app.db.redis import cache_get, cache_set, cache_delete_pattern
+from app.audit.services import create_audit_log
 
 
-def create_policy(db: Session, workspace_id: int, data: PolicyCreate) -> Policy:
+def create_policy(db: Session, workspace_id: int, data: PolicyCreate, user_id: int = None, user_email: str = None) -> Policy:
     policy = Policy(
         workspace_id=workspace_id,
         name=data.name,
@@ -29,6 +30,19 @@ def create_policy(db: Session, workspace_id: int, data: PolicyCreate) -> Policy:
     db.commit()
     db.refresh(policy)
     invalidate_policy_cache(workspace_id)
+    
+    # Add audit log
+    create_audit_log(
+        db=db,
+        action="CREATED",
+        resource_type="POLICY",
+        user_id=user_id,
+        user_email=user_email,
+        workspace_id=workspace_id,
+        resource_id=policy.id,
+        resource_name=policy.name,
+        new_values=data.model_dump()
+    )
     return policy
 
 
