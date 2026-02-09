@@ -8,7 +8,7 @@ import {
 } from "../src";
 
 // Test configuration
-const TEST_API_KEY = "tf_live_52de2ea4dc90d0d4255d9700a4a172e418545e78f597f20e";
+const TEST_API_KEY = "tf_test_xxx";
 const TEST_BASE_URL = "http://localhost:8001";
 
 describe("TokenFence", () => {
