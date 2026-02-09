@@ -6,57 +6,87 @@ tf = TokenFence(
     base_url="http://localhost:8001"
 )
 
-# Test evaluate
+print("=" * 50)
+print("TEST 1: Basic Evaluate")
+print("=" * 50)
 result = tf.evaluate(
-    user_id="user_123",
+    user_id="test_user_1",
+    model="gpt-4o-mini",
+    plan="free",
+    feature="chat",
+    input_tokens=100
+)
+print(f"Allowed: {result.allowed}")
+print(f"Reason: {result.reason_code}")
+print()
+
+print("=" * 50)
+print("TEST 2: Log multiple requests to hit limit")
+print("=" * 50)
+
+# Log 50 requests to hit the daily limit
+for i in range(50):
+    tf.log_usage(
+        request_id=str(uuid.uuid4()),
+        user_id="test_user_2",
+        model="gpt-4o-mini",
+        input_tokens=100,
+        output_tokens=50,
+        status="allowed",
+        plan="free",
+        feature="chat"
+    )
+    if (i + 1) % 10 == 0:
+        print(f"Logged {i + 1} requests...")
+
+print()
+
+print("=" * 50)
+print("TEST 3: Check if user is now blocked")
+print("=" * 50)
+result = tf.evaluate(
+    user_id="test_user_2",
     model="gpt-4o-mini",
     plan="free",
     feature="chat"
 )
-
 print(f"Allowed: {result.allowed}")
 print(f"Reason: {result.reason_code}")
 print(f"Message: {result.message}")
-print(f"Limit State: {result.limit_state}")
-
-
-# Test 2: Log Usage
-print("=== Test Log Usage ===")
-request_id = str(uuid.uuid4())
-log_result = tf.log_usage(
-    request_id=request_id,
-    user_id="user_123",
-    model="gpt-4o-mini",
-    input_tokens=100,
-    output_tokens=50,
-    status="allowed",
-    plan="free",
-    feature="chat",
-    latency_ms=350
-)
-
-print(f"Logged: {log_result.recorded}")
-print(f"Request ID: {log_result.request_id}")
+print(f"Requests today: {result.limit_state.requests_today}/{result.limit_state.requests_limit_daily}")
 print()
 
-# Test 3: Evaluate again (should show 1 request used)
-print("=== Test Evaluate Again ===")
-result2 = tf.evaluate(
-    user_id="user_123",
+print("=" * 50)
+print("TEST 4: Different user should still be allowed")
+print("=" * 50)
+result = tf.evaluate(
+    user_id="test_user_3",
     model="gpt-4o-mini",
     plan="free",
     feature="chat"
 )
-
-print(f"Allowed: {result2.allowed}")
-print(f"Requests today: {result2.limit_state.requests_today}/{result2.limit_state.requests_limit_daily}")
+print(f"Allowed: {result.allowed}")
+print(f"Reason: {result.reason_code}")
 print()
 
-# Test 4: Get Usage Summary
-print("=== Test Usage Summary ===")
+print("=" * 50)
+print("TEST 5: Usage Summary")
+print("=" * 50)
 summary = tf.get_usage_summary()
 print(f"Total requests: {summary.total_requests}")
 print(f"Total tokens: {summary.total_tokens}")
-print(f"Total cost: ${summary.total_cost_usd}")
 print(f"Allowed: {summary.allowed_count}")
 print(f"Blocked: {summary.blocked_count}")
+print()
+
+print("=" * 50)
+print("TEST 6: Usage by User")
+print("=" * 50)
+by_user = tf.get_usage_by_user()
+for user in by_user.items:
+    print(f"  {user.group}: {user.requests} requests, {user.tokens} tokens")
+print()
+
+print("=" * 50)
+print("ALL TESTS COMPLETE!")
+print("=" * 50)
