@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional, List, Dict, Any
 
 from sqlalchemy.orm import Session
@@ -14,9 +14,6 @@ def log_usage(
     environment_id: int,
     data: UsageLogRequest
 ) -> Optional[UsageRecord]:
-    """Log a usage record. Returns None if request_id already exists (idempotency)."""
-    
-    # Check for duplicate request_id
     existing = db.query(UsageRecord).filter(
         UsageRecord.request_id == data.request_id
     ).first()
@@ -50,13 +47,15 @@ def log_usage(
 def get_recent_usage(
     db: Session,
     workspace_id: int,
+    environment_id: int,
     limit: int = 50,
     offset: int = 0,
     user_id: Optional[str] = None,
     feature: Optional[str] = None
 ) -> List[UsageRecord]:
     query = db.query(UsageRecord).filter(
-        UsageRecord.workspace_id == workspace_id
+        UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id
     )
     
     if user_id:
@@ -70,11 +69,13 @@ def get_recent_usage(
 def get_blocked_requests(
     db: Session,
     workspace_id: int,
+    environment_id: int,
     limit: int = 50,
     offset: int = 0
 ) -> List[UsageRecord]:
     return db.query(UsageRecord).filter(
         UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id,
         UsageRecord.status == "blocked"
     ).order_by(UsageRecord.created_at.desc()).offset(offset).limit(limit).all()
 
@@ -82,11 +83,13 @@ def get_blocked_requests(
 def get_usage_summary(
     db: Session,
     workspace_id: int,
+    environment_id: int,
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None
 ) -> UsageSummary:
     query = db.query(UsageRecord).filter(
-        UsageRecord.workspace_id == workspace_id
+        UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id
     )
     
     if start_date:
@@ -105,14 +108,15 @@ def get_usage_summary(
     )
 
 
-def get_usage_by_user(db: Session, workspace_id: int) -> List[UsageByGroup]:
+def get_usage_by_user(db: Session, workspace_id: int, environment_id: int) -> List[UsageByGroup]:
     results = db.query(
         UsageRecord.user_id,
         func.count(UsageRecord.id).label("requests"),
         func.sum(UsageRecord.total_tokens).label("tokens"),
         func.sum(UsageRecord.estimated_cost_usd).label("cost_usd")
     ).filter(
-        UsageRecord.workspace_id == workspace_id
+        UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id
     ).group_by(UsageRecord.user_id).all()
     
     return [
@@ -121,14 +125,15 @@ def get_usage_by_user(db: Session, workspace_id: int) -> List[UsageByGroup]:
     ]
 
 
-def get_usage_by_feature(db: Session, workspace_id: int) -> List[UsageByGroup]:
+def get_usage_by_feature(db: Session, workspace_id: int, environment_id: int) -> List[UsageByGroup]:
     results = db.query(
         UsageRecord.feature,
         func.count(UsageRecord.id).label("requests"),
         func.sum(UsageRecord.total_tokens).label("tokens"),
         func.sum(UsageRecord.estimated_cost_usd).label("cost_usd")
     ).filter(
-        UsageRecord.workspace_id == workspace_id
+        UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id
     ).group_by(UsageRecord.feature).all()
     
     return [
@@ -140,13 +145,14 @@ def get_usage_by_feature(db: Session, workspace_id: int) -> List[UsageByGroup]:
 def get_user_usage_today(
     db: Session,
     workspace_id: int,
+    environment_id: int,
     user_id: str
 ) -> Dict[str, Any]:
-    """Get user's usage for today - used by evaluate endpoint."""
     today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
     
     records = db.query(UsageRecord).filter(
         UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id,
         UsageRecord.user_id == user_id,
         UsageRecord.status == "allowed",
         UsageRecord.created_at >= today_start
@@ -162,13 +168,14 @@ def get_user_usage_today(
 def get_user_usage_month(
     db: Session,
     workspace_id: int,
+    environment_id: int,
     user_id: str
 ) -> Dict[str, Any]:
-    """Get user's usage for current month - used by evaluate endpoint."""
     month_start = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     
     records = db.query(UsageRecord).filter(
         UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id,
         UsageRecord.user_id == user_id,
         UsageRecord.status == "allowed",
         UsageRecord.created_at >= month_start
