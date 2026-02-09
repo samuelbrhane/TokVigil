@@ -29,14 +29,6 @@ import {
   PaginationParams,
   RecentUsageParams,
   UsageSummaryParams,
-  LimitState,
-  APIEvaluateResult,
-  APIUsageLogResult,
-  APIUsageRecord,
-  APIUsageSummary,
-  APIUsageByGroup,
-  APIPaginatedResponse,
-  APILimitState,
 } from "./types";
 
 export class TokenFence {
@@ -335,7 +327,7 @@ export class TokenFence {
     return await this.request<UsageSummary>(
       "GET",
       ENDPOINTS.usageSummary,
-      params,
+      params as Record<string, unknown>,
     );
   }
 
