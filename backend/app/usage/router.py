@@ -38,7 +38,7 @@ def get_recent_usage(
     db: Session = Depends(get_db)
 ):
     """Get recent usage records. Requires X-API-Key header."""
-    return services.get_recent_usage(db, auth.workspace_id, limit, offset, user_id, feature)
+    return services.get_recent_usage(db, auth.workspace_id, auth.environment_id, limit, offset, user_id, feature)
 
 
 @router.get("/blocked", response_model=List[UsageRecordResponse])
@@ -49,7 +49,7 @@ def get_blocked_requests(
     db: Session = Depends(get_db)
 ):
     """Get blocked requests. Requires X-API-Key header."""
-    return services.get_blocked_requests(db, auth.workspace_id, limit, offset)
+    return services.get_blocked_requests(db, auth.workspace_id, auth.environment_id, limit, offset)
 
 
 @router.get("/summary", response_model=UsageSummary)
@@ -60,7 +60,7 @@ def get_usage_summary(
     db: Session = Depends(get_db)
 ):
     """Get usage summary. Requires X-API-Key header."""
-    return services.get_usage_summary(db, auth.workspace_id, start_date, end_date)
+    return services.get_usage_summary(db, auth.workspace_id, auth.environment_id, start_date, end_date)
 
 
 @router.get("/by-user", response_model=List[UsageByGroup])
@@ -69,7 +69,7 @@ def get_usage_by_user(
     db: Session = Depends(get_db)
 ):
     """Get usage grouped by user. Requires X-API-Key header."""
-    return services.get_usage_by_user(db, auth.workspace_id)
+    return services.get_usage_by_user(db, auth.workspace_id, auth.environment_id)
 
 
 @router.get("/by-feature", response_model=List[UsageByGroup])
@@ -78,4 +78,4 @@ def get_usage_by_feature(
     db: Session = Depends(get_db)
 ):
     """Get usage grouped by feature. Requires X-API-Key header."""
-    return services.get_usage_by_feature(db, auth.workspace_id)
+    return services.get_usage_by_feature(db, auth.workspace_id, auth.environment_id)
