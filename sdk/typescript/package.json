@@ -30,11 +30,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tokenfence/tokenfence-node"
+    "url": "https://github.com/samuelbrhane/tokenfence"
   },
   "homepage": "https://tokenfence.io",
   "bugs": {
-    "url": "https://github.com/tokenfence/tokenfence-node/issues"
+    "url": "https://github.com/samuelbrhane/tokenfence/issues"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
