@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
@@ -8,6 +8,7 @@ from app.core.auth import get_current_user
 from app.auth.models import User
 from app.workspaces import services
 from app.workspaces.schemas import *
+from app.workspaces.schemas import PaginatedWorkspaceResponse
 
 router = APIRouter()
 
@@ -23,15 +24,16 @@ def create_workspace(
     return services.create_workspace(db, data, current_user.id, current_user.email)
 
 
-@router.get("", response_model=List[WorkspaceResponse])
+
+@router.get("", response_model=PaginatedWorkspaceResponse)
 def list_workspaces(
     current_user: User = Depends(get_current_user),
-    skip: int = 0,
-    limit: int = 100,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
     """List workspaces owned by current user."""
-    return services.get_workspaces(db, current_user.id, skip=skip, limit=limit)
+    return services.get_workspaces(db, current_user.id, page=page, page_size=page_size)
 
 
 @router.get("/{workspace_id}", response_model=WorkspaceDetailResponse)
