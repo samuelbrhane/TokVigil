@@ -4,14 +4,14 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.workspaces.services import verify_api_key
-from app.workspaces.models import ApiKey
+from app.workspaces.models import ApiKey, Workspace, Environment
 from app.auth.services import decode_token, get_user_by_id
 from app.auth.models import User
 from app.core.rate_limit import check_rate_limit
-from app.workspaces.models import Workspace
 
 
-# == API Key Auth (for SDK)
+# == API Key Auth (for SDK) 
+
 class AuthenticatedRequest:
     def __init__(self, api_key: ApiKey, rate_limit_info: dict = None):
         self.workspace_id = api_key.workspace_id
@@ -38,10 +38,68 @@ async def get_api_key_auth(
             detail="Invalid API key"
         )
     
+    # Validate API key is active
+    if not api_key.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "error": "API_KEY_REVOKED",
+                "message": "API key has been revoked"
+            }
+        )
     
-    workspace = db.query(Workspace).filter(Workspace.id == api_key.workspace_id).first()
+    # Validate workspace exists and is active
+    workspace = db.query(Workspace).filter(
+        Workspace.id == api_key.workspace_id,
+        Workspace.is_deleted == False
+    ).first()
+    
+    if not workspace:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "error": "WORKSPACE_NOT_FOUND",
+                "message": "Workspace not found"
+            }
+        )
+    
+    if not workspace.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "error": "WORKSPACE_INACTIVE",
+                "message": "Workspace has been deactivated"
+            }
+        )
+    
+    # Validate environment exists and is active
+    environment = db.query(Environment).filter(
+        Environment.id == api_key.environment_id,
+        Environment.is_deleted == False
+    ).first()
+    
+    if not environment:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "error": "ENVIRONMENT_NOT_FOUND",
+                "message": "Environment not found"
+            }
+        )
+    
+    if not environment.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "error": "ENVIRONMENT_INACTIVE",
+                "message": "Environment has been deactivated"
+            }
+        )
+    
+    # Get workspace owner's plan for rate limiting
     owner = db.query(User).filter(User.id == workspace.owner_id).first()
     
+    # Check rate limit
     rate_limit_info = check_rate_limit(api_key.id, owner.plan)
     
     return AuthenticatedRequest(api_key, rate_limit_info)
