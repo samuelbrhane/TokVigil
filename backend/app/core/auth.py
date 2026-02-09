@@ -1,4 +1,4 @@
-from fastapi import Header, HTTPException, Depends, status
+from fastapi import Header, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 
@@ -8,9 +8,19 @@ from app.workspaces.models import ApiKey, Workspace, Environment
 from app.auth.services import decode_token, get_user_by_id
 from app.auth.models import User
 from app.core.rate_limit import check_rate_limit
+from app.core.exceptions import (
+    InvalidAPIKeyError,
+    InvalidTokenError,
+    APIKeyRevokedError,
+    WorkspaceNotFoundError,
+    WorkspaceInactiveError,
+    EnvironmentNotFoundError,
+    EnvironmentInactiveError,
+    UserNotFoundError,
+)
 
 
-# == API Key Auth (for SDK) 
+# ==================== API Key Auth (for SDK) ====================
 
 class AuthenticatedRequest:
     def __init__(self, api_key: ApiKey, rate_limit_info: dict = None):
@@ -25,87 +35,47 @@ async def get_api_key_auth(
     db: Session = Depends(get_db)
 ) -> AuthenticatedRequest:
     if not x_api_key:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing API key"
-        )
+        raise InvalidAPIKeyError(message="Missing API key")
     
     api_key = verify_api_key(db, x_api_key)
     
     if not api_key:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid API key"
-        )
+        raise InvalidAPIKeyError()
     
-    # Validate API key is active
     if not api_key.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "error": "API_KEY_REVOKED",
-                "message": "API key has been revoked"
-            }
-        )
+        raise APIKeyRevokedError()
     
-    # Validate workspace exists and is active
     workspace = db.query(Workspace).filter(
         Workspace.id == api_key.workspace_id,
         Workspace.is_deleted == False
     ).first()
     
     if not workspace:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "error": "WORKSPACE_NOT_FOUND",
-                "message": "Workspace not found"
-            }
-        )
+        raise WorkspaceNotFoundError()
     
     if not workspace.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "error": "WORKSPACE_INACTIVE",
-                "message": "Workspace has been deactivated"
-            }
-        )
+        raise WorkspaceInactiveError()
     
-    # Validate environment exists and is active
     environment = db.query(Environment).filter(
         Environment.id == api_key.environment_id,
         Environment.is_deleted == False
     ).first()
     
     if not environment:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "error": "ENVIRONMENT_NOT_FOUND",
-                "message": "Environment not found"
-            }
-        )
+        raise EnvironmentNotFoundError()
     
     if not environment.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "error": "ENVIRONMENT_INACTIVE",
-                "message": "Environment has been deactivated"
-            }
-        )
+        raise EnvironmentInactiveError()
     
-    # Get workspace owner's plan for rate limiting
     owner = db.query(User).filter(User.id == workspace.owner_id).first()
     
-    # Check rate limit
     rate_limit_info = check_rate_limit(api_key.id, owner.plan)
     
     return AuthenticatedRequest(api_key, rate_limit_info)
 
 
-# == JWT Auth (for Dashboard) 
+# ==================== JWT Auth (for Dashboard) ====================
+
 security = HTTPBearer()
 
 
@@ -117,18 +87,12 @@ async def get_current_user(
     
     payload = decode_token(token)
     if not payload or payload.get("type") != "access":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token"
-        )
+        raise InvalidTokenError()
     
     user_id = int(payload.get("sub"))
     user = get_user_by_id(db, user_id)
     
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found"
-        )
+        raise UserNotFoundError()
     
     return user
