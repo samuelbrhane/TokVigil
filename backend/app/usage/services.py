@@ -48,11 +48,13 @@ def get_recent_usage(
     db: Session,
     workspace_id: int,
     environment_id: int,
-    limit: int = 50,
-    offset: int = 0,
+    page: int = 1,
+    page_size: int = 20,
     user_id: Optional[str] = None,
-    feature: Optional[str] = None
-) -> List[UsageRecord]:
+    feature: Optional[str] = None,
+    model: Optional[str] = None,
+    status: Optional[str] = None
+) -> dict:
     query = db.query(UsageRecord).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id
@@ -62,23 +64,131 @@ def get_recent_usage(
         query = query.filter(UsageRecord.user_id == user_id)
     if feature:
         query = query.filter(UsageRecord.feature == feature)
+    if model:
+        query = query.filter(UsageRecord.model == model)
+    if status:
+        query = query.filter(UsageRecord.status == status)
     
-    return query.order_by(UsageRecord.created_at.desc()).offset(offset).limit(limit).all()
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    items = query.order_by(UsageRecord.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
 
 
 def get_blocked_requests(
     db: Session,
     workspace_id: int,
     environment_id: int,
-    limit: int = 50,
-    offset: int = 0
-) -> List[UsageRecord]:
-    return db.query(UsageRecord).filter(
+    page: int = 1,
+    page_size: int = 20
+) -> dict:
+    query = db.query(UsageRecord).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id,
         UsageRecord.status == "blocked"
-    ).order_by(UsageRecord.created_at.desc()).offset(offset).limit(limit).all()
+    )
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    items = query.order_by(UsageRecord.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
 
+
+def get_usage_by_user(
+    db: Session,
+    workspace_id: int,
+    environment_id: int,
+    page: int = 1,
+    page_size: int = 20
+) -> dict:
+    query = db.query(
+        UsageRecord.user_id,
+        func.count(UsageRecord.id).label("requests"),
+        func.sum(UsageRecord.total_tokens).label("tokens"),
+        func.sum(UsageRecord.estimated_cost_usd).label("cost_usd")
+    ).filter(
+        UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id
+    ).group_by(UsageRecord.user_id)
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    results = query.offset((page - 1) * page_size).limit(page_size).all()
+    
+    items = [
+        UsageByGroup(group=r.user_id, requests=r.requests, tokens=r.tokens or 0, cost_usd=r.cost_usd or 0)
+        for r in results
+    ]
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
+
+
+def get_usage_by_feature(
+    db: Session,
+    workspace_id: int,
+    environment_id: int,
+    page: int = 1,
+    page_size: int = 20
+) -> dict:
+    query = db.query(
+        UsageRecord.feature,
+        func.count(UsageRecord.id).label("requests"),
+        func.sum(UsageRecord.total_tokens).label("tokens"),
+        func.sum(UsageRecord.estimated_cost_usd).label("cost_usd")
+    ).filter(
+        UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id
+    ).group_by(UsageRecord.feature)
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    results = query.offset((page - 1) * page_size).limit(page_size).all()
+    
+    items = [
+        UsageByGroup(group=r.feature or "unknown", requests=r.requests, tokens=r.tokens or 0, cost_usd=r.cost_usd or 0)
+        for r in results
+    ]
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
+    
 
 def get_usage_summary(
     db: Session,
@@ -107,39 +217,6 @@ def get_usage_summary(
         blocked_count=len([r for r in records if r.status == "blocked"]),
     )
 
-
-def get_usage_by_user(db: Session, workspace_id: int, environment_id: int) -> List[UsageByGroup]:
-    results = db.query(
-        UsageRecord.user_id,
-        func.count(UsageRecord.id).label("requests"),
-        func.sum(UsageRecord.total_tokens).label("tokens"),
-        func.sum(UsageRecord.estimated_cost_usd).label("cost_usd")
-    ).filter(
-        UsageRecord.workspace_id == workspace_id,
-        UsageRecord.environment_id == environment_id
-    ).group_by(UsageRecord.user_id).all()
-    
-    return [
-        UsageByGroup(group=r.user_id, requests=r.requests, tokens=r.tokens or 0, cost_usd=r.cost_usd or 0)
-        for r in results
-    ]
-
-
-def get_usage_by_feature(db: Session, workspace_id: int, environment_id: int) -> List[UsageByGroup]:
-    results = db.query(
-        UsageRecord.feature,
-        func.count(UsageRecord.id).label("requests"),
-        func.sum(UsageRecord.total_tokens).label("tokens"),
-        func.sum(UsageRecord.estimated_cost_usd).label("cost_usd")
-    ).filter(
-        UsageRecord.workspace_id == workspace_id,
-        UsageRecord.environment_id == environment_id
-    ).group_by(UsageRecord.feature).all()
-    
-    return [
-        UsageByGroup(group=r.feature or "unknown", requests=r.requests, tokens=r.tokens or 0, cost_usd=r.cost_usd or 0)
-        for r in results
-    ]
 
 
 def get_user_usage_today(
