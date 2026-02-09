@@ -51,11 +51,31 @@ def get_workspace(db: Session, workspace_id: int, owner_id: int) -> Optional[Wor
     ).first()
 
 
-def get_workspaces(db: Session, owner_id: int, skip: int = 0, limit: int = 100) -> List[Workspace]:
-    return db.query(Workspace).filter(
+def get_workspaces(
+    db: Session,
+    owner_id: int,
+    page: int = 1,
+    page_size: int = 20
+) -> dict:
+    query = db.query(Workspace).filter(
         Workspace.owner_id == owner_id,
         Workspace.is_deleted == False
-    ).offset(skip).limit(limit).all()
+    )
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    items = query.offset((page - 1) * page_size).limit(page_size).all()
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
 
 
 def update_workspace(
