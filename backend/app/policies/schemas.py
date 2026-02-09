@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
-
+from app.core.pagination import PaginatedResponse
 
 class PolicyCreate(BaseModel):
     name: str
@@ -57,3 +57,7 @@ class PolicyResponse(BaseModel):
     updated_at: datetime
     
     model_config = ConfigDict(from_attributes=True)
+    
+
+class PaginatedPolicyResponse(PaginatedResponse[PolicyResponse]):
+    pass
