@@ -5,7 +5,6 @@ from app.core.pagination import PaginatedResponse
 
 
 class UsageLogRequest(BaseModel):
-    """Request body when SDK logs a completed AI call."""
     request_id: str
     user_id: str
     plan: Optional[str] = None
@@ -13,12 +12,12 @@ class UsageLogRequest(BaseModel):
     model: str
     input_tokens: int
     output_tokens: int
-    estimated_cost_usd: float
+    estimated_cost_usd: Optional[float] = None  
     actual_cost_usd: Optional[float] = None
-    status: str  # allowed, blocked
+    status: str = "allowed"
     reason_code: Optional[str] = None
     latency_ms: Optional[int] = None
-    extra_data: Optional[Dict[str, Any]] = None
+    extra_data: Optional[dict] = None
 
 
 class UsageLogResponse(BaseModel):
