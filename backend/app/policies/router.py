@@ -24,7 +24,7 @@ def create_policy(
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise HTTPException(status_code=404, detail="Workspace not found")
-    return services.create_policy(db, workspace_id, data)
+    return services.create_policy(db, workspace_id, data, current_user.id, current_user.email)
 
 
 @router.get("/{workspace_id}", response_model=List[PolicyResponse])
