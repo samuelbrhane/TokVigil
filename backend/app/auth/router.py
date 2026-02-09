@@ -6,7 +6,7 @@ from app.core.auth import get_current_user
 from app.auth.models import User
 from app.auth import services
 from app.auth.schemas import *
-
+from app.core.exceptions import EmailAlreadyExistsError, InvalidPasswordError, BadRequestError, InvalidTokenError, UserNotFoundError
 router = APIRouter()
 
 
@@ -15,10 +15,7 @@ def register(data: UserRegister, request: Request, db: Session = Depends(get_db)
     """Register a new user."""
     user = services.register_user(db, data, ip_address=request.client.host)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
-        )
+        raise EmailAlreadyExistsError()
     return user
 
 
@@ -27,11 +24,7 @@ def login(data: UserLogin, request: Request, db: Session = Depends(get_db)):
     """Login and get access + refresh tokens."""
     user = services.authenticate_user(db, data.email, data.password, ip_address=request.client.host)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid email or password"
-        )
-    
+        raise InvalidPasswordError(message="Invalid email or password")
     return TokenResponse(
         access_token=services.create_access_token(user.id),
         refresh_token=services.create_refresh_token(user.id)
@@ -44,19 +37,14 @@ def refresh_token(data: TokenRefresh, db: Session = Depends(get_db)):
     payload = services.decode_token(data.refresh_token)
     
     if not payload or payload.get("type") != "refresh":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid refresh token"
-        )
+        raise InvalidTokenError(message="Invalid refresh token")
     
     user_id = int(payload.get("sub"))
     user = services.get_user_by_id(db, user_id)
     
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found"
-        )
+        raise UserNotFoundError()
+         
     
     return TokenResponse(
         access_token=services.create_access_token(user.id),
@@ -89,10 +77,8 @@ def change_password(
     """Change password for current user."""
     success = services.change_password(db, current_user.id, data.current_password, data.new_password)
     if not success:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Current password is incorrect"
-        )
+        raise InvalidPasswordError(message="Current password is incorrect")
+
     return MessageResponse(message="Password changed successfully")
 
 
@@ -109,10 +95,7 @@ def reset_password(data: ResetPassword, db: Session = Depends(get_db)):
     """Reset password using token."""
     success = services.reset_password(db, data.token, data.new_password)
     if not success:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or expired reset token"
-        )
+        raise InvalidTokenError(message="Invalid or expired reset token")
     return MessageResponse(message="Password reset successfully")
 
 
@@ -121,10 +104,8 @@ def verify_email(data: VerifyEmail, db: Session = Depends(get_db)):
     """Verify email using token."""
     success = services.verify_email(db, data.token)
     if not success:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or expired verification token"
-        )
+        raise InvalidTokenError(message="Invalid or expired verification token")
+        
     return MessageResponse(message="Email verified successfully")
 
 
