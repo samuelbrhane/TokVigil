@@ -9,7 +9,13 @@ from app.db.redis import cache_get, cache_set, cache_delete_pattern
 from app.audit.services import create_audit_log
 
 
-def create_policy(db: Session, workspace_id: int, data: PolicyCreate, user_id: int = None, user_email: str = None) -> Policy:
+def create_policy(
+    db: Session,
+    workspace_id: int,
+    data: PolicyCreate,
+    user_id: int = None,
+    user_email: str = None
+) -> Policy:
     policy = Policy(
         workspace_id=workspace_id,
         name=data.name,
@@ -31,7 +37,6 @@ def create_policy(db: Session, workspace_id: int, data: PolicyCreate, user_id: i
     db.refresh(policy)
     invalidate_policy_cache(workspace_id)
     
-    # Add audit log
     create_audit_log(
         db=db,
         action="CREATED",
@@ -43,6 +48,7 @@ def create_policy(db: Session, workspace_id: int, data: PolicyCreate, user_id: i
         resource_name=policy.name,
         new_values=data.model_dump()
     )
+    
     return policy
 
 
@@ -61,10 +67,33 @@ def get_policies(db: Session, workspace_id: int) -> List[Policy]:
     ).order_by(Policy.priority.desc()).all()
 
 
-def update_policy(db: Session, policy_id: int, workspace_id: int, data: PolicyUpdate) -> Optional[Policy]:
+def update_policy(
+    db: Session,
+    policy_id: int,
+    workspace_id: int,
+    data: PolicyUpdate,
+    user_id: int = None,
+    user_email: str = None
+) -> Optional[Policy]:
     policy = get_policy(db, policy_id, workspace_id)
     if not policy:
         return None
+    
+    old_values = {
+        "name": policy.name,
+        "plan": policy.plan,
+        "feature": policy.feature,
+        "user_id": policy.user_id,
+        "requests_per_day": policy.requests_per_day,
+        "requests_per_month": policy.requests_per_month,
+        "tokens_per_day": policy.tokens_per_day,
+        "tokens_per_month": policy.tokens_per_month,
+        "budget_per_day_usd": policy.budget_per_day_usd,
+        "budget_per_month_usd": policy.budget_per_month_usd,
+        "max_cost_per_request_usd": policy.max_cost_per_request_usd,
+        "allowed_models": policy.allowed_models,
+        "priority": policy.priority,
+    }
     
     update_data = data.model_dump(exclude_unset=True)
     for field, value in update_data.items():
@@ -73,18 +102,51 @@ def update_policy(db: Session, policy_id: int, workspace_id: int, data: PolicyUp
     db.commit()
     db.refresh(policy)
     invalidate_policy_cache(workspace_id)
+    
+    create_audit_log(
+        db=db,
+        action="UPDATED",
+        resource_type="POLICY",
+        user_id=user_id,
+        user_email=user_email,
+        workspace_id=workspace_id,
+        resource_id=policy.id,
+        resource_name=policy.name,
+        old_values=old_values,
+        new_values=update_data
+    )
+    
     return policy
 
 
-def delete_policy(db: Session, policy_id: int, workspace_id: int) -> bool:
+def delete_policy(
+    db: Session,
+    policy_id: int,
+    workspace_id: int,
+    user_id: int = None,
+    user_email: str = None
+) -> bool:
     policy = get_policy(db, policy_id, workspace_id)
     if not policy:
         return False
     
+    policy_name = policy.name
     policy.is_deleted = True
     policy.deleted_at = datetime.utcnow()
     db.commit()
     invalidate_policy_cache(workspace_id)
+    
+    create_audit_log(
+        db=db,
+        action="DELETED",
+        resource_type="POLICY",
+        user_id=user_id,
+        user_email=user_email,
+        workspace_id=workspace_id,
+        resource_id=policy_id,
+        resource_name=policy_name
+    )
+    
     return True
 
 
@@ -96,7 +158,6 @@ def find_matching_policy(
     user_id: Optional[str] = None
 ) -> Optional[Policy]:
     
-    # Try cache first
     cache_key = f"policy:{workspace_id}:{plan}:{feature}:{user_id}"
     cached = cache_get(cache_key)
     if cached is not None:
@@ -104,7 +165,6 @@ def find_matching_policy(
             return None
         return db.query(Policy).filter(Policy.id == cached["id"]).first()
     
-    # Query database
     policies = db.query(Policy).filter(
         Policy.workspace_id == workspace_id,
         Policy.is_active == True,
@@ -134,7 +194,6 @@ def find_matching_policy(
             best_score = score
             best_match = policy
     
-    # Cache result
     if best_match:
         cache_set(cache_key, {"id": best_match.id}, ttl=60)
     else:
@@ -144,5 +203,4 @@ def find_matching_policy(
 
 
 def invalidate_policy_cache(workspace_id: int):
-    """Clear all cached policies for a workspace."""
     cache_delete_pattern(f"policy:{workspace_id}:*")
