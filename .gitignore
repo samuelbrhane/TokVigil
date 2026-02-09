@@ -73,3 +73,7 @@ infrastructure/docker/.env
 tmp/
 temp/
 .cache/
+
+# Test files with API keys
+test_local_copy.py
+test_local_copy.ts
