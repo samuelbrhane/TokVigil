@@ -25,7 +25,7 @@ describe("TokenFence", () => {
     });
 
     it("should return allowed result", async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      globalThis.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
         json: () =>
@@ -54,7 +54,7 @@ describe("TokenFence", () => {
     });
 
     it("should return blocked result", async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      globalThis.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 200,
         json: () =>
@@ -80,7 +80,7 @@ describe("TokenFence", () => {
     });
 
     it("should throw AuthenticationError on 401", async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      globalThis.fetch = vi.fn().mockResolvedValue({
         ok: false,
         status: 401,
         json: () =>
@@ -100,7 +100,7 @@ describe("TokenFence", () => {
     });
 
     it("should throw RateLimitError on 429", async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      globalThis.fetch = vi.fn().mockResolvedValue({
         ok: false,
         status: 429,
         json: () =>
@@ -123,7 +123,7 @@ describe("TokenFence", () => {
 
   describe("logUsage", () => {
     it("should log usage successfully", async () => {
-      global.fetch = vi.fn().mockResolvedValue({
+      globalThis.fetch = vi.fn().mockResolvedValue({
         ok: true,
         status: 201,
         json: () =>
