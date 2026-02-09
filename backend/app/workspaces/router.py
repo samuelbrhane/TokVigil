@@ -8,6 +8,7 @@ from app.core.auth import get_current_user
 from app.auth.models import User
 from app.workspaces import services
 from app.workspaces.schemas import *
+from app.core.exceptions import WorkspaceNotFoundError, EnvironmentNotFoundError, APIKeyNotFoundError
 
 router = APIRouter()
 
@@ -44,7 +45,7 @@ def get_workspace(
     """Get workspace by ID with environments."""
     workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     return workspace
 
 
@@ -58,7 +59,7 @@ def update_workspace(
     """Update workspace."""
     workspace = services.update_workspace(db, workspace_id, current_user.id, data, current_user.email)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     return workspace
 
 
@@ -71,7 +72,7 @@ def delete_workspace(
     """Delete workspace (soft delete)."""
     deleted = services.delete_workspace(db, workspace_id, current_user.id, current_user.email)
     if not deleted:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     return None
 
 
@@ -85,7 +86,7 @@ def list_environments(
     """List environments for a workspace."""
     workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     return services.get_environments(db, workspace_id)
 
 
@@ -99,7 +100,7 @@ def create_environment(
     """Create a new environment."""
     workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     return services.create_environment(db, workspace_id, data, current_user.id, current_user.email)
 
 
@@ -113,7 +114,7 @@ def list_api_keys(
     """List API keys for a workspace."""
     workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     return services.get_api_keys(db, workspace_id)
 
 
@@ -127,11 +128,11 @@ def create_api_key(
     """Create a new API key. The full key is only shown once."""
     workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     
     result = services.create_api_key(db, workspace_id, data, current_user.id, current_user.email)
     if not result:
-        raise HTTPException(status_code=404, detail="Environment not found")
+        raise EnvironmentNotFoundError()
     
     api_key, full_key = result
     return ApiKeyCreatedResponse(
@@ -157,9 +158,9 @@ def revoke_api_key(
     """Revoke an API key."""
     workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
-        raise HTTPException(status_code=404, detail="Workspace not found")
+        raise WorkspaceNotFoundError()
     
     revoked = services.revoke_api_key(db, workspace_id, api_key_id, current_user.id, current_user.email)
     if not revoked:
-        raise HTTPException(status_code=404, detail="API key not found")
+        raise APIKeyNotFoundError()
     return None
