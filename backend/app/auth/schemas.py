@@ -75,3 +75,15 @@ class UserPlanResponse(BaseModel):
     evaluate_calls_per_month: int
     team_members_limit: int
     features: Dict[str, bool]
+    
+
+class ApiKeyInfoResponse(BaseModel):
+    key_prefix: str
+    name: str
+    environment_id: int
+    environment_name: str
+    workspace_id: int
+    workspace_name: str
+    
+    class Config:
+        from_attributes = True
