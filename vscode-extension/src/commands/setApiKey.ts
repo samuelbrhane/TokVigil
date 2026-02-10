@@ -1,9 +1,11 @@
 import * as vscode from "vscode";
 import { setApiKey, getConfig } from "../config/settings";
 import { TokenFenceApiClient } from "../api/client";
+import { SidebarProvider } from "../panels/SidebarProvider";
 
 export async function setApiKeyCommand(
   apiClient: TokenFenceApiClient,
+  sidebarProvider: SidebarProvider,
 ): Promise<void> {
   const config = getConfig();
 
@@ -33,7 +35,7 @@ export async function setApiKeyCommand(
   const newConfig = getConfig();
   apiClient.updateConfig(newConfig);
 
-  // Test connection
+  // Test connection and refresh sidebar
   const testResult = await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
@@ -41,7 +43,12 @@ export async function setApiKeyCommand(
       cancellable: false,
     },
     async () => {
-      return apiClient.testConnection();
+      const result = await apiClient.testConnection();
+
+      // Auto-refresh sidebar after setting API key
+      await sidebarProvider.refresh();
+
+      return result;
     },
   );
 
