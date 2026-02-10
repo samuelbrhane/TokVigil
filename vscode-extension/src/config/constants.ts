@@ -9,6 +9,7 @@ export const ENDPOINTS = {
   usageByFeature: "/api/v1/usage/by-feature",
   policies: "/api/v1/policies",
   workspaces: "/api/v1/workspaces",
+  apiKeyInfo: "/api/v1/auth/api-key-info",
 };
 
 export const EXTENSION_ID = "tokenfence.tokenfence";
