@@ -129,7 +129,7 @@ export class TokenFenceApiClient {
       "POST",
       ENDPOINTS.evaluate,
       undefined,
-      params,
+      params as unknown as Record<string, unknown>,
     );
   }
 
