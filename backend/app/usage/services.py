@@ -129,7 +129,7 @@ def get_usage_by_user(
     ).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id
-    ).group_by(UsageRecord.user_id)
+    ).group_by(UsageRecord.user_id).order_by(func.count(UsageRecord.id).desc())  # Add this!
     
     total = query.count()
     total_pages = (total + page_size - 1) // page_size
@@ -167,7 +167,7 @@ def get_usage_by_feature(
     ).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id
-    ).group_by(UsageRecord.feature)
+    ).group_by(UsageRecord.feature).order_by(func.count(UsageRecord.id).desc())  # Add this!
     
     total = query.count()
     total_pages = (total + page_size - 1) // page_size
@@ -188,7 +188,6 @@ def get_usage_by_feature(
         "has_next": page < total_pages,
         "has_prev": page > 1
     }
-    
 
 def get_usage_summary(
     db: Session,
