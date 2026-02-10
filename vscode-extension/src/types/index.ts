@@ -1,7 +1,6 @@
 export interface TokenFenceConfig {
   apiKey: string;
   baseUrl: string;
-  environment: "development" | "staging" | "production";
 }
 
 export interface EvaluateParams {
