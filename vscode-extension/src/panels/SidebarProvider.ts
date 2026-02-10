@@ -72,13 +72,26 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         command: "updateData",
         data: {
           hasApiKey: false,
-          environment: config.environment,
         },
       });
       return;
     }
 
     try {
+      // Get API key info first
+      const apiKeyInfo = await this._apiClient.getApiKeyInfo();
+
+      if (!apiKeyInfo) {
+        this._view.webview.postMessage({
+          command: "updateData",
+          data: {
+            hasApiKey: true,
+            error: "Failed to get API key info. Check your API key.",
+          },
+        });
+        return;
+      }
+
       const [summary, byUser, byFeature] = await Promise.all([
         this._apiClient.getUsageSummary(),
         this._apiClient.getUsageByUser(1, 5),
@@ -89,7 +102,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         command: "updateData",
         data: {
           hasApiKey: true,
-          environment: config.environment,
+          apiKeyInfo: apiKeyInfo,
           summary,
           byUser: byUser.items,
           byFeature: byFeature.items,
@@ -100,7 +113,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         command: "updateData",
         data: {
           hasApiKey: true,
-          environment: config.environment,
           error: error instanceof Error ? error.message : "Failed to load data",
         },
       });
@@ -397,121 +409,135 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             return num.toString();
           }
 
-          function renderContent(data) {
-            const content = document.getElementById('content');
+function renderContent(data) {
+  const content = document.getElementById('content');
 
-            if (!data.hasApiKey) {
-              content.innerHTML = \`
-                <div class="no-api-key">
-                  <p>🔑 API key not configured</p>
-                  <button class="btn btn-primary" onclick="setApiKey()">
-                    Set API Key
-                  </button>
-                  <button class="btn btn-secondary" onclick="openDocs()">
-                    View Documentation
-                  </button>
-                </div>
-              \`;
-              return;
-            }
+  if (!data.hasApiKey) {
+    content.innerHTML = \`
+      <div class="no-api-key">
+        <p>🔑 API key not configured</p>
+        <button class="btn btn-primary" onclick="setApiKey()">
+          Set API Key
+        </button>
+        <button class="btn btn-secondary" onclick="openDocs()">
+          View Documentation
+        </button>
+      </div>
+    \`;
+    return;
+  }
 
-            if (data.error) {
-              content.innerHTML = \`
-                <div class="error">\${data.error}</div>
-                <button class="btn btn-secondary" onclick="refresh()">
-                  Try Again
-                </button>
-              \`;
-              return;
-            }
+  if (data.error) {
+    content.innerHTML = \`
+      <div class="error">\${data.error}</div>
+      <button class="btn btn-secondary" onclick="refresh()">
+        Try Again
+      </button>
+    \`;
+    return;
+  }
 
-            const summary = data.summary || {};
-            const byUser = data.byUser || [];
-            const byFeature = data.byFeature || [];
+  const apiKeyInfo = data.apiKeyInfo || {};
+  const summary = data.summary || {};
+  const byUser = data.byUser || [];
+  const byFeature = data.byFeature || [];
 
-            content.innerHTML = \`
-              <div class="section">
-                <div class="section-title">
-                  Environment
-                  <span class="environment-badge \${data.environment}">\${data.environment}</span>
-                </div>
-              </div>
+  content.innerHTML = \`
+    <div class="section">
+      <div class="section-title">API Key Info</div>
+      <div class="card">
+        <div class="list">
+          <div class="list-item">
+            <span class="list-item-name">Workspace</span>
+            <span class="list-item-value">\${apiKeyInfo.workspaceName || 'N/A'}</span>
+          </div>
+          <div class="list-item">
+            <span class="list-item-name">Environment</span>
+            <span class="list-item-value environment-badge \${apiKeyInfo.environmentName}">\${apiKeyInfo.environmentName || 'N/A'}</span>
+          </div>
+          <div class="list-item">
+            <span class="list-item-name">Key</span>
+            <span class="list-item-value">\${apiKeyInfo.keyPrefix || 'N/A'}...</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-              <div class="section">
-                <div class="section-title">Usage Summary</div>
-                <div class="card">
-                  <div class="stats-grid">
-                    <div class="stat">
-                      <div class="stat-value">\${formatNumber(summary.totalRequests || 0)}</div>
-                      <div class="stat-label">Requests</div>
-                    </div>
-                    <div class="stat">
-                      <div class="stat-value">\${formatNumber(summary.totalTokens || 0)}</div>
-                      <div class="stat-label">Tokens</div>
-                    </div>
-                    <div class="stat">
-                      <div class="stat-value">$\${(summary.totalCostUsd || 0).toFixed(2)}</div>
-                      <div class="stat-label">Cost</div>
-                    </div>
-                    <div class="stat">
-                      <div class="stat-value">\${summary.blockedCount || 0}</div>
-                      <div class="stat-label">Blocked</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    <div class="section">
+      <div class="section-title">Usage Summary (\${apiKeyInfo.environmentName || 'all'})</div>
+      <div class="card">
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-value">\${formatNumber(summary.totalRequests || 0)}</div>
+            <div class="stat-label">Requests</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">\${formatNumber(summary.totalTokens || 0)}</div>
+            <div class="stat-label">Tokens</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">$\${(summary.totalCostUsd || 0).toFixed(2)}</div>
+            <div class="stat-label">Cost</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">\${summary.blockedCount || 0}</div>
+            <div class="stat-label">Blocked</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-              <div class="section">
-                <div class="section-title">Top Users</div>
-                <div class="card">
-                  \${byUser.length > 0 ? \`
-                    <ul class="list">
-                      \${byUser.map(user => \`
-                        <li class="list-item">
-                          <span class="list-item-name">\${user.group}</span>
-                          <span class="list-item-value">\${formatNumber(user.requests)} req</span>
-                        </li>
-                      \`).join('')}
-                    </ul>
-                  \` : '<p style="font-size: 12px; color: var(--vscode-descriptionForeground);">No data yet</p>'}
-                </div>
-              </div>
+    <div class="section">
+      <div class="section-title">Top Users</div>
+      <div class="card">
+        \${byUser.length > 0 ? \`
+          <ul class="list">
+            \${byUser.map(user => \`
+              <li class="list-item">
+                <span class="list-item-name">\${user.group}</span>
+                <span class="list-item-value">\${formatNumber(user.requests)} req</span>
+              </li>
+            \`).join('')}
+          </ul>
+        \` : '<p style="font-size: 12px; color: var(--vscode-descriptionForeground);">No data yet</p>'}
+      </div>
+    </div>
 
-              <div class="section">
-                <div class="section-title">Top Features</div>
-                <div class="card">
-                  \${byFeature.length > 0 ? \`
-                    <ul class="list">
-                      \${byFeature.map(feature => \`
-                        <li class="list-item">
-                          <span class="list-item-name">\${feature.group}</span>
-                          <span class="list-item-value">\${formatNumber(feature.requests)} req</span>
-                        </li>
-                      \`).join('')}
-                    </ul>
-                  \` : '<p style="font-size: 12px; color: var(--vscode-descriptionForeground);">No data yet</p>'}
-                </div>
-              </div>
+    <div class="section">
+      <div class="section-title">Top Features</div>
+      <div class="card">
+        \${byFeature.length > 0 ? \`
+          <ul class="list">
+            \${byFeature.map(feature => \`
+              <li class="list-item">
+                <span class="list-item-name">\${feature.group}</span>
+                <span class="list-item-value">\${formatNumber(feature.requests)} req</span>
+              </li>
+            \`).join('')}
+          </ul>
+        \` : '<p style="font-size: 12px; color: var(--vscode-descriptionForeground);">No data yet</p>'}
+      </div>
+    </div>
 
-              <div class="section">
-                <div class="section-title">Quick Actions</div>
-                <div class="quick-actions">
-                  <button class="btn btn-secondary" onclick="testEvaluate()">
-                    ▶️ Test
-                  </button>
-                  <button class="btn btn-secondary" onclick="insertSnippet()">
-                    📝 Snippet
-                  </button>
-                  <button class="btn btn-secondary" onclick="switchEnvironment()">
-                    🔀 Env
-                  </button>
-                  <button class="btn btn-secondary" onclick="openDashboard()">
-                    📊 Dashboard
-                  </button>
-                </div>
-              </div>
-            \`;
-          }
+    <div class="section">
+      <div class="section-title">Quick Actions</div>
+      <div class="quick-actions">
+        <button class="btn btn-secondary" onclick="testEvaluate()">
+          ▶️ Test
+        </button>
+        <button class="btn btn-secondary" onclick="insertSnippet()">
+          📝 Snippet
+        </button>
+        <button class="btn btn-secondary" onclick="setApiKey()">
+          🔑 Key
+        </button>
+        <button class="btn btn-secondary" onclick="openDashboard()">
+          📊 Dashboard
+        </button>
+      </div>
+    </div>
+  \`;
+}
 
           window.addEventListener('message', event => {
             const message = event.data;
