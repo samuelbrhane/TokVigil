@@ -11,6 +11,32 @@ import {
 } from "../types";
 import { ENDPOINTS } from "../config/constants";
 
+interface LogUsageParams {
+  requestId: string;
+  userId: string;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  status: string;
+  plan?: string;
+  feature?: string;
+  reasonCode?: string;
+}
+
+interface LogUsageResult {
+  recorded: boolean;
+  requestId: string;
+}
+
+interface ApiKeyInfo {
+  keyPrefix: string;
+  name: string;
+  environmentId: number;
+  environmentName: string;
+  workspaceId: number;
+  workspaceName: string;
+}
+
 interface PaginatedResponse<T> {
   items: T[];
   total: number;
@@ -262,5 +288,33 @@ export class TokenFenceApiClient {
         message: error instanceof Error ? error.message : "Connection failed",
       };
     }
+  }
+
+  async getApiKeyInfo(): Promise<ApiKeyInfo | null> {
+    const response = await this.request<ApiKeyInfo>(
+      "GET",
+      "/api/v1/auth/api-key-info",
+    );
+
+    if (response.error || !response.data) {
+      return null;
+    }
+
+    return response.data;
+  }
+
+  async logUsage(params: LogUsageParams): Promise<LogUsageResult | null> {
+    const response = await this.request<LogUsageResult>(
+      "POST",
+      ENDPOINTS.usage,
+      undefined,
+      params as unknown as Record<string, unknown>,
+    );
+
+    if (response.error || !response.data) {
+      return null;
+    }
+
+    return response.data;
   }
 }
