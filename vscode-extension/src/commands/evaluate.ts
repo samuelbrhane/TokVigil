@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { TokenFenceApiClient } from "../api/client";
 import { getConfig } from "../config/settings";
+import { AI_MODELS } from "../config/constants";
 
 export async function testEvaluate(
   apiClient: TokenFenceApiClient,
@@ -29,19 +30,21 @@ export async function testEvaluate(
     return;
   }
 
-  const model = await vscode.window.showQuickPick(
-    [
-      "gpt-4o-mini",
-      "gpt-4o",
-      "gpt-3.5-turbo",
-      "claude-3-haiku",
-      "claude-3-sonnet",
-      "claude-3-opus",
-    ],
-    {
-      placeHolder: "Select AI model",
-    },
-  );
+  const modelItems = Object.entries(AI_MODELS).map(([model, data]) => ({
+    label: data.label,
+    description: data.provider,
+    value: model,
+  }));
+
+  const selectedModel = await vscode.window.showQuickPick(modelItems, {
+    placeHolder: "Select AI model",
+  });
+
+  if (!selectedModel) {
+    return;
+  }
+
+  const model = selectedModel.value;
 
   if (!model) {
     return;

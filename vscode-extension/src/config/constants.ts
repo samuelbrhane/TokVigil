@@ -222,3 +222,63 @@ export const REASON_CODES = {
   MODEL_NOT_ALLOWED: "Model is not allowed by policy",
   MAX_COST_EXCEEDED: "Request cost exceeds maximum allowed",
 };
+
+// Supported AI Models
+export const AI_MODELS = {
+  // OpenAI - GPT-4o series
+  "gpt-4o": { provider: "openai", label: "GPT-4o" },
+  "gpt-4o-mini": { provider: "openai", label: "GPT-4o Mini" },
+
+  // OpenAI - GPT-4 series
+  "gpt-4-turbo": { provider: "openai", label: "GPT-4 Turbo" },
+  "gpt-4": { provider: "openai", label: "GPT-4" },
+
+  // OpenAI - GPT-3.5
+  "gpt-3.5-turbo": { provider: "openai", label: "GPT-3.5 Turbo" },
+
+  // Anthropic - Claude 3.5
+  "claude-3-5-sonnet": { provider: "anthropic", label: "Claude 3.5 Sonnet" },
+  "claude-3-5-haiku": { provider: "anthropic", label: "Claude 3.5 Haiku" },
+
+  // Anthropic - Claude 3
+  "claude-3-opus": { provider: "anthropic", label: "Claude 3 Opus" },
+  "claude-3-sonnet": { provider: "anthropic", label: "Claude 3 Sonnet" },
+  "claude-3-haiku": { provider: "anthropic", label: "Claude 3 Haiku" },
+
+  // Google - Gemini
+  "gemini-1.5-pro": { provider: "google", label: "Gemini 1.5 Pro" },
+  "gemini-1.5-flash": { provider: "google", label: "Gemini 1.5 Flash" },
+  "gemini-1.0-pro": { provider: "google", label: "Gemini 1.0 Pro" },
+
+  // Mistral
+  "mistral-large": { provider: "mistral", label: "Mistral Large" },
+  "mistral-medium": { provider: "mistral", label: "Mistral Medium" },
+  "mistral-small": { provider: "mistral", label: "Mistral Small" },
+
+  // Meta - Llama
+  "llama-3-70b": { provider: "meta", label: "Llama 3 70B" },
+  "llama-3-8b": { provider: "meta", label: "Llama 3 8B" },
+
+  // Cohere
+  "command-r-plus": { provider: "cohere", label: "Command R+" },
+  "command-r": { provider: "cohere", label: "Command R" },
+};
+
+export const PROVIDERS = [
+  "openai",
+  "anthropic",
+  "google",
+  "mistral",
+  "meta",
+  "cohere",
+];
+
+export function getModelsByProvider(provider: string): string[] {
+  return Object.entries(AI_MODELS)
+    .filter(([_, data]) => data.provider === provider)
+    .map(([model]) => model);
+}
+
+export function getAllModels(): string[] {
+  return Object.keys(AI_MODELS);
+}
