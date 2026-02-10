@@ -1,0 +1,227 @@
+import * as vscode from "vscode";
+import { TokenFenceApiClient } from "../api/client";
+import { getConfig } from "../config/settings";
+
+export async function testEvaluate(
+  apiClient: TokenFenceApiClient,
+): Promise<void> {
+  const config = getConfig();
+
+  if (!config.apiKey) {
+    const setKey = await vscode.window.showErrorMessage(
+      "TokenFence API key not configured",
+      "Set API Key",
+    );
+    if (setKey === "Set API Key") {
+      vscode.commands.executeCommand("tokenfence.setApiKey");
+    }
+    return;
+  }
+
+  // Get user input
+  const userId = await vscode.window.showInputBox({
+    prompt: "Enter user ID",
+    placeHolder: "user_123",
+    value: "test_user",
+  });
+
+  if (!userId) {
+    return;
+  }
+
+  const model = await vscode.window.showQuickPick(
+    [
+      "gpt-4o-mini",
+      "gpt-4o",
+      "gpt-3.5-turbo",
+      "claude-3-haiku",
+      "claude-3-sonnet",
+      "claude-3-opus",
+    ],
+    {
+      placeHolder: "Select AI model",
+    },
+  );
+
+  if (!model) {
+    return;
+  }
+
+  const plan = await vscode.window.showInputBox({
+    prompt: "Enter plan (optional)",
+    placeHolder: "free",
+    value: "free",
+  });
+
+  const feature = await vscode.window.showInputBox({
+    prompt: "Enter feature (optional)",
+    placeHolder: "chat",
+    value: "chat",
+  });
+
+  // Show progress
+  await vscode.window.withProgress(
+    {
+      location: vscode.ProgressLocation.Notification,
+      title: "TokenFence: Testing evaluate...",
+      cancellable: false,
+    },
+    async () => {
+      const response = await apiClient.evaluate({
+        userId,
+        model,
+        plan: plan || undefined,
+        feature: feature || undefined,
+      });
+
+      if (response.error) {
+        vscode.window.showErrorMessage(`TokenFence Error: ${response.error}`);
+        return;
+      }
+
+      const result = response.data!;
+
+      // Build result message
+      const statusIcon = result.allowed ? "✅" : "❌";
+      const message = `${statusIcon} ${result.allowed ? "Allowed" : "Blocked"}: ${result.message}`;
+
+      // Show result with details
+      const detail = await vscode.window.showInformationMessage(
+        message,
+        { modal: false },
+        "View Details",
+        "Insert Code",
+      );
+
+      if (detail === "View Details") {
+        showResultDetails(result);
+      } else if (detail === "Insert Code") {
+        insertEvaluateCode(userId, model, plan, feature);
+      }
+    },
+  );
+}
+
+function showResultDetails(result: any): void {
+  const panel = vscode.window.createWebviewPanel(
+    "tokenfenceResult",
+    "TokenFence Evaluate Result",
+    vscode.ViewColumn.Beside,
+    {},
+  );
+
+  const limitState = result.limitState || {};
+
+  panel.webview.html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: var(--vscode-font-family); padding: 20px; }
+        h1 { color: var(--vscode-foreground); }
+        .status { font-size: 24px; margin: 20px 0; }
+        .allowed { color: #4caf50; }
+        .blocked { color: #f44336; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--vscode-panel-border); }
+        th { color: var(--vscode-descriptionForeground); }
+        .code { background: var(--vscode-textCodeBlock-background); padding: 2px 6px; border-radius: 3px; }
+      </style>
+    </head>
+    <body>
+      <h1>Evaluate Result</h1>
+      
+      <div class="status ${result.allowed ? "allowed" : "blocked"}">
+        ${result.allowed ? "✅ Allowed" : "❌ Blocked"}
+      </div>
+      
+      <table>
+        <tr>
+          <th>Reason Code</th>
+          <td><span class="code">${result.reasonCode}</span></td>
+        </tr>
+        <tr>
+          <th>Message</th>
+          <td>${result.message}</td>
+        </tr>
+        <tr>
+          <th>Policy ID</th>
+          <td>${result.policyId || "N/A"}</td>
+        </tr>
+        <tr>
+          <th>Estimated Cost</th>
+          <td>$${result.estimatedCostUsd?.toFixed(4) || "N/A"}</td>
+        </tr>
+      </table>
+      
+      <h2>Limit State</h2>
+      <table>
+        <tr>
+          <th>Requests Today</th>
+          <td>${limitState.requestsToday ?? "N/A"} / ${limitState.requestsLimitDaily ?? "∞"}</td>
+        </tr>
+        <tr>
+          <th>Requests This Month</th>
+          <td>${limitState.requestsThisMonth ?? "N/A"} / ${limitState.requestsLimitMonthly ?? "∞"}</td>
+        </tr>
+        <tr>
+          <th>Tokens Today</th>
+          <td>${limitState.tokensToday ?? "N/A"} / ${limitState.tokensLimitDaily ?? "∞"}</td>
+        </tr>
+        <tr>
+          <th>Cost Today</th>
+          <td>$${limitState.costTodayUsd?.toFixed(2) ?? "N/A"} / $${limitState.costLimitDailyUsd ?? "∞"}</td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `;
+}
+
+async function insertEvaluateCode(
+  userId: string,
+  model: string,
+  plan?: string,
+  feature?: string,
+): Promise<void> {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showErrorMessage("No active editor");
+    return;
+  }
+
+  const languageId = editor.document.languageId;
+  let code: string;
+
+  if (languageId === "python") {
+    code = `result = tf.evaluate(
+    user_id="${userId}",
+    model="${model}",
+    plan="${plan || "free"}",
+    feature="${feature || "chat"}"
+)
+
+if result.allowed:
+    # Make your AI call here
+    pass
+else:
+    print(f"Blocked: {result.message}")
+`;
+  } else {
+    code = `const result = await tf.evaluate({
+  userId: "${userId}",
+  model: "${model}",
+  plan: "${plan || "free"}",
+  feature: "${feature || "chat"}",
+});
+
+if (result.allowed) {
+  // Make your AI call here
+} else {
+  console.log(\`Blocked: \${result.message}\`);
+}
+`;
+  }
+
+  await editor.insertSnippet(new vscode.SnippetString(code));
+}
