@@ -1,0 +1,194 @@
+{
+  "name": "tokenfence",
+  "displayName": "TokenFence",
+  "description": "AI usage control - manage rate limits, budgets, and policies for your AI-powered applications",
+  "version": "0.1.0",
+  "publisher": "tokenfence",
+  "icon": "resources/icons/tokenfence.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samuelbrhane/tokenfence"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "llm",
+    "openai",
+    "anthropic",
+    "rate-limiting",
+    "usage-control",
+    "tokenfence"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onView:tokenfence-sidebar"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "tokenfence.testEvaluate",
+        "title": "TokenFence: Test Evaluate",
+        "icon": "$(play)"
+      },
+      {
+        "command": "tokenfence.openDashboard",
+        "title": "TokenFence: Open Dashboard",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "tokenfence.switchEnvironment",
+        "title": "TokenFence: Switch Environment",
+        "icon": "$(server-environment)"
+      },
+      {
+        "command": "tokenfence.setApiKey",
+        "title": "TokenFence: Set API Key",
+        "icon": "$(key)"
+      },
+      {
+        "command": "tokenfence.refreshUsage",
+        "title": "TokenFence: Refresh Usage",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "tokenfence.insertSnippet",
+        "title": "TokenFence: Insert Code Snippet",
+        "icon": "$(code)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tokenfence-container",
+          "title": "TokenFence",
+          "icon": "resources/icons/sidebar.svg"
+        }
+      ]
+    },
+    "views": {
+      "tokenfence-container": [
+        {
+          "type": "webview",
+          "id": "tokenfence-sidebar",
+          "name": "TokenFence",
+          "icon": "resources/icons/sidebar.svg"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "TokenFence",
+      "properties": {
+        "tokenfence.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your TokenFence API key"
+        },
+        "tokenfence.baseUrl": {
+          "type": "string",
+          "default": "https://api.tokenfence.io",
+          "description": "TokenFence API base URL"
+        },
+        "tokenfence.environment": {
+          "type": "string",
+          "enum": [
+            "development",
+            "staging",
+            "production"
+          ],
+          "default": "development",
+          "description": "Current environment"
+        },
+        "tokenfence.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show usage in status bar"
+        },
+        "tokenfence.enableAutocomplete": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable autocomplete suggestions"
+        },
+        "tokenfence.enableHover": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable hover documentation"
+        },
+        "tokenfence.enableDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable inline validation"
+        }
+      }
+    },
+    "snippets": [
+      {
+        "language": "python",
+        "path": "./src/snippets/python.code-snippets"
+      },
+      {
+        "language": "typescript",
+        "path": "./src/snippets/typescript.code-snippets"
+      },
+      {
+        "language": "javascript",
+        "path": "./src/snippets/javascript.code-snippets"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "tokenfence.testEvaluate",
+          "group": "tokenfence",
+          "when": "editorTextFocus"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "tokenfence.refreshUsage",
+          "when": "view == tokenfence-sidebar",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "tokenfence.testEvaluate",
+        "key": "ctrl+shift+t",
+        "mac": "cmd+shift+t",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.3.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.0"
+  }
+}
