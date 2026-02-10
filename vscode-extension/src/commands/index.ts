@@ -4,7 +4,6 @@ import { SidebarProvider } from "../panels/SidebarProvider";
 
 import { testEvaluate } from "./evaluate";
 import { openDashboard, openDocs, openApiReference } from "./openDashboard";
-import { switchEnvironment } from "./switchEnvironment";
 import { setApiKeyCommand } from "./setApiKey";
 import { refreshUsage } from "./refreshUsage";
 import { insertSnippet } from "./insertSnippet";
@@ -39,18 +38,10 @@ export function registerCommands(
     ),
   );
 
-  // Switch Environment
-  context.subscriptions.push(
-    vscode.commands.registerCommand(
-      "tokenfence.switchEnvironment",
-      switchEnvironment,
-    ),
-  );
-
   // Set API Key
   context.subscriptions.push(
     vscode.commands.registerCommand("tokenfence.setApiKey", () =>
-      setApiKeyCommand(apiClient),
+      setApiKeyCommand(apiClient, sidebarProvider),
     ),
   );
 
