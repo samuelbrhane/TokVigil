@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
-
+from app.core.auth import get_api_key_auth, AuthenticatedRequest
 from app.db.session import get_db
 from app.core.auth import get_current_user
 from app.auth.models import User
@@ -137,4 +137,39 @@ def get_current_plan(current_user: User = Depends(get_current_user)):
     return UserPlanResponse(
         plan=current_user.plan,
         **plan_details
+    )
+    
+    
+@router.get("/api-key-info", response_model=ApiKeyInfoResponse)
+def get_api_key_info(
+    auth: AuthenticatedRequest = Depends(get_api_key_auth),
+    db: Session = Depends(get_db)
+):
+    """Get information about the current API key. Requires X-API-Key header."""
+    from app.workspaces.models import Workspace, Environment, ApiKey
+    
+    # Get workspace
+    workspace = db.query(Workspace).filter(
+        Workspace.id == auth.workspace_id,
+        Workspace.is_deleted == False
+    ).first()
+    
+    # Get environment
+    environment = db.query(Environment).filter(
+        Environment.id == auth.environment_id,
+        Environment.is_deleted == False
+    ).first()
+    
+    # Get API key details
+    api_key = db.query(ApiKey).filter(
+        ApiKey.id == auth.api_key_id
+    ).first()
+    
+    return ApiKeyInfoResponse(
+        key_prefix=api_key.key_prefix,
+        name=api_key.name,
+        environment_id=auth.environment_id,
+        environment_name=environment.name if environment else "unknown",
+        workspace_id=auth.workspace_id,
+        workspace_name=workspace.name if workspace else "unknown"
     )
