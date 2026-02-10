@@ -84,6 +84,24 @@ export async function testEvaluate(
 
       const result = response.data!;
 
+      // Log the test request so it shows in usage summary
+      try {
+        await apiClient.logUsage({
+          requestId: crypto.randomUUID(),
+          userId,
+          model,
+          inputTokens: 100,
+          outputTokens: 50,
+          status: result.allowed ? "allowed" : "blocked",
+          plan: plan || "free",
+          feature: feature || "test",
+          reasonCode: result.reasonCode,
+        });
+      } catch (logError) {
+        // Silently ignore log errors
+        console.error("Failed to log test request:", logError);
+      }
+
       // Build result message
       const statusIcon = result.allowed ? "✅" : "❌";
       const message = `${statusIcon} ${result.allowed ? "Allowed" : "Blocked"}: ${result.message}`;
