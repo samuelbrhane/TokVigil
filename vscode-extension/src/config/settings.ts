@@ -8,9 +8,6 @@ export function getConfig(): TokenFenceConfig {
   return {
     apiKey: config.get<string>("apiKey") || "",
     baseUrl: config.get<string>("baseUrl") || DEFAULT_BASE_URL,
-    environment:
-      config.get<"development" | "staging" | "production">("environment") ||
-      "development",
   };
 }
 
@@ -22,17 +19,6 @@ export async function setApiKey(apiKey: string): Promise<void> {
 export async function setBaseUrl(baseUrl: string): Promise<void> {
   const config = vscode.workspace.getConfiguration("tokenfence");
   await config.update("baseUrl", baseUrl, vscode.ConfigurationTarget.Global);
-}
-
-export async function setEnvironment(
-  environment: "development" | "staging" | "production",
-): Promise<void> {
-  const config = vscode.workspace.getConfiguration("tokenfence");
-  await config.update(
-    "environment",
-    environment,
-    vscode.ConfigurationTarget.Global,
-  );
 }
 
 export function isAutocompleteEnabled(): boolean {
