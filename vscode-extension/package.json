@@ -46,11 +46,6 @@
         "icon": "$(dashboard)"
       },
       {
-        "command": "tokenfence.switchEnvironment",
-        "title": "TokenFence: Switch Environment",
-        "icon": "$(server-environment)"
-      },
-      {
         "command": "tokenfence.setApiKey",
         "title": "TokenFence: Set API Key",
         "icon": "$(key)"
@@ -97,16 +92,6 @@
           "type": "string",
           "default": "https://api.tokenfence.io",
           "description": "TokenFence API base URL"
-        },
-        "tokenfence.environment": {
-          "type": "string",
-          "enum": [
-            "development",
-            "staging",
-            "production"
-          ],
-          "default": "development",
-          "description": "Current environment"
         },
         "tokenfence.showStatusBar": {
           "type": "boolean",
