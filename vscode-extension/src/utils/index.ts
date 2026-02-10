@@ -1,2 +1,2 @@
-export { KeyStorage } from "./keyStorage";
 export * from "./notifications";
+export { keyStorage } from "./KeyStorage";
