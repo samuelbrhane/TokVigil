@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 const SECRET_KEY = "tokenfence.apiKey";
 
-export class KeyStorage {
+export class keyStorage {
   private secretStorage: vscode.SecretStorage;
 
   constructor(context: vscode.ExtensionContext) {
