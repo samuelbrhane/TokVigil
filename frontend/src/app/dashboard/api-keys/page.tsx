@@ -1,14 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Badge } from "@/components/ui";
 import Card from "@/components/ui/Card";
-
-const apiKeys = [
-  { id: 1, name: "Production Key", prefix: "tf_live_a1b2c3...", env: "production", created: "2025-01-15", lastUsed: "2 min ago" },
-  { id: 2, name: "Development Key", prefix: "tf_test_d4e5f6...", env: "development", created: "2025-01-15", lastUsed: "1 hour ago" },
-  { id: 3, name: "Staging Key", prefix: "tf_test_g7h8i9...", env: "staging", created: "2025-02-01", lastUsed: "3 days ago" },
-];
+import WorkspaceSelector from "@/components/dashboard/WorkspaceSelector";
+import CreateApiKeyModal from "@/components/dashboard/CreateApiKeyModal";
+import { getApiKeys, getEnvironments, revokeApiKey } from "@/lib/workspaces";
+import { ApiKey, Environment } from "@/types/workspace";
 
 const envColors: Record<string, "success" | "warning" | "brand"> = {
   production: "success",
@@ -17,100 +15,227 @@ const envColors: Record<string, "success" | "warning" | "brand"> = {
 };
 
 export default function ApiKeysPage() {
+  const [workspaceId, setWorkspaceId] = useState<number | null>(null);
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [environments, setEnvironments] = useState<Environment[]>([]);
+  const [loading, setLoading] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
 
+  const fetchData = async (wsId: number) => {
+    setLoading(true);
+    try {
+      const [keys, envs] = await Promise.all([
+        getApiKeys(wsId),
+        getEnvironments(wsId),
+      ]);
+      setApiKeys(keys);
+      setEnvironments(envs);
+    } catch {
+      // handle error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (workspaceId) fetchData(workspaceId);
+  }, [workspaceId]);
+
+  const handleWorkspaceChange = (id: number) => {
+    setWorkspaceId(id);
+    setActiveTab("all");
+  };
+
+  const handleRevoke = async (keyId: number) => {
+    if (!workspaceId) return;
+    if (!confirm("Are you sure you want to revoke this API key?")) return;
+
+    try {
+      await revokeApiKey(workspaceId, keyId);
+      setApiKeys((prev) => prev.filter((k) => k.id !== keyId));
+    } catch {
+      // handle error
+    }
+  };
+
+  const handleCreated = () => {
+    if (workspaceId) fetchData(workspaceId);
+  };
+
+  const getEnvName = (envId: number) =>
+    environments.find((e) => e.id === envId)?.name || "unknown";
+
+  const envTabs = ["all", ...environments.map((e) => e.name)];
+
+  const filteredKeys = apiKeys.filter(
+    (k) => activeTab === "all" || getEnvName(k.environment_id) === activeTab,
+  );
+
   return (
     <div className="space-y-6">
-      {/* Tabs + Create */}
+      {/* Workspace selector */}
       <div className="flex items-center justify-between">
-        <div className="flex gap-1">
-          {["all", "production", "development", "staging"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono capitalize transition-colors ${
-                activeTab === tab
-                  ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
-                  : "text-surface-500 hover:text-surface-300"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-surface-500 font-mono">Workspace:</span>
+          <WorkspaceSelector
+            value={workspaceId}
+            onChange={handleWorkspaceChange}
+          />
         </div>
-        <Button variant="primary" size="sm" onClick={() => setShowCreate(!showCreate)}>
-          + Create API Key
-        </Button>
       </div>
 
-      {/* Create key form */}
-      {showCreate && (
-        <Card className="p-6 border-brand-500/20 animate-slide-up">
-          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">New API Key</h3>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-mono font-medium tracking-wider uppercase text-surface-400">Name</label>
-              <input
-                placeholder="e.g., Production Key"
-                className="w-full bg-surface-900/80 border border-surface-700/60 rounded-lg px-4 py-2.5 text-sm text-surface-200 font-mono focus:outline-none focus:border-brand-500/50"
-              />
+      {!workspaceId ? (
+        <div className="text-center py-16">
+          <div className="text-4xl mb-4">⚿</div>
+          <h3 className="text-lg font-bold font-mono text-surface-300 mb-2">
+            Select a workspace
+          </h3>
+          <p className="text-sm text-surface-500">
+            Choose a workspace to manage its API keys.
+          </p>
+        </div>
+      ) : loading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="h-12 bg-surface-800/20 rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      ) : (
+        <>
+          {/* Tabs + Create */}
+          <div className="flex items-center justify-between">
+            <div className="flex gap-1">
+              {envTabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono capitalize transition-colors ${
+                    activeTab === tab
+                      ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
+                      : "text-surface-500 hover:text-surface-300"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
             </div>
-            <div className="space-y-1.5">
-              <label className="block text-xs font-mono font-medium tracking-wider uppercase text-surface-400">Environment</label>
-              <select className="w-full bg-surface-900/80 border border-surface-700/60 rounded-lg px-4 py-2.5 text-sm text-surface-200 font-mono focus:outline-none focus:border-brand-500/50">
-                <option>production</option>
-                <option>development</option>
-                <option>staging</option>
-              </select>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setShowCreate(true)}
+            >
+              + Create API Key
+            </Button>
+          </div>
+
+          {/* Keys table */}
+          {filteredKeys.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="text-4xl mb-4">⚿</div>
+              <h3 className="text-lg font-bold font-mono text-surface-300 mb-2">
+                No API keys
+              </h3>
+              <p className="text-sm text-surface-500 mb-6">
+                Create your first API key to start using the SDK.
+              </p>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setShowCreate(true)}
+              >
+                + Create API Key
+              </Button>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="primary" size="sm">Generate Key</Button>
-            <Button variant="ghost" size="sm" onClick={() => setShowCreate(false)}>Cancel</Button>
-          </div>
-        </Card>
+          ) : (
+            <Card className="overflow-hidden animate-fade-in">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-surface-800/30">
+                      {[
+                        "Name",
+                        "Key",
+                        "Environment",
+                        "Created",
+                        "Last Used",
+                        "Actions",
+                      ].map((h) => (
+                        <th
+                          key={h}
+                          className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-500 uppercase tracking-wider"
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredKeys.map((key, i) => (
+                      <tr
+                        key={key.id}
+                        className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors animate-fade-in-up"
+                        style={{
+                          animationDelay: `${i * 50}ms`,
+                          animationFillMode: "both",
+                        }}
+                      >
+                        <td className="px-4 py-3 text-sm font-mono text-surface-200">
+                          {key.name}
+                        </td>
+                        <td className="px-4 py-3">
+                          <code className="text-xs font-mono text-surface-400 bg-surface-900/60 px-2 py-1 rounded">
+                            {key.key_prefix}...
+                          </code>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Badge
+                            variant={
+                              envColors[getEnvName(key.environment_id)] ||
+                              "brand"
+                            }
+                          >
+                            {getEnvName(key.environment_id)}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3 text-xs font-mono text-surface-500">
+                          {new Date(key.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-3 text-xs font-mono text-surface-500">
+                          {key.last_used_at
+                            ? new Date(key.last_used_at).toLocaleDateString()
+                            : "Never"}
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => handleRevoke(key.id)}
+                            className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors"
+                          >
+                            Revoke
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          )}
+        </>
       )}
 
-      {/* Keys table */}
-      <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-surface-800/30">
-                {["Name", "Key", "Environment", "Created", "Last Used", "Actions"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-500 uppercase tracking-wider">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {apiKeys
-                .filter((k) => activeTab === "all" || k.env === activeTab)
-                .map((key) => (
-                  <tr key={key.id} className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors">
-                    <td className="px-4 py-3 text-sm font-mono text-surface-200">{key.name}</td>
-                    <td className="px-4 py-3">
-                      <code className="text-xs font-mono text-surface-400 bg-surface-900/60 px-2 py-1 rounded">
-                        {key.prefix}
-                      </code>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge variant={envColors[key.env]}>{key.env}</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-xs font-mono text-surface-500">{key.created}</td>
-                    <td className="px-4 py-3 text-xs font-mono text-surface-500">{key.lastUsed}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <button className="text-xs font-mono text-surface-500 hover:text-brand-400 transition-colors">Copy</button>
-                        <button className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors">Revoke</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+      {workspaceId && environments.length > 0 && (
+        <CreateApiKeyModal
+          open={showCreate}
+          onClose={() => setShowCreate(false)}
+          onCreated={handleCreated}
+          workspaceId={workspaceId}
+          environments={environments}
+        />
+      )}
     </div>
   );
 }
