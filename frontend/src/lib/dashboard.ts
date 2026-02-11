@@ -54,3 +54,14 @@ export async function getGlobalRecent(
 export async function getGlobalTopUsers(limit = 5): Promise<TopUser[]> {
   return api<TopUser[]>(`/dashboard/usage/global/top-users?limit=${limit}`);
 }
+
+export interface DailyUsage {
+  date: string;
+  requests: number;
+  tokens: number;
+  cost_usd: number;
+}
+
+export async function getGlobalDaily(days = 7): Promise<DailyUsage[]> {
+  return api<DailyUsage[]>(`/dashboard/usage/global/daily?days=${days}`);
+}

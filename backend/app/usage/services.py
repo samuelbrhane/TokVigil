@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 
 from sqlalchemy.orm import Session
@@ -410,3 +410,76 @@ def get_global_top_users(
         }
         for r in results
     ]
+
+    
+def get_global_daily_usage(
+    db: Session,
+    user_id: int,
+    days: int = 7
+) -> list:
+    from app.workspaces.models import Workspace
+    
+    workspace_ids = db.query(Workspace.id).filter(
+        Workspace.owner_id == user_id,
+        Workspace.is_deleted == False
+    ).all()
+    workspace_ids = [w[0] for w in workspace_ids]
+    
+    if not workspace_ids:
+        return []
+    
+    start_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    start_date = start_date - timedelta(days=days - 1)
+    
+    results = db.query(
+        func.date(UsageRecord.created_at).label("day"),
+        func.count(UsageRecord.id).label("requests"),
+        func.coalesce(func.sum(UsageRecord.total_tokens), 0).label("tokens"),
+        func.coalesce(func.sum(UsageRecord.estimated_cost_usd), 0).label("cost_usd"),
+    ).filter(
+        UsageRecord.workspace_id.in_(workspace_ids),
+        UsageRecord.created_at >= start_date
+    ).group_by(
+        func.date(UsageRecord.created_at)
+    ).order_by(
+        func.date(UsageRecord.created_at)
+    ).all()
+    
+    # Fill missing days with zeros
+    result_map = {str(r.day): r for r in results}
+    daily = []
+    for i in range(days):
+        day = start_date + timedelta(days=i)
+        day_str = str(day.date())
+        if day_str in result_map:
+            r = result_map[day_str]
+            daily.append({
+                "date": day_str,
+                "requests": r.requests,
+                "tokens": int(r.tokens),
+                "cost_usd": float(r.cost_usd),
+            })
+        else:
+            daily.append({
+                "date": day_str,
+                "requests": 0,
+                "tokens": 0,
+                "cost_usd": 0.0,
+            })
+    
+    # Aggregate into weeks for 90d
+    if days > 30:
+        weekly = []
+        for i in range(0, len(daily), 7):
+            chunk = daily[i:i + 7]
+            if not chunk:
+                continue
+            weekly.append({
+                "date": chunk[0]["date"],
+                "requests": sum(d["requests"] for d in chunk),
+                "tokens": sum(d["tokens"] for d in chunk),
+                "cost_usd": sum(d["cost_usd"] for d in chunk),
+            })
+        return weekly
+    
+    return daily

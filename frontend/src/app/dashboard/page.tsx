@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import {
+  DailyUsage,
+  getGlobalDaily,
   getGlobalRecent,
   getGlobalSummary,
   getGlobalTopUsers,
@@ -13,7 +15,11 @@ import {
 import { getWorkspaces } from "@/lib/workspaces";
 import { DashboardBanner } from "@/components/ui";
 import TopUsersTable from "@/components/dashboard/TopUsersTable";
-import { QuickActions, RecentActivity } from "@/components/dashboard";
+import {
+  QuickActions,
+  RecentActivity,
+  RequestsChart,
+} from "@/components/dashboard";
 
 function getPlanLimits(plan: string) {
   const plans: Record<
@@ -30,27 +36,36 @@ function getPlanLimits(plan: string) {
   };
   return plans[plan] || plans.free;
 }
+
 export default function DashboardOverview() {
   const { user } = useAuth();
   const [summary, setSummary] = useState<UsageSummary | null>(null);
   const [topUsers, setTopUsers] = useState<TopUser[]>([]);
   const [recent, setRecent] = useState<UsageRecord[]>([]);
+  const [chartData, setChartData] = useState<Record<string, DailyUsage[]>>({});
   const [apiKeyCount, setApiKeyCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [summaryData, topUsersData, recentData, workspacesData] =
-          await Promise.all([
-            getGlobalSummary(),
-            getGlobalTopUsers(5),
-            getGlobalRecent(1, 5),
-            getWorkspaces(),
-          ]);
+        const [
+          summaryData,
+          topUsersData,
+          recentData,
+          dailyData,
+          workspacesData,
+        ] = await Promise.all([
+          getGlobalSummary(),
+          getGlobalTopUsers(5),
+          getGlobalRecent(1, 5),
+          getGlobalDaily(7),
+          getWorkspaces(),
+        ]);
         setSummary(summaryData);
         setTopUsers(topUsersData);
         setRecent(recentData.items);
+        setChartData({ "7d": dailyData });
         setApiKeyCount(workspacesData.items.length);
       } catch {
         // handle error
@@ -60,6 +75,17 @@ export default function DashboardOverview() {
     };
     fetchData();
   }, []);
+
+  const handlePeriodChange = async (days: number) => {
+    const label = `${days}d`;
+    if (chartData[label]) return;
+    try {
+      const data = await getGlobalDaily(days);
+      setChartData((prev) => ({ ...prev, [label]: data }));
+    } catch {
+      // handle error
+    }
+  };
 
   const planName = user?.plan || "free";
   const planLimits = getPlanLimits(planName);
@@ -72,6 +98,12 @@ export default function DashboardOverview() {
         planLimits={planLimits}
         apiKeyCount={apiKeyCount}
         planName={planName}
+      />
+
+      <RequestsChart
+        data={chartData}
+        loading={loading}
+        onPeriodChange={handlePeriodChange}
       />
 
       <TopUsersTable users={topUsers} loading={loading} />

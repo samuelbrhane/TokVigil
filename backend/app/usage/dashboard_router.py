@@ -44,6 +44,14 @@ def get_global_top_users(
     return services.get_global_top_users(db, current_user.id, limit)
 
 
+@router.get("/global/daily")
+def get_global_daily(
+    current_user: User = Depends(get_current_user),
+    days: int = Query(7, ge=1, le=90),
+    db: Session = Depends(get_db)
+):
+    return services.get_global_daily_usage(db, current_user.id, days)
+
 
 @router.get("/{workspace_id}/{environment_id}/recent", response_model=PaginatedUsageResponse)
 def get_recent_usage(
