@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { AuthLayout } from "@/components/auth";
 import { Button, InputField } from "@/components/ui";
 import { signup } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [registered, setRegistered] = useState(false);
   const [form, setForm] = useState({
     first: "",
     last: "",
@@ -45,13 +46,42 @@ export default function SignupPage() {
         first_name: form.first,
         last_name: form.last,
       });
-      router.push("/login?registered=true");
+      setRegistered(true);
+      router.push(`/verify-email?email=${encodeURIComponent(form.email)}`);
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+
+  if (registered) {
+    return (
+      <AuthLayout
+        title="Check your email"
+        subtitle="We sent a verification link to your email"
+      >
+        <div className="p-6 rounded-xl border border-surface-800/40 bg-surface-900/40 text-center space-y-4">
+          <div className="text-4xl">✉️</div>
+          <p className="text-surface-400 text-sm">
+            We sent a verification link to{" "}
+            <span className="text-white font-medium">{form.email}</span>. Please
+            check your inbox and click the link to verify your account.
+          </p>
+          <p className="text-surface-500 text-xs">
+            Didn't receive it? Check your spam folder or try again in a few
+            minutes.
+          </p>
+          <Link
+            href="/login"
+            className="inline-block mt-2 text-brand-500 hover:text-brand-400 font-mono font-medium text-sm"
+          >
+            Go to Sign in →
+          </Link>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout
