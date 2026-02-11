@@ -356,7 +356,7 @@ export const FOOTER_COLUMNS = [
       { label: "Python SDK", href: "/docs/sdk/python" },
       { label: "TypeScript SDK", href: "/docs/sdk/typescript" },
       { label: "API Reference", href: "/docs/api-reference" },
-      { label: "GitHub", href: "https://github.com/tokenfence" },
+      { label: "GitHub", href: "https://github.com/samuelbrhane/tokenfence" },
     ],
   },
   {
