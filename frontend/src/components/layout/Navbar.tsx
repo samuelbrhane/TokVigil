@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useScrollY } from "@/lib/hooks";
 import { NAV_LINKS } from "@/lib/constants";
 import { Button } from "@/components/ui";
+import { useAuth } from "@/lib/auth-context";
 import Logo from "./Logo";
 
 export default function Navbar() {
@@ -13,6 +14,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const scrolled = scrollY > 20;
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, loading } = useAuth();
 
   const isAuthPage = [
     "/login",
@@ -32,7 +34,6 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Logo size="md" />
 
-        {/* Desktop nav — always visible */}
         <div className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <Link
@@ -49,23 +50,33 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* Desktop auth buttons — hide on auth pages */}
         {!isAuthPage && (
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/login">
-              <Button variant="ghost" size="sm">
-                Log in
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button variant="primary" size="sm">
-                Get Started →
-              </Button>
-            </Link>
+            {loading ? (
+              <div className="w-20 h-8 rounded-lg bg-surface-800/40 animate-pulse" />
+            ) : user ? (
+              <Link href="/dashboard">
+                <Button variant="primary" size="sm">
+                  Dashboard →
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button variant="primary" size="sm">
+                    Get Started →
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         )}
 
-        {/* Mobile hamburger */}
         <button
           className="md:hidden flex flex-col gap-1.5 p-2"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -82,7 +93,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden bg-surface-950/95 backdrop-blur-xl border-b border-surface-800/40 animate-slide-down">
           <div className="px-6 py-4 space-y-3">
@@ -98,16 +108,28 @@ export default function Navbar() {
             ))}
             {!isAuthPage && (
               <div className="border-t border-surface-800/40 pt-4 mt-4 flex flex-col gap-2">
-                <Link href="/login" onClick={() => setMobileOpen(false)}>
-                  <Button variant="ghost" size="sm" className="w-full">
-                    Log in
-                  </Button>
-                </Link>
-                <Link href="/signup" onClick={() => setMobileOpen(false)}>
-                  <Button variant="primary" size="sm" className="w-full">
-                    Get Started →
-                  </Button>
-                </Link>
+                {loading ? (
+                  <div className="w-full h-8 rounded-lg bg-surface-800/40 animate-pulse" />
+                ) : user ? (
+                  <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
+                    <Button variant="primary" size="sm" className="w-full">
+                      Dashboard →
+                    </Button>
+                  </Link>
+                ) : (
+                  <>
+                    <Link href="/login" onClick={() => setMobileOpen(false)}>
+                      <Button variant="ghost" size="sm" className="w-full">
+                        Log in
+                      </Button>
+                    </Link>
+                    <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                      <Button variant="primary" size="sm" className="w-full">
+                        Get Started →
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             )}
           </div>
