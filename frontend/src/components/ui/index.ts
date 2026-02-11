@@ -6,3 +6,4 @@ export { default as SectionTag } from "./SectionTag";
 export { default as CodeBlock } from "./CodeBlock";
 export { default as GridBackground } from "./GridBackground";
 export { default as FenceMotif } from "./FenceMotif";
+export { default as DashboardBanner } from "./DashboardBanner";

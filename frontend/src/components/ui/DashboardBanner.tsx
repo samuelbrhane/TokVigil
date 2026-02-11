@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { UsageSummary } from "@/lib/dashboard";
 
 function UsageArc({
   percent,
@@ -16,16 +17,16 @@ function UsageArc({
   const offset = circumference - (percent / 100) * circumference;
   const color =
     percent > 90
-      ? "#ef4444" // red — critical
+      ? "#ef4444"
       : percent > 75
-        ? "#f43f5e" // rose — warning high
+        ? "#f43f5e"
         : percent > 60
-          ? "#fbbf24" // amber — warning
+          ? "#fbbf24"
           : percent > 40
-            ? "#a3e635" // lime — healthy
+            ? "#a3e635"
             : percent > 20
-              ? "#22d3ee" // cyan — low usage
-              : "#818cf8"; // indigo — minimal
+              ? "#22d3ee"
+              : "#818cf8";
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -103,10 +104,62 @@ function TickerItem({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function DashboardBanner() {
+function formatNumber(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
+  return n.toLocaleString();
+}
+
+interface DashboardBannerProps {
+  summary: UsageSummary | null;
+  loading: boolean;
+  planLimits: {
+    evaluate_calls_limit: number | null;
+    rate_limit_per_minute: number | null;
+  };
+  apiKeyCount: number;
+  planName: string;
+}
+
+export default function DashboardBanner({
+  summary,
+  loading,
+  planLimits,
+  apiKeyCount,
+  planName,
+}: DashboardBannerProps) {
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-surface-700/40 bg-surface-900/60 h-64 animate-pulse" />
+    );
+  }
+
+  const totalRequests = summary?.total_requests || 0;
+  const totalTokens = summary?.total_tokens || 0;
+  const totalCost = summary?.total_cost_usd || 0;
+  const allowedCount = summary?.allowed_count || 0;
+  const blockedCount = summary?.blocked_count || 0;
+  const blockRate =
+    totalRequests > 0
+      ? ((blockedCount / totalRequests) * 100).toFixed(1)
+      : "0.0";
+
+  const evalLimit = planLimits.evaluate_calls_limit;
+  const evalPercent =
+    evalLimit && evalLimit > 0
+      ? Math.min(Math.round((totalRequests / evalLimit) * 100), 100)
+      : 0;
+
+  const systemStatus: "healthy" | "warning" | "critical" =
+    Number(blockRate) > 10
+      ? "critical"
+      : Number(blockRate) > 5
+        ? "warning"
+        : "healthy";
+
   return (
     <div className="relative rounded-2xl border border-surface-700/40 bg-gradient-to-br from-surface-900/80 via-surface-950 to-surface-900/60 overflow-hidden mb-8">
-      {/* Subtle grid overlay */}
+      {/* Grid overlay */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
@@ -117,9 +170,13 @@ export default function DashboardBanner() {
 
       {/* Top status bar */}
       <div className="relative flex items-center gap-3 px-6 py-2.5 border-b border-surface-700/40 bg-surface-950/50">
-        <PulseIndicator status="healthy" />
+        <PulseIndicator status={systemStatus} />
         <span className="text-xs font-mono text-surface-300">
-          All systems operational
+          {systemStatus === "healthy"
+            ? "All systems operational"
+            : systemStatus === "warning"
+              ? "Elevated block rate"
+              : "High block rate detected"}
         </span>
         <span className="text-xs font-mono text-surface-400 ml-auto">
           {new Date().toLocaleDateString("en-US", {
@@ -135,9 +192,29 @@ export default function DashboardBanner() {
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
           {/* Arcs */}
           <div className="flex items-center gap-6">
-            <UsageArc percent={67} label="Evaluate Calls" value="33.5K" />
-            <UsageArc percent={37} label="Tokens Used" value="18.5M" />
-            <UsageArc percent={45} label="Budget Used" value="$89" />
+            <UsageArc
+              percent={evalPercent}
+              label="Evaluate Calls"
+              value={formatNumber(totalRequests)}
+            />
+            <UsageArc
+              percent={
+                totalTokens > 0
+                  ? Math.min(Math.round((totalTokens / 10_000_000) * 100), 100)
+                  : 0
+              }
+              label="Tokens Used"
+              value={formatNumber(totalTokens)}
+            />
+            <UsageArc
+              percent={
+                totalCost > 0
+                  ? Math.min(Math.round((totalCost / 200) * 100), 100)
+                  : 0
+              }
+              label="Budget Used"
+              value={`$${totalCost.toFixed(2)}`}
+            />
           </div>
 
           {/* Divider */}
@@ -151,10 +228,10 @@ export default function DashboardBanner() {
                   Total Requests
                 </p>
                 <p className="text-2xl font-bold font-mono text-surface-100 mt-1">
-                  12,847
+                  {totalRequests.toLocaleString()}
                 </p>
                 <p className="text-xs font-mono text-emerald-400 mt-0.5">
-                  +12.3% vs last period
+                  {allowedCount.toLocaleString()} allowed
                 </p>
               </div>
               <div>
@@ -162,10 +239,10 @@ export default function DashboardBanner() {
                   Blocked
                 </p>
                 <p className="text-2xl font-bold font-mono text-surface-100 mt-1">
-                  342
+                  {blockedCount.toLocaleString()}
                 </p>
                 <p className="text-xs font-mono text-red-400 mt-0.5">
-                  2.7% block rate
+                  {blockRate}% block rate
                 </p>
               </div>
             </div>
@@ -173,13 +250,22 @@ export default function DashboardBanner() {
         </div>
       </div>
 
-      {/* Bottom ticker bar */}
+      {/* Bottom ticker */}
       <div className="relative flex items-center px-2 py-2 border-t border-surface-700/40 bg-surface-950/50 overflow-x-auto">
-        <TickerItem label="Plan" value="Pro" />
-        <TickerItem label="Rate" value="500/min" />
-        <TickerItem label="API Keys" value="4 active" />
-        <TickerItem label="Team" value="3 members" />
-        <TickerItem label="Avg Latency" value="12ms" />
+        <TickerItem label="Plan" value={planName} />
+        <TickerItem
+          label="Rate"
+          value={
+            planLimits.rate_limit_per_minute
+              ? `${planLimits.rate_limit_per_minute.toLocaleString()}/min`
+              : "Unlimited"
+          }
+        />
+        <TickerItem label="API Keys" value={`${apiKeyCount} active`} />
+        <TickerItem
+          label="Eval Limit"
+          value={evalLimit ? `${formatNumber(evalLimit)}/mo` : "Unlimited"}
+        />
       </div>
     </div>
   );
