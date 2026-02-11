@@ -5,7 +5,11 @@ class ApiError extends Error {
   status: number;
   data: any;
   constructor(status: number, data: any) {
-    super(data?.detail || "Something went wrong");
+    const message =
+      typeof data?.detail === "string"
+        ? data.detail
+        : data?.detail?.message || "Something went wrong";
+    super(message);
     this.status = status;
     this.data = data;
   }

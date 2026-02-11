@@ -244,9 +244,11 @@ class InternalError(APIError):
         )
         
         
-class EmailNotVerifiedError(HTTPException):
-    def __init__(self):
+class EmailNotVerifiedError(APIError):
+    def __init__(self, message: str = "Email not verified. Please check your inbox.", details: Any = None):
         super().__init__(
-            status_code=403,
-            detail="Email not verified. Please check your inbox."
+            status_code=status.HTTP_403_FORBIDDEN,
+            error_code="EMAIL_NOT_VERIFIED",
+            message=message,
+            details=details
         )
