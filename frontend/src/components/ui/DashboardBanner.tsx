@@ -14,7 +14,18 @@ function UsageArc({
   const radius = 36;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (percent / 100) * circumference;
-  const color = percent > 80 ? "#f43f5e" : percent > 60 ? "#fbbf24" : "#06b6d4";
+  const color =
+    percent > 90
+      ? "#ef4444" // red — critical
+      : percent > 75
+        ? "#f43f5e" // rose — warning high
+        : percent > 60
+          ? "#fbbf24" // amber — warning
+          : percent > 40
+            ? "#a3e635" // lime — healthy
+            : percent > 20
+              ? "#22d3ee" // cyan — low usage
+              : "#818cf8"; // indigo — minimal
 
   return (
     <div className="flex flex-col items-center gap-1">

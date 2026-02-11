@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { StatCard, Button, Badge } from "@/components/ui";
+import { Button, Badge } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import { BarChart } from "@/components/charts";
 import DashboardBanner from "@/components/ui/DashboardBanner";
@@ -37,7 +37,6 @@ const recentActivity = [
     cost: "—",
     status: "blocked",
     time: "8 min ago",
-    reason: "DAILY_LIMIT",
   },
   {
     user: "user_556",
@@ -58,7 +57,6 @@ const recentActivity = [
 export default function DashboardOverview() {
   return (
     <div className="space-y-8">
-      {/* Stats */}
       <DashboardBanner />
 
       {/* Chart + Activity */}
@@ -66,7 +64,7 @@ export default function DashboardOverview() {
         {/* Usage chart */}
         <Card className="lg:col-span-2 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-sm font-mono font-bold text-surface-200">
+            <h3 className="text-sm font-mono font-bold text-white">
               Requests This Week
             </h3>
             <div className="flex gap-1">
@@ -75,8 +73,8 @@ export default function DashboardOverview() {
                   key={period}
                   className={`px-2.5 py-1 rounded text-xs font-mono transition-colors ${
                     period === "7d"
-                      ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
-                      : "text-surface-500 hover:text-surface-300"
+                      ? "bg-brand-500/15 text-brand-300 border border-brand-500/30"
+                      : "text-surface-400 hover:text-white"
                   }`}
                 >
                   {period}
@@ -89,18 +87,18 @@ export default function DashboardOverview() {
 
         {/* Recent activity */}
         <Card className="p-6">
-          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">
+          <h3 className="text-sm font-mono font-bold text-white mb-4">
             Recent Activity
           </h3>
           <div className="space-y-3">
             {recentActivity.map((item, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between py-2 border-b border-surface-800/20 last:border-0"
+                className="flex items-center justify-between py-2 border-b border-surface-700/30 last:border-0"
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-surface-300 truncate">
+                    <span className="text-xs font-mono text-white truncate">
                       {item.user}
                     </span>
                     <Badge
@@ -109,11 +107,11 @@ export default function DashboardOverview() {
                       {item.status === "allowed" ? "✓" : "✕"}
                     </Badge>
                   </div>
-                  <span className="text-[11px] font-mono text-surface-600">
+                  <span className="text-[11px] font-mono text-surface-400">
                     {item.feature} · {item.time}
                   </span>
                 </div>
-                <span className="text-xs font-mono text-surface-400">
+                <span className="text-xs font-mono text-brand-300">
                   {item.cost}
                 </span>
               </div>
@@ -125,41 +123,43 @@ export default function DashboardOverview() {
       {/* Quick Actions + Top Users */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="p-6">
-          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">
+          <h3 className="text-sm font-mono font-bold text-white mb-4">
             Quick Actions
           </h3>
-          <div className="space-y-2">
-            <Link href="/dashboard/policies/new">
+          <div className="flex flex-col gap-2">
+            <Link href="/dashboard/policies/new" className="block">
               <Button
                 variant="secondary"
                 className="w-full justify-start"
                 size="sm"
               >
-                <span className="mr-2">⬡</span> Create Policy
+                <span className="mr-2 text-brand-400">⬡</span> Create Policy
               </Button>
             </Link>
-            <Link href="/dashboard/api-keys">
+            <Link href="/dashboard/api-keys" className="block">
               <Button
                 variant="secondary"
                 className="w-full justify-start"
                 size="sm"
               >
-                <span className="mr-2">⚿</span> Generate API Key
+                <span className="mr-2 text-brand-400">⚿</span> Generate API Key
               </Button>
             </Link>
-            <Button
-              variant="secondary"
-              className="w-full justify-start"
-              size="sm"
-            >
-              <span className="mr-2">◩</span> View Docs
-            </Button>
+            <Link href="/docs" className="block">
+              <Button
+                variant="secondary"
+                className="w-full justify-start"
+                size="sm"
+              >
+                <span className="mr-2 text-brand-400">◩</span> View Docs
+              </Button>
+            </Link>
           </div>
         </Card>
 
         <Card className="lg:col-span-2 p-6">
-          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">
-            Top Users (This Month)
+          <h3 className="text-sm font-mono font-bold text-white mb-4">
+            Top Users This Month
           </h3>
           <div className="space-y-3">
             {[
@@ -171,21 +171,19 @@ export default function DashboardOverview() {
             ].map((u, i) => (
               <div
                 key={u.user}
-                className="flex items-center justify-between py-2 border-b border-surface-800/20 last:border-0"
+                className="flex items-center justify-between py-2 border-b border-surface-700/30 last:border-0"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-mono text-surface-600 w-4">
+                  <span className="text-xs font-mono text-brand-400 w-4 font-bold">
                     {i + 1}.
                   </span>
-                  <span className="text-sm font-mono text-surface-300">
-                    {u.user}
-                  </span>
+                  <span className="text-sm font-mono text-white">{u.user}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-xs font-mono text-surface-500">
+                  <span className="text-xs font-mono text-surface-300">
                     {u.requests.toLocaleString()} reqs
                   </span>
-                  <span className="text-xs font-mono text-brand-400">
+                  <span className="text-xs font-mono text-emerald-400 font-bold">
                     {u.cost}
                   </span>
                 </div>
