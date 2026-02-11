@@ -10,55 +10,47 @@ TOKENFENCE_PLANS = {
         "evaluate_calls_per_month": 1000,
         "team_members_limit": 1,
         "features": {
-            "webhooks": False,
             "audit_logs": False,
             "priority_support": False,
-            "custom_branding": False,
         }
     },
-    "starter": {
-        "name": "Starter",
-        "price_monthly": 29,
+    "pro": {
+        "name": "Pro",
+        "price_monthly": 19,
         "rate_limit_per_minute": 500,
         "workspaces_limit": 3,
         "api_keys_limit": 10,
         "evaluate_calls_per_month": 50000,
         "team_members_limit": 3,
         "features": {
-            "webhooks": True,
-            "audit_logs": False,
+            "audit_logs": True,
             "priority_support": False,
-            "custom_branding": False,
         }
     },
-    "pro": {
-        "name": "Pro",
-        "price_monthly": 99,
+    "premium": {
+        "name": "Premium",
+        "price_monthly": 49,
         "rate_limit_per_minute": 2000,
         "workspaces_limit": 10,
         "api_keys_limit": 50,
         "evaluate_calls_per_month": 500000,
         "team_members_limit": 10,
         "features": {
-            "webhooks": True,
             "audit_logs": True,
-            "priority_support": False,
-            "custom_branding": False,
+            "priority_support": True,
         }
     },
     "enterprise": {
         "name": "Enterprise",
-        "price_monthly": 299,
+        "price_monthly": 149,
         "rate_limit_per_minute": 10000,
         "workspaces_limit": -1,  # unlimited
         "api_keys_limit": -1,  # unlimited
         "evaluate_calls_per_month": -1,  # unlimited
         "team_members_limit": -1,  # unlimited
         "features": {
-            "webhooks": True,
             "audit_logs": True,
             "priority_support": True,
-            "custom_branding": True,
         }
     }
 }
