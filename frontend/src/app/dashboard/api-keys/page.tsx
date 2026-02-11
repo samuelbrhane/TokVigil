@@ -5,7 +5,8 @@ import { Button, Badge } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import WorkspaceSelector from "@/components/dashboard/WorkspaceSelector";
 import CreateApiKeyModal from "@/components/dashboard/CreateApiKeyModal";
-import { getApiKeys, getEnvironments, revokeApiKey } from "@/lib/workspaces";
+import RevokeApiKeyModal from "@/components/dashboard/RevokeApiKeyModal";
+import { getApiKeys, getEnvironments } from "@/lib/workspaces";
 import { ApiKey, Environment } from "@/types/workspace";
 
 const envColors: Record<string, "success" | "warning" | "brand"> = {
@@ -21,6 +22,7 @@ export default function ApiKeysPage() {
   const [loading, setLoading] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [revokeTarget, setRevokeTarget] = useState<ApiKey | null>(null);
 
   const fetchData = async (wsId: number) => {
     setLoading(true);
@@ -47,16 +49,9 @@ export default function ApiKeysPage() {
     setActiveTab("all");
   };
 
-  const handleRevoke = async (keyId: number) => {
-    if (!workspaceId) return;
-    if (!confirm("Are you sure you want to revoke this API key?")) return;
-
-    try {
-      await revokeApiKey(workspaceId, keyId);
-      setApiKeys((prev) => prev.filter((k) => k.id !== keyId));
-    } catch {
-      // handle error
-    }
+  const handleRevoked = () => {
+    if (workspaceId) fetchData(workspaceId);
+    setRevokeTarget(null);
   };
 
   const handleCreated = () => {
@@ -151,7 +146,7 @@ export default function ApiKeysPage() {
               </Button>
             </div>
           ) : (
-            <Card className="overflow-hidden animate-fade-in">
+            <Card className="animate-fade-in">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -174,14 +169,10 @@ export default function ApiKeysPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredKeys.map((key, i) => (
+                    {filteredKeys.map((key) => (
                       <tr
                         key={key.id}
-                        className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors animate-fade-in-up"
-                        style={{
-                          animationDelay: `${i * 50}ms`,
-                          animationFillMode: "both",
-                        }}
+                        className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors"
                       >
                         <td className="px-4 py-3 text-sm font-mono text-surface-200">
                           {key.name}
@@ -210,12 +201,14 @@ export default function ApiKeysPage() {
                             : "Never"}
                         </td>
                         <td className="px-4 py-3">
-                          <button
-                            onClick={() => handleRevoke(key.id)}
-                            className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors"
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setRevokeTarget(key)}
+                            className="text-surface-500 hover:text-red-400"
                           >
                             Revoke
-                          </button>
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -234,6 +227,17 @@ export default function ApiKeysPage() {
           onCreated={handleCreated}
           workspaceId={workspaceId}
           environments={environments}
+        />
+      )}
+
+      {revokeTarget && workspaceId && (
+        <RevokeApiKeyModal
+          open={true}
+          onClose={() => setRevokeTarget(null)}
+          onRevoked={handleRevoked}
+          workspaceId={workspaceId}
+          apiKeyId={revokeTarget.id}
+          apiKeyName={revokeTarget.name}
         />
       )}
     </div>

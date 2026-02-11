@@ -278,7 +278,8 @@ def create_api_key(
 def get_api_keys(db: Session, workspace_id: int) -> List[ApiKey]:
     return db.query(ApiKey).filter(
         ApiKey.workspace_id == workspace_id,
-        ApiKey.is_deleted == False
+        ApiKey.is_deleted == False,
+        ApiKey.is_active == True
     ).all()
 
 
