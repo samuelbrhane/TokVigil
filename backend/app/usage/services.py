@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, List, Dict, Any
 
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, Integer
 
 from app.usage.models import UsageRecord
 from app.usage.schemas import UsageLogRequest, UsageSummary, UsageByGroup
@@ -188,7 +188,6 @@ def get_usage_by_feature(
         "has_next": page < total_pages,
         "has_prev": page > 1
     }
-
 def get_usage_summary(
     db: Session,
     workspace_id: int,
@@ -196,26 +195,31 @@ def get_usage_summary(
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None
 ) -> UsageSummary:
-    query = db.query(UsageRecord).filter(
+    query = db.query(
+        func.count(UsageRecord.id).label("total_requests"),
+        func.coalesce(func.sum(UsageRecord.total_tokens), 0).label("total_tokens"),
+        func.coalesce(func.sum(UsageRecord.estimated_cost_usd), 0).label("total_cost_usd"),
+        func.sum(func.cast(UsageRecord.status == "allowed", Integer)).label("allowed_count"),
+        func.sum(func.cast(UsageRecord.status == "blocked", Integer)).label("blocked_count"),
+    ).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id
     )
-    
+
     if start_date:
         query = query.filter(UsageRecord.created_at >= start_date)
     if end_date:
         query = query.filter(UsageRecord.created_at <= end_date)
-    
-    records = query.all()
-    
-    return UsageSummary(
-        total_requests=len(records),
-        total_tokens=sum(r.total_tokens for r in records),
-        total_cost_usd=sum(r.estimated_cost_usd for r in records),
-        allowed_count=len([r for r in records if r.status == "allowed"]),
-        blocked_count=len([r for r in records if r.status == "blocked"]),
-    )
 
+    r = query.one()
+
+    return UsageSummary(
+        total_requests=r.total_requests,
+        total_tokens=int(r.total_tokens),
+        total_cost_usd=float(r.total_cost_usd),
+        allowed_count=int(r.allowed_count or 0),
+        blocked_count=int(r.blocked_count or 0),
+    )
 
 
 def get_user_usage_today(
@@ -225,19 +229,23 @@ def get_user_usage_today(
     user_id: str
 ) -> Dict[str, Any]:
     today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
-    
-    records = db.query(UsageRecord).filter(
+
+    r = db.query(
+        func.count(UsageRecord.id).label("requests_today"),
+        func.coalesce(func.sum(UsageRecord.total_tokens), 0).label("tokens_today"),
+        func.coalesce(func.sum(UsageRecord.estimated_cost_usd), 0).label("cost_today_usd"),
+    ).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id,
         UsageRecord.user_id == user_id,
         UsageRecord.status == "allowed",
         UsageRecord.created_at >= today_start
-    ).all()
-    
+    ).one()
+
     return {
-        "requests_today": len(records),
-        "tokens_today": sum(r.total_tokens for r in records),
-        "cost_today_usd": sum(r.estimated_cost_usd for r in records),
+        "requests_today": r.requests_today,
+        "tokens_today": int(r.tokens_today),
+        "cost_today_usd": float(r.cost_today_usd),
     }
 
 
@@ -248,17 +256,21 @@ def get_user_usage_month(
     user_id: str
 ) -> Dict[str, Any]:
     month_start = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    
-    records = db.query(UsageRecord).filter(
+
+    r = db.query(
+        func.count(UsageRecord.id).label("requests_month"),
+        func.coalesce(func.sum(UsageRecord.total_tokens), 0).label("tokens_month"),
+        func.coalesce(func.sum(UsageRecord.estimated_cost_usd), 0).label("cost_month_usd"),
+    ).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id,
         UsageRecord.user_id == user_id,
         UsageRecord.status == "allowed",
         UsageRecord.created_at >= month_start
-    ).all()
-    
+    ).one()
+
     return {
-        "requests_month": len(records),
-        "tokens_month": sum(r.total_tokens for r in records),
-        "cost_month_usd": sum(r.estimated_cost_usd for r in records),
+        "requests_month": r.requests_month,
+        "tokens_month": int(r.tokens_month),
+        "cost_month_usd": float(r.cost_month_usd),
     }
