@@ -1,5 +1,30 @@
+"use client";
+
 import { Navbar, Footer } from "@/components/layout";
-import { AuthProvider } from "@/lib/auth-context";
+import { AuthProvider, useAuth } from "@/lib/auth-context";
+
+function PublicContent({ children }: { children: React.ReactNode }) {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-surface-950">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-surface-400 text-sm font-mono">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
+}
 
 export default function PublicLayout({
   children,
@@ -8,9 +33,7 @@ export default function PublicLayout({
 }) {
   return (
     <AuthProvider>
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
+      <PublicContent>{children}</PublicContent>
     </AuthProvider>
   );
 }
