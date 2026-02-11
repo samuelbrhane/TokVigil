@@ -242,3 +242,11 @@ class InternalError(APIError):
             message=message,
             details=details
         )
+        
+        
+class EmailNotVerifiedError(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=403,
+            detail="Email not verified. Please check your inbox."
+        )

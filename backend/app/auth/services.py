@@ -10,7 +10,7 @@ from app.core.config import settings
 from app.auth.models import User
 from app.auth.schemas import UserRegister, UserUpdate
 from app.audit.services import create_audit_log
-
+from app.core.exceptions import EmailNotVerifiedError
 
 def hash_password(password: str) -> str:
     salt = secrets.token_hex(16)
@@ -111,6 +111,9 @@ def authenticate_user(db: Session, email: str, password: str, ip_address: str = 
         )
         return None
     
+    if not user.email_verified:
+        raise EmailNotVerifiedError()  # new exception
+    
     create_audit_log(
         db=db,
         action="LOGGED_IN",
@@ -123,7 +126,6 @@ def authenticate_user(db: Session, email: str, password: str, ip_address: str = 
     )
     
     return user
-
 
 def get_user_by_id(db: Session, user_id: int) -> Optional[User]:
     return db.query(User).filter(

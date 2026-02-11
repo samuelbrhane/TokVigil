@@ -2,16 +2,31 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AuthLayout, SocialAuth } from "@/components/auth";
+import { useRouter } from "next/navigation";
+import { AuthLayout } from "@/components/auth";
 import { Button, InputField } from "@/components/ui";
+import { login } from "@/lib/auth";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement login
+    setError("");
+    setLoading(true);
+
+    try {
+      await login(email, password);
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -20,6 +35,12 @@ export default function LoginPage() {
       subtitle="Sign in to your TokenFence account"
     >
       <div className="p-6 rounded-xl border border-surface-800/40 bg-surface-900/40">
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <InputField
             label="Email"
@@ -56,12 +77,15 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <Button variant="primary" className="w-full mt-2" type="submit">
-            Sign In →
+          <Button
+            variant="primary"
+            className="w-full mt-2"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Signing in..." : "Sign In →"}
           </Button>
         </form>
-
-        {/* <SocialAuth mode="login" /> */}
       </div>
 
       <p className="mt-6 text-center text-sm text-surface-500">
