@@ -274,3 +274,139 @@ def get_user_usage_month(
         "tokens_month": int(r.tokens_month),
         "cost_month_usd": float(r.cost_month_usd),
     }
+    
+    
+def get_global_usage_summary(
+    db: Session,
+    user_id: int,
+    start_date: Optional[datetime] = None,
+    end_date: Optional[datetime] = None
+) -> dict:
+    from app.workspaces.models import Workspace
+    
+    workspace_ids = db.query(Workspace.id).filter(
+        Workspace.owner_id == user_id,
+        Workspace.is_deleted == False
+    ).all()
+    workspace_ids = [w[0] for w in workspace_ids]
+    
+    if not workspace_ids:
+        return {
+            "total_requests": 0,
+            "total_tokens": 0,
+            "total_cost_usd": 0.0,
+            "allowed_count": 0,
+            "blocked_count": 0,
+        }
+    
+    query = db.query(
+        func.count(UsageRecord.id).label("total_requests"),
+        func.coalesce(func.sum(UsageRecord.total_tokens), 0).label("total_tokens"),
+        func.coalesce(func.sum(UsageRecord.estimated_cost_usd), 0).label("total_cost_usd"),
+        func.sum(func.cast(UsageRecord.status == "allowed", Integer)).label("allowed_count"),
+        func.sum(func.cast(UsageRecord.status == "blocked", Integer)).label("blocked_count"),
+    ).filter(
+        UsageRecord.workspace_id.in_(workspace_ids)
+    )
+    
+    if start_date:
+        query = query.filter(UsageRecord.created_at >= start_date)
+    if end_date:
+        query = query.filter(UsageRecord.created_at <= end_date)
+    
+    r = query.one()
+    
+    return {
+        "total_requests": r.total_requests,
+        "total_tokens": int(r.total_tokens),
+        "total_cost_usd": float(r.total_cost_usd),
+        "allowed_count": int(r.allowed_count or 0),
+        "blocked_count": int(r.blocked_count or 0),
+    }
+
+
+def get_global_recent_usage(
+    db: Session,
+    user_id: int,
+    page: int = 1,
+    page_size: int = 10
+) -> dict:
+    from app.workspaces.models import Workspace
+    
+    workspace_ids = db.query(Workspace.id).filter(
+        Workspace.owner_id == user_id,
+        Workspace.is_deleted == False
+    ).all()
+    workspace_ids = [w[0] for w in workspace_ids]
+    
+    if not workspace_ids:
+        return {
+            "items": [],
+            "total": 0,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": 0,
+            "has_next": False,
+            "has_prev": False,
+        }
+    
+    query = db.query(UsageRecord).filter(
+        UsageRecord.workspace_id.in_(workspace_ids)
+    )
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    items = query.order_by(UsageRecord.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1,
+    }
+
+
+def get_global_top_users(
+    db: Session,
+    user_id: int,
+    limit: int = 5
+) -> list:
+    from app.workspaces.models import Workspace
+    
+    workspace_ids = db.query(Workspace.id).filter(
+        Workspace.owner_id == user_id,
+        Workspace.is_deleted == False
+    ).all()
+    workspace_ids = [w[0] for w in workspace_ids]
+    
+    if not workspace_ids:
+        return []
+    
+    results = db.query(
+        UsageRecord.user_id,
+        func.count(UsageRecord.id).label("requests"),
+        func.coalesce(func.sum(UsageRecord.total_tokens), 0).label("tokens"),
+        func.coalesce(func.sum(UsageRecord.estimated_cost_usd), 0).label("cost_usd"),
+        func.sum(func.cast(UsageRecord.status == "blocked", Integer)).label("blocked"),
+    ).filter(
+        UsageRecord.workspace_id.in_(workspace_ids)
+    ).group_by(
+        UsageRecord.user_id
+    ).order_by(
+        func.count(UsageRecord.id).desc()
+    ).limit(limit).all()
+    
+    return [
+        {
+            "user_id": r.user_id,
+            "requests": r.requests,
+            "tokens": int(r.tokens),
+            "cost_usd": float(r.cost_usd),
+            "blocked": int(r.blocked or 0),
+        }
+        for r in results
+    ]

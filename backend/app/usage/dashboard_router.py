@@ -15,6 +15,36 @@ from app.usage.schemas import *
 router = APIRouter()
 
 
+@router.get("/global/summary", response_model=UsageSummary)
+def get_global_summary(
+    current_user: User = Depends(get_current_user),
+    start_date: Optional[datetime] = Query(None),
+    end_date: Optional[datetime] = Query(None),
+    db: Session = Depends(get_db)
+):
+    return services.get_global_usage_summary(db, current_user.id, start_date, end_date)
+
+
+@router.get("/global/recent", response_model=PaginatedUsageResponse)
+def get_global_recent(
+    current_user: User = Depends(get_current_user),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(10, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    return services.get_global_recent_usage(db, current_user.id, page, page_size)
+
+
+@router.get("/global/top-users")
+def get_global_top_users(
+    current_user: User = Depends(get_current_user),
+    limit: int = Query(5, ge=1, le=20),
+    db: Session = Depends(get_db)
+):
+    return services.get_global_top_users(db, current_user.id, limit)
+
+
+
 @router.get("/{workspace_id}/{environment_id}/recent", response_model=PaginatedUsageResponse)
 def get_recent_usage(
     workspace_id: int,
@@ -95,3 +125,5 @@ def get_usage_summary(
     if not workspace:
         raise WorkspaceNotFoundError()
     return services.get_usage_summary(db, workspace_id, environment_id, start_date, end_date)
+
+
