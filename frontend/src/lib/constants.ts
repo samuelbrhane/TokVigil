@@ -185,7 +185,6 @@ for (const record of blocked.items) {
 ] as const;
 
 // In constants.ts — update PLANS names:
-
 export const PLANS = [
   {
     name: "Free",
@@ -197,22 +196,20 @@ export const PLANS = [
       "2 API keys",
       "1,000 evaluate calls/month",
       "100 requests/min",
-      "1 team member",
     ],
     cta: "Start Free",
     highlighted: false,
   },
   {
     name: "Pro",
-    price: "$19",
+    price: "$9",
     period: "/month",
-    description: "For small teams shipping their first AI features",
+    description: "For solo developers shipping AI features",
     features: [
       "3 workspaces",
       "10 API keys",
       "50,000 evaluate calls/month",
       "500 requests/min",
-      "3 team members",
       "Audit logs",
     ],
     cta: "Start Pro",
@@ -220,7 +217,7 @@ export const PLANS = [
   },
   {
     name: "Premium",
-    price: "$49",
+    price: "$29",
     period: "/month",
     description: "For teams running AI in production at scale",
     features: [
@@ -228,7 +225,6 @@ export const PLANS = [
       "50 API keys",
       "500,000 evaluate calls/month",
       "2,000 requests/min",
-      "10 team members",
       "Audit logs",
       "Priority support",
     ],
@@ -237,7 +233,7 @@ export const PLANS = [
   },
   {
     name: "Enterprise",
-    price: "$149",
+    price: "$99",
     period: "/month",
     description: "For organizations needing full control",
     features: [
@@ -245,7 +241,6 @@ export const PLANS = [
       "Unlimited API keys",
       "Unlimited evaluate calls",
       "10,000 requests/min",
-      "Unlimited team members",
       "Audit logs",
       "Priority support",
     ],
@@ -284,13 +279,7 @@ export const FEATURE_COMPARISON = [
     premium: "2,000",
     enterprise: "10,000",
   },
-  {
-    feature: "Team Members",
-    free: "1",
-    pro: "3",
-    premium: "10",
-    enterprise: "Unlimited",
-  },
+
   { feature: "Audit Logs", free: "—", pro: "✓", premium: "✓", enterprise: "✓" },
   {
     feature: "Priority Support",
