@@ -73,3 +73,23 @@ export async function resendVerification(
     body: JSON.stringify({ email }),
   });
 }
+
+export async function updateProfile(data: {
+  first_name: string;
+  last_name: string;
+}): Promise<any> {
+  return api("/auth/me", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function changePassword(data: {
+  current_password: string;
+  new_password: string;
+}): Promise<any> {
+  return api("/auth/change-password", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
