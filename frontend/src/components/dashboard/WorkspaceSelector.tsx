@@ -7,24 +7,34 @@ import { Workspace } from "@/types/workspace";
 interface WorkspaceSelectorProps {
   value: number | null;
   onChange: (id: number) => void;
+  onLoaded?: (hasWorkspaces: boolean) => void;
 }
 
 export default function WorkspaceSelector({
   value,
   onChange,
+  onLoaded,
 }: WorkspaceSelectorProps) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchWorkspaces = () => {
+    setLoading(true);
     getWorkspaces()
       .then((data) => {
         setWorkspaces(data.items);
-        if (!value && data.items.length > 0) {
-          onChange(data.items[0].id);
+        if (data.items.length > 0) {
+          if (!value || !data.items.find((w) => w.id === value)) {
+            onChange(data.items[0].id);
+          }
         }
+        onLoaded?.(data.items.length > 0);
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchWorkspaces();
   }, []);
 
   if (loading) {

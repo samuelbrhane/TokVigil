@@ -69,6 +69,10 @@ export default function PoliciesPage() {
           <WorkspaceSelector
             value={workspaceId}
             onChange={handleWorkspaceChange}
+            onLoaded={(has) => {
+              setInitialized(true);
+              if (!has) setLoading(false);
+            }}
           />
         </div>
       </div>
