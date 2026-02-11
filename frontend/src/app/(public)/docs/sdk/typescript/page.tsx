@@ -122,7 +122,7 @@ for (const user of byUser.items) {
 }
 
 // Get usage by feature
-const byFeature = await tf.getUsageByFeature();
+const byFeature = await tf.getUsageByFeature({ page: 1, pageSize: 10 });
 for (const feature of byFeature.items) {
   console.log(\`\${feature.group}: \${feature.tokens} tokens\`);
 }
@@ -134,7 +134,7 @@ for (const record of recent.items) {
 }
 
 // Get blocked requests
-const blocked = await tf.getBlockedRequests();
+const blocked = await tf.getBlockedRequests({ page: 1, pageSize: 20 });
 for (const record of blocked.items) {
   console.log(\`\${record.userId}: \${record.reasonCode}\`);
 }`,

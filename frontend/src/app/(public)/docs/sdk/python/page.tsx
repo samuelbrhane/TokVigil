@@ -82,7 +82,7 @@ for user in by_user.items:
     print(f"{user.group}: {user.requests} requests, \${user.cost_usd:.2f}")
 
 # Get usage by feature
-by_feature = tf.get_usage_by_feature()
+by_feature = tf.get_usage_by_feature(page=1, page_size=10)
 for feature in by_feature.items:
     print(f"{feature.group}: {feature.tokens} tokens")
 
@@ -92,7 +92,7 @@ for record in recent.items:
     print(f"{record.model}: {record.total_tokens} tokens")
 
 # Get blocked requests
-blocked = tf.get_blocked_requests()
+blocked = tf.get_blocked_requests(page=1, page_size=20)
 for record in blocked.items:
     print(f"{record.user_id}: {record.reason_code}")`;
 
