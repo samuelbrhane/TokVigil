@@ -12,7 +12,10 @@ function PlanCards() {
   const [ref, visible] = useInView(0.1);
 
   return (
-    <div ref={ref as React.RefObject<HTMLDivElement>} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-24">
+    <div
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-24"
+    >
       {PLANS.map((plan, i) => (
         <div
           key={plan.name}
@@ -36,23 +39,35 @@ function PlanCards() {
             </>
           )}
           <div className="mb-6">
-            <h3 className="font-mono font-bold text-surface-300 tracking-tight">{plan.name}</h3>
+            <h3 className="font-mono font-bold text-surface-300 tracking-tight">
+              {plan.name}
+            </h3>
             <div className="mt-3 flex items-baseline gap-1">
-              <span className="text-4xl font-bold text-surface-100 font-mono">{plan.price}</span>
-              <span className="text-sm text-surface-500 font-mono">{plan.period}</span>
+              <span className="text-4xl font-bold text-surface-100 font-mono">
+                {plan.price}
+              </span>
+              <span className="text-sm text-surface-500 font-mono">
+                {plan.period}
+              </span>
             </div>
             <p className="mt-2 text-sm text-surface-500">{plan.description}</p>
           </div>
           <ul className="space-y-3 mb-8">
             {plan.features.map((f) => (
-              <li key={f} className="flex items-start gap-2.5 text-sm text-surface-400">
+              <li
+                key={f}
+                className="flex items-start gap-2.5 text-sm text-surface-400"
+              >
                 <span className="text-brand-500 mt-0.5 text-xs">▸</span>
                 {f}
               </li>
             ))}
           </ul>
           <Link href="/signup">
-            <Button variant={plan.highlighted ? "primary" : "secondary"} className="w-full">
+            <Button
+              variant={plan.highlighted ? "primary" : "secondary"}
+              className="w-full"
+            >
               {plan.cta}
             </Button>
           </Link>
@@ -102,12 +117,18 @@ function ComparisonTable() {
                 key={row.feature}
                 className={`border-b border-surface-800/20 ${i % 2 === 0 ? "bg-surface-900/20" : ""}`}
               >
-                <td className="px-5 py-3 text-sm text-surface-300 font-mono">{row.feature}</td>
-                <td className="px-5 py-3 text-sm text-surface-500 text-center font-mono">{row.free}</td>
+                <td className="px-5 py-3 text-sm text-surface-300 font-mono">
+                  {row.feature}
+                </td>
+                <td className="px-5 py-3 text-sm text-surface-500 text-center font-mono">
+                  {row.free}
+                </td>
                 <td className="px-5 py-3 text-sm text-surface-300 text-center font-mono bg-brand-500/5">
                   {row.pro}
                 </td>
-                <td className="px-5 py-3 text-sm text-surface-500 text-center font-mono">{row.enterprise}</td>
+                <td className="px-5 py-3 text-sm text-surface-500 text-center font-mono">
+                  {row.enterprise}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -141,8 +162,12 @@ function FAQSection() {
             onClick={() => setOpenIndex(openIndex === i ? null : i)}
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-mono font-medium text-surface-200">{faq.question}</span>
-              <span className={`text-surface-500 text-xs transition-transform duration-200 ${openIndex === i ? "rotate-180" : ""}`}>
+              <span className="text-sm font-mono font-medium text-surface-200">
+                {faq.question}
+              </span>
+              <span
+                className={`text-surface-500 text-xs transition-transform duration-200 ${openIndex === i ? "rotate-180" : ""}`}
+              >
                 ▾
               </span>
             </div>
@@ -163,7 +188,7 @@ export default function PricingPage() {
     <div className="pt-24">
       <div className="relative">
         <GridBackground opacity={0.02} />
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
           <PageHeader
             tag="Pricing"
             title="Simple, predictable"

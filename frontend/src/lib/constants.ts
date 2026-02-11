@@ -301,6 +301,33 @@ export const FEATURE_COMPARISON = [
   },
 ] as const;
 
+export const PRICING_FAQ = [
+  {
+    question: "What counts as an evaluate call?",
+    answer:
+      "One evaluate call = one POST to /api/v1/evaluate. When your SDK calls tf.evaluate() or tf.checkAndCall(), that counts as 1 evaluate call. Usage logging (POST /api/v1/usage) does not count toward your limit.",
+  },
+  {
+    question: "Can I switch plans anytime?",
+    answer:
+      "Yes. Upgrade or downgrade at any time. Changes take effect immediately, and we pro-rate billing.",
+  },
+  {
+    question: "What happens when I hit my evaluate call limit?",
+    answer:
+      "Additional evaluate calls return PLAN_LIMIT_EXCEEDED. You can upgrade your plan or wait for the monthly reset.",
+  },
+  {
+    question: "Do you store my LLM prompts or responses?",
+    answer:
+      "No. TokenFence only sees token counts, costs, and metadata. Your prompts and responses go directly between your app and the LLM provider.",
+  },
+  {
+    question: "What does the rate limit apply to?",
+    answer:
+      "The rate limit applies to API calls per minute per API key. This protects both your account and the platform from abuse or runaway scripts.",
+  },
+] as const;
 // ============================================================
 // STATS (landing page hero)
 // ============================================================
