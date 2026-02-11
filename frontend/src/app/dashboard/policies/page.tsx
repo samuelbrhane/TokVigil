@@ -183,6 +183,13 @@ export default function PoliciesPage() {
                           {formatBudget(policy.budget_per_day_usd)}
                         </td>
                         <td className="px-4 py-3">
+                          <Badge
+                            variant={policy.is_active ? "success" : "default"}
+                          >
+                            {policy.is_active ? "active" : "inactive"}
+                          </Badge>
+                        </td>
+                        <td className="px-4 py-3">
                           <div className="flex gap-2">
                             <button
                               onClick={async () => {
@@ -201,22 +208,6 @@ export default function PoliciesPage() {
                             >
                               {policy.is_active ? "Disable" : "Enable"}
                             </button>
-                            <Link
-                              href={`/dashboard/policies/${policy.id}/edit?workspace=${workspaceId}`}
-                              className="text-xs font-mono text-surface-500 hover:text-brand-400 transition-colors"
-                            >
-                              Edit
-                            </Link>
-                            <button
-                              onClick={() => setDeleteTarget(policy)}
-                              className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-2">
                             <Link
                               href={`/dashboard/policies/${policy.id}/edit?workspace=${workspaceId}`}
                               className="text-xs font-mono text-surface-500 hover:text-brand-400 transition-colors"
