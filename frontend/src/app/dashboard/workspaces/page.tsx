@@ -39,13 +39,11 @@ export default function WorkspacesPage() {
           <div className="h-5 w-32 bg-surface-800/40 rounded animate-pulse" />
           <div className="h-9 w-40 bg-surface-800/40 rounded animate-pulse" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-40 rounded-xl bg-surface-800/20 border border-surface-800/40 animate-pulse"
-            />
-          ))}
+        <div className="flex items-center justify-center py-16">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-surface-400 text-sm font-mono">Loading...</p>
+          </div>
         </div>
       </div>
     );

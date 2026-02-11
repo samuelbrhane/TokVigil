@@ -41,7 +41,7 @@ export async function createPolicy(
 export async function updatePolicy(
   workspaceId: number,
   policyId: number,
-  data: Partial<PolicyFormData>,
+  data: Partial<PolicyFormData> & { is_active?: boolean },
 ): Promise<Policy> {
   return api<Policy>(`/policies/${workspaceId}/${policyId}`, {
     method: "PUT",

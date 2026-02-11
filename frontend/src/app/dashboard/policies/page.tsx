@@ -7,7 +7,7 @@ import Card from "@/components/ui/Card";
 import WorkspaceSelector from "@/components/dashboard/WorkspaceSelector";
 import DeletePolicyModal from "@/components/dashboard/DeletePolicyModal";
 import Pagination from "@/components/dashboard/Pagination";
-import { getPolicies } from "@/lib/policies";
+import { getPolicies, updatePolicy } from "@/lib/policies";
 import { Policy, PaginatedPolicies } from "@/types/policy";
 
 export default function PoliciesPage() {
@@ -74,13 +74,11 @@ export default function PoliciesPage() {
       </div>
 
       {!initialized ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-12 bg-surface-800/20 rounded-lg animate-pulse"
-            />
-          ))}
+        <div className="flex items-center justify-center py-16">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-surface-400 text-sm font-mono">Loading...</p>
+          </div>
         </div>
       ) : !workspaceId ? (
         <div className="text-center py-16">
@@ -93,13 +91,11 @@ export default function PoliciesPage() {
           </p>
         </div>
       ) : loading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-12 bg-surface-800/20 rounded-lg animate-pulse"
-            />
-          ))}
+        <div className="flex items-center justify-center py-16">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+            <p className="text-surface-400 text-sm font-mono">Loading...</p>
+          </div>
         </div>
       ) : (
         <>
@@ -187,11 +183,37 @@ export default function PoliciesPage() {
                           {formatBudget(policy.budget_per_day_usd)}
                         </td>
                         <td className="px-4 py-3">
-                          <Badge
-                            variant={policy.is_active ? "success" : "default"}
-                          >
-                            {policy.is_active ? "active" : "inactive"}
-                          </Badge>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={async () => {
+                                try {
+                                  await updatePolicy(workspaceId!, policy.id, {
+                                    is_active: !policy.is_active,
+                                  });
+                                  fetchPolicies(workspaceId!, page);
+                                } catch {}
+                              }}
+                              className={`text-xs font-mono transition-colors ${
+                                policy.is_active
+                                  ? "text-surface-500 hover:text-yellow-400"
+                                  : "text-surface-500 hover:text-green-400"
+                              }`}
+                            >
+                              {policy.is_active ? "Disable" : "Enable"}
+                            </button>
+                            <Link
+                              href={`/dashboard/policies/${policy.id}/edit?workspace=${workspaceId}`}
+                              className="text-xs font-mono text-surface-500 hover:text-brand-400 transition-colors"
+                            >
+                              Edit
+                            </Link>
+                            <button
+                              onClick={() => setDeleteTarget(policy)}
+                              className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex gap-2">
