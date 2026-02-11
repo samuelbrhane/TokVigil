@@ -6,7 +6,7 @@ import Logo from "./Logo";
 export default function Footer() {
   return (
     <footer className="relative border-t border-surface-800/40 bg-surface-950">
-      <div className="max-w-6xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand column */}
           <div className="space-y-4">
