@@ -171,20 +171,20 @@ export default function DocsPage() {
         />
 
         {/* Next Steps */}
-        <div className="mt-8 p-6 bg-surface-900/50 border border-surface-800 rounded-lg">
+        <div className="mt-8 p-4 sm:p-6 bg-surface-900/50 border border-surface-800 rounded-lg">
           <h3 className="font-mono font-semibold text-surface-100 mb-4">
             Next Steps
           </h3>
-          <ul className="space-y-2 text-sm text-surface-400">
-            <li className="flex items-center gap-2">
-              <span className="text-brand-500">1.</span>
+          <ul className="space-y-3 text-sm text-surface-400">
+            <li>
+              <span className="text-brand-500 mr-2">1.</span>
               <Link href="/signup" className="text-brand-400 hover:underline">
                 Create your account
               </Link>{" "}
               and get your API key
             </li>
-            <li className="flex items-center gap-2">
-              <span className="text-brand-500">2.</span>
+            <li>
+              <span className="text-brand-500 mr-2">2.</span>
               <Link
                 href="/docs/sdk/python"
                 className="text-brand-400 hover:underline"
@@ -193,15 +193,18 @@ export default function DocsPage() {
               </Link>{" "}
               for your language
             </li>
-            <li className="flex items-center gap-2">
-              <span className="text-brand-500">3.</span>
+            <li>
+              <span className="text-brand-500 mr-2">3.</span>
               Create policies in the{" "}
-              <Link href="/login" className="text-brand-400 hover:underline">
+              <Link
+                href="/dashboard"
+                className="text-brand-400 hover:underline"
+              >
                 dashboard
               </Link>
             </li>
-            <li className="flex items-center gap-2">
-              <span className="text-brand-500">4.</span>
+            <li>
+              <span className="text-brand-500 mr-2">4.</span>
               Install the{" "}
               <Link
                 href="/docs/vscode-extension"
