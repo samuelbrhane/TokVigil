@@ -12,8 +12,9 @@ import { Policy, PaginatedPolicies } from "@/types/policy";
 
 export default function PoliciesPage() {
   const [workspaceId, setWorkspaceId] = useState<number | null>(null);
+  const [initialized, setInitialized] = useState(false);
   const [data, setData] = useState<PaginatedPolicies | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<Policy | null>(null);
@@ -37,6 +38,7 @@ export default function PoliciesPage() {
   const handleWorkspaceChange = (id: number) => {
     setWorkspaceId(id);
     setPage(1);
+    setInitialized(true);
   };
 
   const handleDeleted = () => {
@@ -71,7 +73,16 @@ export default function PoliciesPage() {
         </div>
       </div>
 
-      {!workspaceId ? (
+      {!initialized ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="h-12 bg-surface-800/20 rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      ) : !workspaceId ? (
         <div className="text-center py-16">
           <div className="text-4xl mb-4">⬡</div>
           <h3 className="text-lg font-bold font-mono text-surface-300 mb-2">

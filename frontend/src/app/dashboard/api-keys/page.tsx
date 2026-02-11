@@ -17,9 +17,10 @@ const envColors: Record<string, "success" | "warning" | "brand"> = {
 
 export default function ApiKeysPage() {
   const [workspaceId, setWorkspaceId] = useState<number | null>(null);
+  const [initialized, setInitialized] = useState(false);
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [environments, setEnvironments] = useState<Environment[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [revokeTarget, setRevokeTarget] = useState<ApiKey | null>(null);
@@ -47,6 +48,7 @@ export default function ApiKeysPage() {
   const handleWorkspaceChange = (id: number) => {
     setWorkspaceId(id);
     setActiveTab("all");
+    setInitialized(true);
   };
 
   const handleRevoked = () => {
@@ -80,7 +82,16 @@ export default function ApiKeysPage() {
         </div>
       </div>
 
-      {!workspaceId ? (
+      {!initialized ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="h-12 bg-surface-800/20 rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      ) : !workspaceId ? (
         <div className="text-center py-16">
           <div className="text-4xl mb-4">⚿</div>
           <h3 className="text-lg font-bold font-mono text-surface-300 mb-2">
