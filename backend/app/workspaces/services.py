@@ -140,12 +140,47 @@ def delete_workspace(
     owner_id: int,
     user_email: str = None
 ) -> bool:
+    from app.policies.models import Policy
+    
     workspace = get_workspace(db, workspace_id, owner_id)
     if not workspace:
         return False
     
     workspace_name = workspace.name
+    
+    # Soft delete all API keys
+    db.query(ApiKey).filter(
+        ApiKey.workspace_id == workspace_id,
+        ApiKey.is_deleted == False
+    ).update({
+        ApiKey.is_deleted: True,
+        ApiKey.is_active: False,
+        ApiKey.deleted_at: datetime.utcnow()
+    })
+    
+    # Soft delete all policies
+    db.query(Policy).filter(
+        Policy.workspace_id == workspace_id,
+        Policy.is_deleted == False
+    ).update({
+        Policy.is_deleted: True,
+        Policy.is_active: False,
+        Policy.deleted_at: datetime.utcnow()
+    })
+    
+    # Soft delete all environments
+    db.query(Environment).filter(
+        Environment.workspace_id == workspace_id,
+        Environment.is_deleted == False
+    ).update({
+        Environment.is_deleted: True,
+        Environment.is_active: False,
+        Environment.deleted_at: datetime.utcnow()
+    })
+    
+    # Soft delete workspace
     workspace.is_deleted = True
+    workspace.is_active = False
     workspace.deleted_at = datetime.utcnow()
     db.commit()
     

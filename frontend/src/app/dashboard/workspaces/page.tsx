@@ -5,13 +5,18 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui";
 import { getWorkspaces } from "@/lib/workspaces";
 import { Workspace } from "@/types/workspace";
-import { CreateWorkspaceModal, WorkspaceCard } from "@/components/dashboard";
+import {
+  CreateWorkspaceModal,
+  DeleteWorkspaceModal,
+  WorkspaceCard,
+} from "@/components/dashboard";
 
 export default function WorkspacesPage() {
   const router = useRouter();
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Workspace | null>(null);
 
   const fetchWorkspaces = async () => {
     try {
@@ -32,18 +37,17 @@ export default function WorkspacesPage() {
     setWorkspaces((prev) => [workspace, ...prev]);
   };
 
+  const handleDeleted = () => {
+    fetchWorkspaces();
+    setDeleteTarget(null);
+  };
+
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="h-5 w-32 bg-surface-800/40 rounded animate-pulse" />
-          <div className="h-9 w-40 bg-surface-800/40 rounded animate-pulse" />
-        </div>
-        <div className="flex items-center justify-center py-16">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-surface-400 text-sm font-mono">Loading...</p>
-          </div>
+      <div className="flex items-center justify-center py-16">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-surface-400 text-sm font-mono">Loading...</p>
         </div>
       </div>
     );
@@ -78,7 +82,7 @@ export default function WorkspacesPage() {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-hidden">
           {workspaces.map((ws, i) => (
             <WorkspaceCard
               key={ws.id}
@@ -86,6 +90,7 @@ export default function WorkspacesPage() {
               envCount={3}
               index={i}
               onClick={() => router.push(`/dashboard/workspaces/${ws.id}`)}
+              onDelete={() => setDeleteTarget(ws)}
             />
           ))}
         </div>
@@ -96,6 +101,16 @@ export default function WorkspacesPage() {
         onClose={() => setShowCreate(false)}
         onCreated={handleCreated}
       />
+
+      {deleteTarget && (
+        <DeleteWorkspaceModal
+          open={true}
+          onClose={() => setDeleteTarget(null)}
+          onDeleted={handleDeleted}
+          workspaceId={deleteTarget.id}
+          workspaceName={deleteTarget.name}
+        />
+      )}
     </div>
   );
 }
