@@ -1,0 +1,140 @@
+"use client";
+
+import Link from "next/link";
+import { StatCard, Button, Badge } from "@/components/ui";
+import Card from "@/components/ui/Card";
+import { BarChart } from "@/components/charts";
+
+const chartData = [
+  { label: "Mon", value: 1200 },
+  { label: "Tue", value: 1800 },
+  { label: "Wed", value: 1400 },
+  { label: "Thu", value: 2200 },
+  { label: "Fri", value: 1900 },
+  { label: "Sat", value: 800 },
+  { label: "Sun", value: 600 },
+];
+
+const recentActivity = [
+  { user: "user_342", feature: "chat", cost: "$0.003", status: "allowed", time: "2 min ago" },
+  { user: "user_891", feature: "summarize", cost: "$0.001", status: "allowed", time: "5 min ago" },
+  { user: "user_127", feature: "chat", cost: "—", status: "blocked", time: "8 min ago", reason: "DAILY_LIMIT" },
+  { user: "user_556", feature: "extract", cost: "$0.012", status: "allowed", time: "12 min ago" },
+  { user: "user_342", feature: "chat", cost: "$0.004", status: "allowed", time: "15 min ago" },
+];
+
+export default function DashboardOverview() {
+  return (
+    <div className="space-y-8">
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Total Requests" value="12,847" change="+12.3%" />
+        <StatCard label="Total Tokens" value="2.4M" change="+8.1%" />
+        <StatCard label="Total Cost" value="$156.32" change="+5.7%" />
+        <StatCard label="Blocked Requests" value="342" change="-3.2%" />
+      </div>
+
+      {/* Chart + Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Usage chart */}
+        <Card className="lg:col-span-2 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-sm font-mono font-bold text-surface-200">Requests This Week</h3>
+            <div className="flex gap-1">
+              {["7d", "30d", "90d"].map((period) => (
+                <button
+                  key={period}
+                  className={`px-2.5 py-1 rounded text-xs font-mono transition-colors ${
+                    period === "7d"
+                      ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
+                      : "text-surface-500 hover:text-surface-300"
+                  }`}
+                >
+                  {period}
+                </button>
+              ))}
+            </div>
+          </div>
+          <BarChart data={chartData} height={220} />
+        </Card>
+
+        {/* Recent activity */}
+        <Card className="p-6">
+          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">Recent Activity</h3>
+          <div className="space-y-3">
+            {recentActivity.map((item, i) => (
+              <div
+                key={i}
+                className="flex items-center justify-between py-2 border-b border-surface-800/20 last:border-0"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-surface-300 truncate">
+                      {item.user}
+                    </span>
+                    <Badge variant={item.status === "allowed" ? "success" : "danger"}>
+                      {item.status === "allowed" ? "✓" : "✕"}
+                    </Badge>
+                  </div>
+                  <span className="text-[11px] font-mono text-surface-600">{item.feature} · {item.time}</span>
+                </div>
+                <span className="text-xs font-mono text-surface-400">{item.cost}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* Quick Actions + Top Users */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Card className="p-6">
+          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">Quick Actions</h3>
+          <div className="space-y-2">
+            <Link href="/dashboard/policies/new">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <span className="mr-2">⬡</span> Create Policy
+              </Button>
+            </Link>
+            <Link href="/dashboard/api-keys">
+              <Button variant="secondary" className="w-full justify-start" size="sm">
+                <span className="mr-2">⚿</span> Generate API Key
+              </Button>
+            </Link>
+            <Button variant="secondary" className="w-full justify-start" size="sm">
+              <span className="mr-2">◩</span> View Docs
+            </Button>
+          </div>
+        </Card>
+
+        <Card className="lg:col-span-2 p-6">
+          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">Top Users (This Month)</h3>
+          <div className="space-y-3">
+            {[
+              { user: "user_342", requests: 2340, cost: "$34.20" },
+              { user: "user_891", requests: 1890, cost: "$28.50" },
+              { user: "user_127", requests: 1560, cost: "$22.10" },
+              { user: "user_556", requests: 1230, cost: "$18.90" },
+              { user: "user_789", requests: 980, cost: "$14.30" },
+            ].map((u, i) => (
+              <div
+                key={u.user}
+                className="flex items-center justify-between py-2 border-b border-surface-800/20 last:border-0"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-mono text-surface-600 w-4">{i + 1}.</span>
+                  <span className="text-sm font-mono text-surface-300">{u.user}</span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-xs font-mono text-surface-500">
+                    {u.requests.toLocaleString()} reqs
+                  </span>
+                  <span className="text-xs font-mono text-brand-400">{u.cost}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
