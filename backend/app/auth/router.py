@@ -1,3 +1,4 @@
+import secrets
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from app.core.auth import get_api_key_auth, AuthenticatedRequest
@@ -173,3 +174,24 @@ def get_api_key_info(
         workspace_id=auth.workspace_id,
         workspace_name=workspace.name if workspace else "unknown"
     )
+    
+    
+@router.post("/resend-verification-public", response_model=MessageResponse)
+def resend_verification_public(data: ForgotPassword, db: Session = Depends(get_db)):
+    """Resend email verification (public, no auth required)."""
+    user = db.query(User).filter(
+        User.email == data.email,
+        User.is_active == True,
+        User.is_deleted == False
+    ).first()
+    
+    if user and not user.email_verified:
+        user.email_verification_token = secrets.token_urlsafe(32)
+        db.commit()
+        
+        print(f"\n{'='*50}")
+        print(f"EMAIL VERIFICATION TOKEN for {user.email}")
+        print(f"Token: {user.email_verification_token}")
+        print(f"{'='*50}\n")
+
+    return MessageResponse(message="If the email exists, a verification link has been sent")

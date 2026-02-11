@@ -64,3 +64,12 @@ export function isAuthenticated(): boolean {
     typeof window !== "undefined" && !!localStorage.getItem("access_token")
   );
 }
+
+export async function resendVerification(
+  email: string,
+): Promise<MessageResponse> {
+  return api<MessageResponse>("/auth/resend-verification-public", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
