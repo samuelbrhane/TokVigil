@@ -2,9 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getGlobalSummary, UsageSummary } from "@/lib/dashboard";
+import {
+  getGlobalSummary,
+  getGlobalTopUsers,
+  TopUser,
+  UsageSummary,
+} from "@/lib/dashboard";
 import { getWorkspaces } from "@/lib/workspaces";
 import { DashboardBanner } from "@/components/ui";
+import TopUsersTable from "@/components/dashboard/TopUsersTable";
 
 function getPlanLimits(plan: string) {
   const plans: Record<
@@ -25,17 +31,20 @@ function getPlanLimits(plan: string) {
 export default function DashboardOverview() {
   const { user } = useAuth();
   const [summary, setSummary] = useState<UsageSummary | null>(null);
+  const [topUsers, setTopUsers] = useState<TopUser[]>([]);
   const [apiKeyCount, setApiKeyCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [summaryData, workspacesData] = await Promise.all([
+        const [summaryData, topUsersData, workspacesData] = await Promise.all([
           getGlobalSummary(),
+          getGlobalTopUsers(5),
           getWorkspaces(),
         ]);
         setSummary(summaryData);
+        setTopUsers(topUsersData);
         setApiKeyCount(workspacesData.items.length);
       } catch {
         // handle error
@@ -59,7 +68,8 @@ export default function DashboardOverview() {
         planName={planName}
       />
 
-      {/* TODO: Top Users */}
+      <TopUsersTable users={topUsers} loading={loading} />
+
       {/* TODO: Quick Actions + Recent Activity */}
     </div>
   );
