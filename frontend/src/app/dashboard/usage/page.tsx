@@ -116,13 +116,6 @@ function MiniStat({
 // ── Usage Banner ──────────────────────────────────────
 
 function UsageBanner() {
-  const [tick, setTick] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => setTick((t) => t + 1), 2500);
-    return () => clearInterval(interval);
-  }, []);
-
   const liveModels = [
     { model: "gpt-4o-mini", pct: 66 },
     { model: "gpt-4o", pct: 16 },
@@ -192,28 +185,6 @@ function UsageBanner() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Live ticker */}
-      <div className="relative flex items-center gap-2 px-5 py-2.5 border-t border-surface-700/40 bg-surface-950/50">
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-emerald-400" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
-        </span>
-        <span
-          key={tick}
-          className="text-xs font-mono text-surface-300 animate-fade-in"
-        >
-          {
-            [
-              "12,847 requests today",
-              "2.7% block rate",
-              "Peak: 2,800 req at 14:00",
-              "Avg cost: $0.012/req",
-              "342 blocked this period",
-            ][tick % 5]
-          }
-        </span>
       </div>
     </div>
   );

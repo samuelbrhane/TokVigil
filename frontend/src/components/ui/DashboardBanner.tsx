@@ -104,13 +104,6 @@ function TickerItem({ label, value }: { label: string; value: string }) {
 }
 
 export default function DashboardBanner() {
-  const [tick, setTick] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => setTick((t) => t + 1), 3000);
-    return () => clearInterval(interval);
-  }, []);
-
   const recentEvents = [
     "user_342 → chat → allowed",
     "user_891 → summarize → allowed",
@@ -182,19 +175,6 @@ export default function DashboardBanner() {
                 <p className="text-xs font-mono text-red-400 mt-0.5">
                   2.7% block rate
                 </p>
-              </div>
-            </div>
-
-            {/* Live event ticker */}
-            <div className="rounded-lg bg-surface-950/60 border border-surface-700/40 px-4 py-2.5 overflow-hidden">
-              <div className="flex items-center gap-2">
-                <PulseIndicator status="healthy" />
-                <span
-                  key={tick}
-                  className="text-xs font-mono text-surface-300 animate-fade-in"
-                >
-                  {recentEvents[tick % recentEvents.length]}
-                </span>
               </div>
             </div>
           </div>
