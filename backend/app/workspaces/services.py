@@ -8,6 +8,9 @@ from sqlalchemy.orm import Session
 from app.workspaces.models import Workspace, Environment, ApiKey
 from app.workspaces.schemas import WorkspaceCreate, WorkspaceUpdate, EnvironmentCreate, ApiKeyCreate
 from app.audit.services import create_audit_log
+from app.core.plans import get_plan
+from app.core.exceptions import PlanLimitExceededError
+from app.auth.models import User
 
 
 # == Workspace
@@ -17,6 +20,22 @@ def create_workspace(
     owner_id: int,
     user_email: str = None
 ) -> Workspace:
+    # Check plan limit
+    user = db.query(User).filter(User.id == owner_id).first()
+    plan = get_plan(user.plan)
+    limit = plan["workspaces_limit"]
+    
+    if limit != -1:
+        current_count = db.query(Workspace).filter(
+            Workspace.owner_id == owner_id,
+            Workspace.is_deleted == False
+        ).count()
+        if current_count >= limit:
+            raise PlanLimitExceededError(
+                message=f"Workspace limit reached ({limit}). Upgrade your plan for more.",
+                details={"current": current_count, "limit": limit, "plan": user.plan}
+            )
+    
     workspace = Workspace(name=data.name, owner_id=owner_id)
     db.add(workspace)
     db.commit()
@@ -198,6 +217,28 @@ def create_api_key(
     user_id: int = None,
     user_email: str = None
 ) -> Optional[tuple[ApiKey, str]]:
+    # Check plan limit
+    user = db.query(User).filter(User.id == user_id).first()
+    plan = get_plan(user.plan)
+    limit = plan["api_keys_limit"]
+    
+    if limit != -1:
+        current_count = db.query(ApiKey).filter(
+            ApiKey.workspace_id.in_(
+                db.query(Workspace.id).filter(
+                    Workspace.owner_id == user_id,
+                    Workspace.is_deleted == False
+                )
+            ),
+            ApiKey.is_deleted == False,
+            ApiKey.is_active == True
+        ).count()
+        if current_count >= limit:
+            raise PlanLimitExceededError(
+                message=f"API key limit reached ({limit}). Upgrade your plan for more.",
+                details={"current": current_count, "limit": limit, "plan": user.plan}
+            )
+    
     environment = db.query(Environment).filter(
         Environment.id == data.environment_id,
         Environment.workspace_id == workspace_id,
