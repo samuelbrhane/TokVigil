@@ -104,14 +104,6 @@ function TickerItem({ label, value }: { label: string; value: string }) {
 }
 
 export default function DashboardBanner() {
-  const recentEvents = [
-    "user_342 → chat → allowed",
-    "user_891 → summarize → allowed",
-    "user_127 → chat → blocked:DAILY_LIMIT",
-    "user_556 → extract → allowed",
-    "user_789 → chat → allowed",
-  ];
-
   return (
     <div className="relative rounded-2xl border border-surface-700/40 bg-gradient-to-br from-surface-900/80 via-surface-950 to-surface-900/60 overflow-hidden mb-8">
       {/* Subtle grid overlay */}

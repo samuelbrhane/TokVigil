@@ -1,20 +1,41 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Button, Badge } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import { BarChart } from "@/components/charts";
 import DashboardBanner from "@/components/ui/DashboardBanner";
 
-const chartData = [
-  { label: "Mon", value: 1200 },
-  { label: "Tue", value: 1800 },
-  { label: "Wed", value: 1400 },
-  { label: "Thu", value: 2200 },
-  { label: "Fri", value: 1900 },
-  { label: "Sat", value: 800 },
-  { label: "Sun", value: 600 },
-];
+// Generate last N days labels from today
+function getLastNDays(n: number): string[] {
+  const days: string[] = [];
+  const today = new Date();
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    days.push(
+      d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    );
+  }
+  return days;
+}
+
+// Mock data per period — will be replaced with real API calls
+const chartDataByPeriod: Record<string, { label: string; value: number }[]> = {
+  "7d": getLastNDays(7).map((label, i) => ({
+    label,
+    value: [1200, 1800, 1400, 2200, 1900, 800, 600][i],
+  })),
+  "30d": getLastNDays(30).map((label) => ({
+    label,
+    value: Math.floor(Math.random() * 2500) + 500,
+  })),
+  "90d": getLastNDays(12).map((_, i) => ({
+    label: `W${i + 1}`,
+    value: Math.floor(Math.random() * 15000) + 3000,
+  })),
+};
 
 const recentActivity = [
   {
@@ -55,6 +76,8 @@ const recentActivity = [
 ];
 
 export default function DashboardOverview() {
+  const [period, setPeriod] = useState("7d");
+
   return (
     <div className="space-y-8">
       <DashboardBanner />
@@ -64,25 +87,24 @@ export default function DashboardOverview() {
         {/* Usage chart */}
         <Card className="lg:col-span-2 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-sm font-mono font-bold text-white">
-              Requests This Week
-            </h3>
+            <h3 className="text-sm font-mono font-bold text-white">Requests</h3>
             <div className="flex gap-1">
-              {["7d", "30d", "90d"].map((period) => (
+              {(["7d", "30d", "90d"] as const).map((p) => (
                 <button
-                  key={period}
+                  key={p}
+                  onClick={() => setPeriod(p)}
                   className={`px-2.5 py-1 rounded text-xs font-mono transition-colors ${
-                    period === "7d"
+                    period === p
                       ? "bg-brand-500/15 text-brand-300 border border-brand-500/30"
                       : "text-surface-400 hover:text-white"
                   }`}
                 >
-                  {period}
+                  {p}
                 </button>
               ))}
             </div>
           </div>
-          <BarChart data={chartData} height={220} />
+          <BarChart data={chartDataByPeriod[period]} height={220} />
         </Card>
 
         {/* Recent activity */}
