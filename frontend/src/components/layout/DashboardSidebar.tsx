@@ -26,19 +26,6 @@ export default function DashboardSidebar() {
         <Logo size="sm" href="/dashboard" />
       </div>
 
-      {/* Workspace selector */}
-      <div className="px-3 py-3">
-        <button className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-900/60 border border-surface-800/40 hover:border-surface-700/60 transition-colors">
-          <span className="w-6 h-6 rounded bg-brand-500/20 flex items-center justify-center text-xs text-brand-400 font-mono font-bold">
-            T
-          </span>
-          <span className="text-sm text-surface-300 font-mono truncate flex-1 text-left">
-            Team Workspace
-          </span>
-          <span className="text-surface-600 text-xs">▾</span>
-        </button>
-      </div>
-
       {/* Main nav */}
       <nav className="flex-1 px-3 py-2 space-y-0.5">
         {DASHBOARD_NAV.map((item) => {
@@ -51,10 +38,12 @@ export default function DashboardSidebar() {
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-mono transition-all duration-200",
                 active
                   ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
-                  : "text-surface-400 hover:text-surface-200 hover:bg-surface-900/60 border border-transparent"
+                  : "text-surface-400 hover:text-surface-200 hover:bg-surface-900/60 border border-transparent",
               )}
             >
-              <span className="text-base w-5 text-center">{icons[item.icon]}</span>
+              <span className="text-base w-5 text-center">
+                {icons[item.icon]}
+              </span>
               {item.label}
             </Link>
           );
@@ -73,10 +62,12 @@ export default function DashboardSidebar() {
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-mono transition-all duration-200",
                 active
                   ? "bg-brand-500/10 text-brand-400"
-                  : "text-surface-400 hover:text-surface-200 hover:bg-surface-900/60"
+                  : "text-surface-400 hover:text-surface-200 hover:bg-surface-900/60",
               )}
             >
-              <span className="text-base w-5 text-center">{icons[item.icon]}</span>
+              <span className="text-base w-5 text-center">
+                {icons[item.icon]}
+              </span>
               {item.label}
             </Link>
           );
@@ -88,7 +79,9 @@ export default function DashboardSidebar() {
             L
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-surface-300 font-mono truncate">luka@tokenfence.io</p>
+            <p className="text-xs text-surface-300 font-mono truncate">
+              luka@tokenfence.io
+            </p>
           </div>
         </div>
       </div>
