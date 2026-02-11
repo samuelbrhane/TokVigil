@@ -184,9 +184,8 @@ for (const record of blocked.items) {
   },
 ] as const;
 
-// ============================================================
-// PRICING PLANS
-// ============================================================
+// In constants.ts — update PLANS names:
+
 export const PLANS = [
   {
     name: "Free",
@@ -195,112 +194,110 @@ export const PLANS = [
     description: "For solo developers exploring AI integration",
     features: [
       "1 workspace",
-      "1,000 AI requests/month",
-      "Basic analytics",
-      "Community support",
-      "1 environment",
+      "2 API keys",
+      "1,000 evaluate calls/month",
+      "100 requests/min",
+      "1 team member",
     ],
     cta: "Start Free",
     highlighted: false,
   },
   {
     name: "Pro",
+    price: "$19",
+    period: "/month",
+    description: "For small teams shipping their first AI features",
+    features: [
+      "3 workspaces",
+      "10 API keys",
+      "50,000 evaluate calls/month",
+      "500 requests/min",
+      "3 team members",
+      "Audit logs",
+    ],
+    cta: "Start Pro",
+    highlighted: false,
+  },
+  {
+    name: "Premium",
     price: "$49",
     period: "/month",
-    description: "For teams shipping AI-powered products",
+    description: "For teams running AI in production at scale",
     features: [
-      "5 workspaces",
-      "100,000 AI requests/month",
-      "Advanced analytics",
-      "Webhooks & alerts",
-      "3 environments",
+      "10 workspaces",
+      "50 API keys",
+      "500,000 evaluate calls/month",
+      "2,000 requests/min",
+      "10 team members",
+      "Audit logs",
       "Priority support",
     ],
-    cta: "Start Pro Trial",
+    cta: "Start Premium",
     highlighted: true,
   },
   {
     name: "Enterprise",
-    price: "Custom",
-    period: "",
-    description: "For organizations with complex compliance needs",
+    price: "$149",
+    period: "/month",
+    description: "For organizations needing full control",
     features: [
       "Unlimited workspaces",
-      "Unlimited AI requests",
-      "Full audit logs",
-      "SSO & RBAC",
-      "Unlimited environments",
-      "Dedicated support & SLA",
+      "Unlimited API keys",
+      "Unlimited evaluate calls",
+      "10,000 requests/min",
+      "Unlimited team members",
+      "Audit logs",
+      "Priority support",
     ],
-    cta: "Contact Sales",
+    cta: "Start Enterprise",
     highlighted: false,
   },
 ] as const;
 
-// ============================================================
-// PRICING FAQ
-// ============================================================
-export const PRICING_FAQ = [
-  {
-    question: "What counts as an AI request?",
-    answer:
-      "One AI request = one evaluate call + one usage log. When your SDK calls tf.chat(), it evaluates the policy and logs usage — that counts as 1 AI request.",
-  },
-  {
-    question: "Can I switch plans anytime?",
-    answer:
-      "Yes. Upgrade or downgrade at any time. Changes take effect immediately, and we pro-rate billing.",
-  },
-  {
-    question: "What happens when I hit my limit?",
-    answer:
-      "On the Free plan, additional evaluate calls return PLAN_LIMIT_EXCEEDED. On Pro, you can configure overage behavior — block or allow with alerts.",
-  },
-  {
-    question: "Do you store my LLM prompts or responses?",
-    answer:
-      "No. TokenFence only sees token counts, costs, and metadata. Your prompts and responses go directly between your app and the LLM provider.",
-  },
-  {
-    question: "Can I use my own API keys (BYOK)?",
-    answer:
-      "Yes. Pass your own OpenAI/Anthropic key to the SDK. TokenFence still tracks usage and enforces policies — you just pay the LLM provider directly.",
-  },
-] as const;
-
-// ============================================================
-// FEATURE COMPARISON TABLE
-// ============================================================
+// Update FEATURE_COMPARISON column names too:
 export const FEATURE_COMPARISON = [
-  { feature: "Workspaces", free: "1", pro: "5", enterprise: "Unlimited" },
   {
-    feature: "AI Requests/month",
-    free: "1,000",
-    pro: "100,000",
+    feature: "Workspaces",
+    free: "1",
+    pro: "3",
+    premium: "10",
     enterprise: "Unlimited",
   },
-  { feature: "Environments", free: "1", pro: "3", enterprise: "Unlimited" },
-  { feature: "Policies", free: "5", pro: "Unlimited", enterprise: "Unlimited" },
   {
-    feature: "Usage Analytics",
-    free: "Basic",
-    pro: "Advanced",
-    enterprise: "Advanced",
-  },
-  { feature: "Webhooks", free: "—", pro: "✓", enterprise: "✓" },
-  { feature: "Audit Logs", free: "—", pro: "30 days", enterprise: "1 year" },
-  { feature: "SSO / RBAC", free: "—", pro: "—", enterprise: "✓" },
-  {
-    feature: "Support",
-    free: "Community",
-    pro: "Priority",
-    enterprise: "Dedicated + SLA",
+    feature: "API Keys",
+    free: "2",
+    pro: "10",
+    premium: "50",
+    enterprise: "Unlimited",
   },
   {
-    feature: "Export Data",
+    feature: "Evaluate Calls/month",
+    free: "1,000",
+    pro: "50,000",
+    premium: "500,000",
+    enterprise: "Unlimited",
+  },
+  {
+    feature: "Rate Limit (req/min)",
+    free: "100",
+    pro: "500",
+    premium: "2,000",
+    enterprise: "10,000",
+  },
+  {
+    feature: "Team Members",
+    free: "1",
+    pro: "3",
+    premium: "10",
+    enterprise: "Unlimited",
+  },
+  { feature: "Audit Logs", free: "—", pro: "✓", premium: "✓", enterprise: "✓" },
+  {
+    feature: "Priority Support",
     free: "—",
-    pro: "CSV",
-    enterprise: "CSV + JSON + API",
+    pro: "—",
+    premium: "✓",
+    enterprise: "✓",
   },
 ] as const;
 
