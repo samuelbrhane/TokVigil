@@ -83,8 +83,13 @@ def register_user(db: Session, data: UserRegister, ip_address: str = None) -> Op
     )
     
     # TODO: Send verification email
+    print(f"\n{'='*50}")
+    print(f"EMAIL VERIFICATION TOKEN for {user.email}")
+    print(f"Token: {user.email_verification_token}")
+    print(f"{'='*50}\n")
     
     return user
+    
 
 
 def authenticate_user(db: Session, email: str, password: str, ip_address: str = None) -> Optional[User]:
@@ -203,8 +208,13 @@ def request_password_reset(db: Session, email: str) -> bool:
     )
     
     # TODO: Send password reset email
+    print(f"\n{'='*50}")
+    print(f"PASSWORD RESET TOKEN for {user.email}")
+    print(f"Token: {user.password_reset_token}")
+    print(f"{'='*50}\n")
     
     return True
+
 
 
 def reset_password(db: Session, token: str, new_password: str) -> bool:

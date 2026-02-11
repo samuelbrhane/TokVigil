@@ -2,10 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AuthLayout, SocialAuth } from "@/components/auth";
+import { useRouter } from "next/navigation";
+import { AuthLayout } from "@/components/auth";
 import { Button, InputField } from "@/components/ui";
+import { signup } from "@/lib/auth";
 
 export default function SignupPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     first: "",
     last: "",
@@ -18,9 +23,34 @@ export default function SignupPage() {
     (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm({ ...form, [key]: e.target.value });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement signup
+    setError("");
+
+    if (form.password !== form.confirm) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await signup({
+        email: form.email,
+        password: form.password,
+        first_name: form.first,
+        last_name: form.last,
+      });
+      router.push("/login?registered=true");
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,6 +59,12 @@ export default function SignupPage() {
       subtitle="Start controlling AI usage in minutes"
     >
       <div className="p-6 rounded-xl border border-surface-800/40 bg-surface-900/40">
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <InputField
@@ -94,12 +130,15 @@ export default function SignupPage() {
             </span>
           </label>
 
-          <Button variant="primary" className="w-full mt-2" type="submit">
-            Create Account →
+          <Button
+            variant="primary"
+            className="w-full mt-2"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Creating account..." : "Create Account →"}
           </Button>
         </form>
-
-        {/* <SocialAuth mode="signup" /> */}
       </div>
 
       <p className="mt-6 text-center text-sm text-surface-500">
