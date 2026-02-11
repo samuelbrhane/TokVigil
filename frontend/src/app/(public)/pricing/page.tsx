@@ -132,7 +132,9 @@ function ComparisonTable() {
       <h3 className="text-xl font-bold font-mono text-surface-100 text-center mb-8">
         Feature Comparison
       </h3>
-      <div className="overflow-x-auto rounded-xl border border-surface-800/40">
+
+      {/* Desktop table */}
+      <div className="hidden lg:block rounded-xl border border-surface-800/40">
         <table className="w-full">
           <thead>
             <tr className="border-b border-surface-800/40">
@@ -178,6 +180,54 @@ function ComparisonTable() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile cards */}
+      <div className="lg:hidden space-y-3">
+        {FEATURE_COMPARISON.map((row) => (
+          <div
+            key={row.feature}
+            className="p-4 rounded-xl border border-surface-800/30 bg-surface-900/20"
+          >
+            <p className="text-sm font-mono font-bold text-surface-200 mb-3">
+              {row.feature}
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {(
+                [
+                  { label: "Free", value: row.free, highlight: false },
+                  { label: "Pro", value: row.pro, highlight: false },
+                  { label: "Premium", value: row.premium, highlight: true },
+                  {
+                    label: "Enterprise",
+                    value: row.enterprise,
+                    highlight: false,
+                  },
+                ] as const
+              ).map((plan) => (
+                <div
+                  key={plan.label}
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg ${
+                    plan.highlight
+                      ? "bg-brand-500/5 border border-brand-500/20"
+                      : "bg-surface-900/40"
+                  }`}
+                >
+                  <span
+                    className={`text-xs font-mono ${plan.highlight ? "text-brand-400" : "text-surface-500"}`}
+                  >
+                    {plan.label}
+                  </span>
+                  <span
+                    className={`text-sm font-mono font-medium ${plan.highlight ? "text-surface-200" : "text-surface-400"}`}
+                  >
+                    {plan.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
