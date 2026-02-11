@@ -15,12 +15,36 @@ class ApiError extends Error {
   }
 }
 
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+
+async function refreshAccessToken(): Promise<boolean> {
+  const refreshToken = localStorage.getItem("refresh_token");
+  if (!refreshToken) return false;
+
+  try {
+    const res = await fetch(`${API_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+
+    if (!res.ok) return false;
+
+    const data = await res.json();
+    localStorage.setItem("access_token", data.access_token);
+    localStorage.setItem("refresh_token", data.refresh_token);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function api<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+  const token = localStorage.getItem("access_token");
 
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
@@ -30,6 +54,42 @@ export async function api<T>(
       ...options.headers,
     },
   });
+
+  if (res.status === 401) {
+    // Avoid multiple refresh calls at once
+    if (!isRefreshing) {
+      isRefreshing = true;
+      refreshPromise = refreshAccessToken();
+    }
+
+    const refreshed = await refreshPromise;
+    isRefreshing = false;
+    refreshPromise = null;
+
+    if (refreshed) {
+      // Retry original request with new token
+      const newToken = localStorage.getItem("access_token");
+      const retryRes = await fetch(`${API_URL}${endpoint}`, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(newToken && { Authorization: `Bearer ${newToken}` }),
+          ...options.headers,
+        },
+      });
+
+      if (retryRes.ok) {
+        if (retryRes.status === 204) return null as T;
+        return retryRes.json();
+      }
+    }
+
+    // Refresh failed — clear tokens and redirect to login
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    window.location.href = "/login";
+    throw new ApiError(401, { detail: "Session expired" });
+  }
 
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
