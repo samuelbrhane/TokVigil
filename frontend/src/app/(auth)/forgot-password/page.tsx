@@ -4,14 +4,27 @@ import { useState } from "react";
 import Link from "next/link";
 import { AuthLayout } from "@/components/auth";
 import { Button, InputField } from "@/components/ui";
+import { forgotPassword } from "@/lib/auth";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) setSent(true);
+    setError("");
+    setLoading(true);
+
+    try {
+      await forgotPassword(email);
+      setSent(true);
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,8 +44,8 @@ export default function ForgotPasswordPage() {
             </div>
             <p className="text-sm text-surface-400 leading-relaxed">
               We&apos;ve sent a password reset link to{" "}
-              <span className="text-surface-200 font-mono">{email}</span>. Check your
-              inbox.
+              <span className="text-surface-200 font-mono">{email}</span>. Check
+              your inbox.
             </p>
             <Link href="/login">
               <Button variant="secondary" className="w-full mt-6">
@@ -42,9 +55,14 @@ export default function ForgotPasswordPage() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                {error}
+              </div>
+            )}
             <p className="text-sm text-surface-500 leading-relaxed">
-              Enter your email address and we&apos;ll send you a link to reset your
-              password.
+              Enter your email address and we&apos;ll send you a link to reset
+              your password.
             </p>
             <InputField
               label="Email"
@@ -55,8 +73,13 @@ export default function ForgotPasswordPage() {
               icon={<span className="text-xs">@</span>}
               required
             />
-            <Button variant="primary" className="w-full" type="submit">
-              Send Reset Link →
+            <Button
+              variant="primary"
+              className="w-full"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? "Sending..." : "Send Reset Link →"}
             </Button>
           </form>
         )}
