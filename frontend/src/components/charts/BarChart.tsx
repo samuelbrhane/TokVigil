@@ -15,6 +15,16 @@ function formatValue(val: number): string {
   return val.toString();
 }
 
+function getBarColor(value: number, max: number): string {
+  const pct = max > 0 ? (value / max) * 100 : 0;
+  if (pct > 85) return "linear-gradient(180deg, #f87171 0%, #ef4444 100%)"; // red — peak
+  if (pct > 70) return "linear-gradient(180deg, #fb923c 0%, #f97316 100%)"; // orange — high
+  if (pct > 55) return "linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%)"; // amber — above avg
+  if (pct > 40) return "linear-gradient(180deg, #a3e635 0%, #84cc16 100%)"; // lime — healthy
+  if (pct > 25) return "linear-gradient(180deg, #22d3ee 0%, #06b6d4 100%)"; // cyan — moderate
+  return "linear-gradient(180deg, #818cf8 0%, #6366f1 100%)"; // indigo — low
+}
+
 export default function BarChart({
   data,
   maxValue,
@@ -26,12 +36,10 @@ export default function BarChart({
   const rawMax = maxValue || Math.max(...data.map((d) => d.value));
   const rawMin = Math.min(...data.map((d) => d.value));
 
-  // Add padding: 10% above max, floor at 0 or 80% of min
   const chartMax = Math.ceil(rawMax * 1.1);
   const chartMin = rawMin > 0 ? Math.floor(rawMin * 0.8) : 0;
   const range = chartMax - chartMin;
 
-  // Generate Y axis labels
   const yLabels: number[] = [];
   const step = range / ySteps;
   for (let i = 0; i <= ySteps; i++) {
@@ -58,9 +66,8 @@ export default function BarChart({
 
       {/* Chart area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Bars + grid lines */}
         <div className="relative flex-1">
-          {/* Horizontal grid lines */}
+          {/* Grid lines */}
           {yLabels.map((_, i) => (
             <div
               key={i}
@@ -84,7 +91,6 @@ export default function BarChart({
                   onMouseEnter={() => setHoveredIndex(i)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  {/* Tooltip */}
                   {hoveredIndex === i && (
                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10 px-2.5 py-1 rounded-md bg-surface-800 border border-surface-700/60 shadow-lg whitespace-nowrap">
                       <span className="text-[11px] font-mono text-white font-bold">
@@ -102,9 +108,7 @@ export default function BarChart({
                     }`}
                     style={{
                       height: `${barPct}%`,
-                      background:
-                        item.color ||
-                        "linear-gradient(180deg, #22D3EE 0%, #0891B2 100%)",
+                      background: item.color || getBarColor(item.value, rawMax),
                     }}
                   />
                 </div>
