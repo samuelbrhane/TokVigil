@@ -14,8 +14,9 @@ export default function SignupPage() {
     confirm: "",
   });
 
-  const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm({ ...form, [key]: e.target.value });
+  const update =
+    (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm({ ...form, [key]: e.target.value });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +24,10 @@ export default function SignupPage() {
   };
 
   return (
-    <AuthLayout title="Create your account" subtitle="Start controlling AI usage in minutes">
+    <AuthLayout
+      title="Create your account"
+      subtitle="Start controlling AI usage in minutes"
+    >
       <div className="p-6 rounded-xl border border-surface-800/40 bg-surface-900/40">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -95,12 +99,15 @@ export default function SignupPage() {
           </Button>
         </form>
 
-        <SocialAuth mode="signup" />
+        {/* <SocialAuth mode="signup" /> */}
       </div>
 
       <p className="mt-6 text-center text-sm text-surface-500">
         Already have an account?{" "}
-        <Link href="/login" className="text-brand-500 hover:text-brand-400 font-mono font-medium">
+        <Link
+          href="/login"
+          className="text-brand-500 hover:text-brand-400 font-mono font-medium"
+        >
           Sign in
         </Link>
       </p>

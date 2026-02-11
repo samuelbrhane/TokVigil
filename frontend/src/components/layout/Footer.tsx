@@ -44,7 +44,7 @@ export default function Footer() {
           <p className="text-xs font-mono text-surface-600">
             © {new Date().getFullYear()} TokenFence. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
+          {/* <div className="flex items-center gap-6">
             {["Twitter", "GitHub", "Discord"].map((s) => (
               <a
                 key={s}
@@ -54,7 +54,7 @@ export default function Footer() {
                 {s}
               </a>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

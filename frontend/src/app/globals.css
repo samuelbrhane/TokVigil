@@ -31,11 +31,11 @@ body {
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #f59e0b;
+  background: #0bc2f5;
 }
 
 /* Focus ring */
 *:focus-visible {
-  outline: 1px solid rgba(245, 158, 11, 0.5);
+  outline: 1px solid rgba(11, 198, 245, 0.481);
   outline-offset: 2px;
 }

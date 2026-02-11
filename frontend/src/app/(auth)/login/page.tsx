@@ -15,7 +15,10 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthLayout title="Welcome back" subtitle="Sign in to your TokenFence account">
+    <AuthLayout
+      title="Welcome back"
+      subtitle="Sign in to your TokenFence account"
+    >
       <div className="p-6 rounded-xl border border-surface-800/40 bg-surface-900/40">
         <form onSubmit={handleSubmit} className="space-y-4">
           <InputField
@@ -58,12 +61,15 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <SocialAuth mode="login" />
+        {/* <SocialAuth mode="login" /> */}
       </div>
 
       <p className="mt-6 text-center text-sm text-surface-500">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-brand-500 hover:text-brand-400 font-mono font-medium">
+        <Link
+          href="/signup"
+          className="text-brand-500 hover:text-brand-400 font-mono font-medium"
+        >
           Sign up
         </Link>
       </p>

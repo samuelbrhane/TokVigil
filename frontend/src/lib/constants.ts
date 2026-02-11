@@ -15,7 +15,7 @@ export const BRAND = {
 export const NAV_LINKS = [
   { label: "Features", href: "/features" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Docs", href: "#docs" },
+  { label: "Docs", href: "/docs" },
 ] as const;
 
 // ============================================================
@@ -227,15 +227,35 @@ export const PRICING_FAQ = [
 // ============================================================
 export const FEATURE_COMPARISON = [
   { feature: "Workspaces", free: "1", pro: "5", enterprise: "Unlimited" },
-  { feature: "AI Requests/month", free: "1,000", pro: "100,000", enterprise: "Unlimited" },
+  {
+    feature: "AI Requests/month",
+    free: "1,000",
+    pro: "100,000",
+    enterprise: "Unlimited",
+  },
   { feature: "Environments", free: "1", pro: "3", enterprise: "Unlimited" },
   { feature: "Policies", free: "5", pro: "Unlimited", enterprise: "Unlimited" },
-  { feature: "Usage Analytics", free: "Basic", pro: "Advanced", enterprise: "Advanced" },
+  {
+    feature: "Usage Analytics",
+    free: "Basic",
+    pro: "Advanced",
+    enterprise: "Advanced",
+  },
   { feature: "Webhooks", free: "—", pro: "✓", enterprise: "✓" },
   { feature: "Audit Logs", free: "—", pro: "30 days", enterprise: "1 year" },
   { feature: "SSO / RBAC", free: "—", pro: "—", enterprise: "✓" },
-  { feature: "Support", free: "Community", pro: "Priority", enterprise: "Dedicated + SLA" },
-  { feature: "Export Data", free: "—", pro: "CSV", enterprise: "CSV + JSON + API" },
+  {
+    feature: "Support",
+    free: "Community",
+    pro: "Priority",
+    enterprise: "Dedicated + SLA",
+  },
+  {
+    feature: "Export Data",
+    free: "—",
+    pro: "CSV",
+    enterprise: "CSV + JSON + API",
+  },
 ] as const;
 
 // ============================================================
@@ -256,33 +276,29 @@ export const FOOTER_COLUMNS = [
     links: [
       { label: "Features", href: "/features" },
       { label: "Pricing", href: "/pricing" },
-      { label: "Documentation", href: "#" },
-      { label: "Changelog", href: "#" },
-      { label: "VS Code Extension", href: "#" },
+      { label: "Documentation", href: "/docs" },
+      { label: "VS Code Extension", href: "/docs/vscode-extension" },
     ],
   },
   {
     title: "Developers",
     links: [
-      { label: "Python SDK", href: "#" },
-      { label: "TypeScript SDK", href: "#" },
-      { label: "API Reference", href: "#" },
-      { label: "Status Page", href: "#" },
-      { label: "GitHub", href: "#" },
+      { label: "Python SDK", href: "/docs/sdk/python" },
+      { label: "TypeScript SDK", href: "/docs/sdk/typescript" },
+      { label: "API Reference", href: "/docs/api-reference" },
+      { label: "GitHub", href: "https://github.com/tokenfence" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "Contact", href: "#" },
-      { label: "Privacy Policy", href: "#" },
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
     ],
   },
 ] as const;
-
 // ============================================================
 // DASHBOARD SIDEBAR NAV
 // ============================================================

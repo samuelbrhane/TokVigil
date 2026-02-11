@@ -14,7 +14,12 @@ export default function Navbar() {
   const scrolled = scrollY > 20;
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isAuthPage = ["/login", "/signup", "/forgot-password", "/reset-password"].includes(pathname);
+  const isAuthPage = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+  ].includes(pathname);
 
   return (
     <nav
@@ -24,7 +29,7 @@ export default function Navbar() {
           : ""
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Logo size="md" />
 
         {/* Desktop nav */}
@@ -48,10 +53,14 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           <Link href="/login">
-            <Button variant="ghost" size="sm">Log in</Button>
+            <Button variant="ghost" size="sm">
+              Log in
+            </Button>
           </Link>
           <Link href="/signup">
-            <Button variant="primary" size="sm">Get Started →</Button>
+            <Button variant="primary" size="sm">
+              Get Started →
+            </Button>
           </Link>
         </div>
 
@@ -61,9 +70,15 @@ export default function Navbar() {
             className="md:hidden flex flex-col gap-1.5 p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            <span className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "opacity-0" : ""}`} />
-            <span className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            <span
+              className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}
+            />
+            <span
+              className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "opacity-0" : ""}`}
+            />
+            <span
+              className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}
+            />
           </button>
         )}
       </div>
