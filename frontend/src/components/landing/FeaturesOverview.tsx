@@ -13,7 +13,7 @@ export default function FeaturesOverview() {
       id="features"
       className="relative py-32"
     >
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <PageHeader
           tag="Capabilities"
           title="Everything you need to"

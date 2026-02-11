@@ -15,7 +15,7 @@ export default function PricingPreview() {
       id="pricing"
       className="relative py-32"
     >
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <PageHeader
           tag="Pricing"
           title="Simple, predictable"
@@ -54,7 +54,9 @@ export default function PricingPreview() {
                     {plan.period}
                   </span>
                 </div>
-                <p className="mt-2 text-sm text-surface-500">{plan.description}</p>
+                <p className="mt-2 text-sm text-surface-500">
+                  {plan.description}
+                </p>
               </div>
 
               <ul className="space-y-3 mb-8">

@@ -102,39 +102,85 @@ export const FEATURES = [
 export const STEPS = [
   {
     num: "01",
-    title: "Install the SDK",
-    code: `pip install tokenfence`,
-    description: "Add TokenFence to your project in seconds.",
+    title: "Install & initialize",
+    description:
+      "Add the SDK and connect to your TokenFence workspace with one API key.",
+    python: `pip install tokenfence
+
+from tokenfence import TokenFence
+
+tf = TokenFence(api_key="tf_live_...")`,
+    typescript: `npm install tokenfence
+
+import { TokenFence } from "tokenfence";
+
+const tf = new TokenFence({ apiKey: "tf_live_..." });`,
   },
   {
     num: "02",
-    title: "Wrap your AI calls",
-    code: `from tokenfence import TokenFence
-
-tf = TokenFence(api_key="tf_live_...")
-
-response = tf.chat(
-    user_id="user_123",
-    feature="chat",
-    messages=[{"role": "user", "content": prompt}],
-    model="gpt-4o-mini",
-)`,
+    title: "Evaluate, call, and log",
     description:
-      "Replace direct LLM calls with controlled calls. TokenFence evaluates policies, calls the model, and logs usage.",
+      "Check policies before each AI call, then log usage automatically. One function handles the full flow.",
+    python: `# Check → Call AI → Log usage (all in one)
+result, response = tf.check_and_call(
+    user_id="user_123",
+    model="gpt-4o-mini",
+    plan="free",
+    feature="chat",
+    ai_function=lambda: openai.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": "Hello"}]
+    )
+)
+
+if result.allowed:
+    print(response.choices[0].message.content)
+else:
+    print(f"Blocked: {result.reason_code}")`,
+    typescript: `// Check → Call AI → Log usage (all in one)
+const { result, response } = await tf.checkAndCall(
+  {
+    userId: "user_123",
+    model: "gpt-4o-mini",
+    plan: "free",
+    feature: "chat",
+  },
+  () => openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: "Hello" }],
+  })
+);
+
+if (result.allowed && response) {
+  console.log(response.choices[0].message.content);
+} else {
+  console.log(\`Blocked: \${result.reasonCode}\`);
+}`,
   },
   {
     num: "03",
     title: "Monitor & enforce",
-    code: `# Blocked requests raise clear errors
-try:
-    response = tf.chat(...)
-except AIUsageBlockedError as e:
-    print(e.reason_code)
-    # "FREE_PLAN_DAILY_CAP_EXCEEDED"
-    print(e.retry_after)
-    # 3600 seconds`,
     description:
-      "View usage in VS Code, the dashboard, or via API. Policies enforce automatically.",
+      "Track usage, catch blocked requests, and handle errors from code, VS Code, or the dashboard.",
+    python: `# Usage summary
+summary = tf.get_usage_summary()
+print(f"Requests: {summary.total_requests}")
+print(f"Cost: \${summary.total_cost_usd}")
+
+# Check blocked requests
+blocked = tf.get_blocked_requests()
+for record in blocked.items:
+    print(f"{record.user_id}: {record.reason_code}")`,
+    typescript: `// Usage summary
+const summary = await tf.getUsageSummary();
+console.log(\`Requests: \${summary.totalRequests}\`);
+console.log(\`Cost: $\${summary.totalCostUsd}\`);
+
+// Check blocked requests  
+const blocked = await tf.getBlockedRequests();
+for (const record of blocked.items) {
+  console.log(\`\${record.userId}: \${record.reasonCode}\`);
+}`,
   },
 ] as const;
 

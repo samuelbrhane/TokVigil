@@ -20,7 +20,7 @@ export default function HeroSection() {
       {/* Ambient glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-brand-500/5 rounded-full blur-[120px]" />
 
-      <div className="relative max-w-4xl mx-auto px-6 text-center">
+      <div className="relative max-w-7xl mx-auto px-6 text-center">
         <div
           className="transition-all duration-700"
           style={{

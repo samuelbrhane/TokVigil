@@ -9,6 +9,9 @@ import { PageHeader } from "@/components/layout";
 export default function HowItWorks() {
   const [ref, visible] = useInView(0.1);
   const [activeStep, setActiveStep] = useState(0);
+  const [lang, setLang] = useState<"python" | "typescript">("python");
+
+  const step = STEPS[activeStep];
 
   return (
     <section
@@ -18,7 +21,7 @@ export default function HowItWorks() {
     >
       <GridBackground opacity={0.02} />
 
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <PageHeader
           tag="Integration"
           title="Three steps to"
@@ -28,9 +31,9 @@ export default function HowItWorks() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Steps */}
           <div className="space-y-2">
-            {STEPS.map((step, i) => (
+            {STEPS.map((s, i) => (
               <button
-                key={step.num}
+                key={s.num}
                 onClick={() => setActiveStep(i)}
                 className={`w-full text-left p-5 rounded-xl border transition-all duration-300 ${
                   activeStep === i
@@ -49,22 +52,26 @@ export default function HowItWorks() {
                       activeStep === i ? "text-brand-500" : "text-surface-600"
                     }`}
                   >
-                    {step.num}
+                    {s.num}
                   </span>
                   <div>
                     <h3
                       className={`font-bold font-mono tracking-tight ${
-                        activeStep === i ? "text-surface-100" : "text-surface-400"
+                        activeStep === i
+                          ? "text-surface-100"
+                          : "text-surface-400"
                       }`}
                     >
-                      {step.title}
+                      {s.title}
                     </h3>
                     <p
                       className={`text-sm mt-1 leading-relaxed ${
-                        activeStep === i ? "text-surface-400" : "text-surface-600"
+                        activeStep === i
+                          ? "text-surface-400"
+                          : "text-surface-600"
                       }`}
                     >
-                      {step.description}
+                      {s.description}
                     </p>
                   </div>
                 </div>
@@ -72,7 +79,7 @@ export default function HowItWorks() {
             ))}
           </div>
 
-          {/* Code */}
+          {/* Code with language toggle */}
           <div
             style={{
               opacity: visible ? 1 : 0,
@@ -80,7 +87,27 @@ export default function HowItWorks() {
               transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s",
             }}
           >
-            <CodeBlock code={STEPS[activeStep].code} language="python" />
+            {/* Language tabs */}
+            <div className="flex gap-1 mb-3">
+              {(["python", "typescript"] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-mono capitalize transition-colors ${
+                    lang === l
+                      ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
+                      : "text-surface-500 hover:text-surface-300 border border-transparent"
+                  }`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+
+            <CodeBlock
+              code={step[lang]}
+              language={lang === "python" ? "python" : "typescript"}
+            />
           </div>
         </div>
       </div>
