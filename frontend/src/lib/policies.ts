@@ -5,7 +5,12 @@ export async function getPolicies(
   workspaceId: number,
   page = 1,
   pageSize = 20,
-  filters?: { plan?: string; feature?: string; is_active?: boolean },
+  filters?: {
+    plan?: string;
+    feature?: string;
+    is_active?: boolean;
+    search?: string;
+  },
 ): Promise<PaginatedPolicies> {
   const params = new URLSearchParams({
     page: String(page),
@@ -15,6 +20,7 @@ export async function getPolicies(
   if (filters?.feature) params.set("feature", filters.feature);
   if (filters?.is_active !== undefined)
     params.set("is_active", String(filters.is_active));
+  if (filters?.search) params.set("search", filters.search);
 
   return api<PaginatedPolicies>(
     `/policies/${workspaceId}?${params.toString()}`,

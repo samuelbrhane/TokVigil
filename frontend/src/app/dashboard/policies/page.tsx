@@ -17,12 +17,15 @@ export default function PoliciesPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [activeSearch, setActiveSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<Policy | null>(null);
 
-  const fetchPolicies = async (wsId: number, p: number) => {
+  const fetchPolicies = async (wsId: number, p: number, s?: string) => {
     setLoading(true);
     try {
-      const result = await getPolicies(wsId, p);
+      const result = await getPolicies(wsId, p, 20, {
+        search: s || undefined,
+      });
       setData(result);
     } catch {
       // handle error
@@ -32,27 +35,36 @@ export default function PoliciesPage() {
   };
 
   useEffect(() => {
-    if (workspaceId) fetchPolicies(workspaceId, page);
-  }, [workspaceId, page]);
+    if (workspaceId) fetchPolicies(workspaceId, page, activeSearch);
+  }, [workspaceId, page, activeSearch]);
 
   const handleWorkspaceChange = (id: number) => {
     setWorkspaceId(id);
     setPage(1);
+    setSearch("");
+    setActiveSearch("");
     setInitialized(true);
   };
 
+  const handleSearch = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      setPage(1);
+      setActiveSearch(search);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearch("");
+    setActiveSearch("");
+    setPage(1);
+  };
+
   const handleDeleted = () => {
-    if (workspaceId) fetchPolicies(workspaceId, page);
+    if (workspaceId) fetchPolicies(workspaceId, page, activeSearch);
     setDeleteTarget(null);
   };
 
-  const filteredPolicies =
-    data?.items.filter(
-      (p) =>
-        p.name.toLowerCase().includes(search.toLowerCase()) ||
-        p.plan?.toLowerCase().includes(search.toLowerCase()) ||
-        p.feature?.toLowerCase().includes(search.toLowerCase()),
-    ) || [];
+  const policies = data?.items || [];
 
   const formatLimit = (val: number | null) =>
     val === null ? "—" : val === -1 ? "∞" : val.toLocaleString();
@@ -108,11 +120,20 @@ export default function PoliciesPage() {
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-800/40">
               <span className="text-surface-600 text-xs">⌕</span>
               <input
-                placeholder="Search policies..."
+                placeholder="Search policies... (Enter)"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={handleSearch}
                 className="bg-transparent text-xs text-surface-300 placeholder-surface-600 font-mono outline-none w-48"
               />
+              {activeSearch && (
+                <button
+                  onClick={handleClearSearch}
+                  className="text-surface-500 hover:text-white text-xs"
+                >
+                  ✕
+                </button>
+              )}
             </div>
             <Link href={`/dashboard/policies/new?workspace=${workspaceId}`}>
               <Button variant="primary" size="sm">
@@ -122,20 +143,28 @@ export default function PoliciesPage() {
           </div>
 
           {/* Table */}
-          {filteredPolicies.length === 0 ? (
+          {policies.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-4xl mb-4">⬡</div>
               <h3 className="text-lg font-bold font-mono text-surface-300 mb-2">
-                No policies
+                {activeSearch ? "No results" : "No policies"}
               </h3>
               <p className="text-sm text-surface-500 mb-6">
-                Create your first policy to start enforcing AI usage rules.
+                {activeSearch
+                  ? `No policies found for "${activeSearch}"`
+                  : "Create your first policy to start enforcing AI usage rules."}
               </p>
-              <Link href={`/dashboard/policies/new?workspace=${workspaceId}`}>
-                <Button variant="primary" size="sm">
-                  + Create Policy
+              {activeSearch ? (
+                <Button variant="ghost" size="sm" onClick={handleClearSearch}>
+                  Clear search
                 </Button>
-              </Link>
+              ) : (
+                <Link href={`/dashboard/policies/new?workspace=${workspaceId}`}>
+                  <Button variant="primary" size="sm">
+                    + Create Policy
+                  </Button>
+                </Link>
+              )}
             </div>
           ) : (
             <Card className="animate-fade-in">
@@ -163,7 +192,7 @@ export default function PoliciesPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredPolicies.map((policy) => (
+                    {policies.map((policy) => (
                       <tr
                         key={policy.id}
                         className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors"
@@ -201,7 +230,11 @@ export default function PoliciesPage() {
                                   await updatePolicy(workspaceId!, policy.id, {
                                     is_active: !policy.is_active,
                                   });
-                                  fetchPolicies(workspaceId!, page);
+                                  fetchPolicies(
+                                    workspaceId!,
+                                    page,
+                                    activeSearch,
+                                  );
                                 } catch {}
                               }}
                               className={`text-xs font-mono transition-colors ${

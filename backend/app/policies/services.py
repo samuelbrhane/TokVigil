@@ -67,20 +67,26 @@ def get_policies(
     page_size: int = 20,
     plan: str = None,
     feature: str = None,
-    is_active: bool = None
+    is_active: bool = None,
+    search: str = None
 ) -> dict:
     query = db.query(Policy).filter(
         Policy.workspace_id == workspace_id,
         Policy.is_deleted == False
     )
     
-    # Filtering
     if plan:
         query = query.filter(Policy.plan == plan)
     if feature:
         query = query.filter(Policy.feature == feature)
     if is_active is not None:
         query = query.filter(Policy.is_active == is_active)
+    if search:
+        query = query.filter(
+            Policy.name.ilike(f"%{search}%") |
+            Policy.plan.ilike(f"%{search}%") |
+            Policy.feature.ilike(f"%{search}%")
+        )
     
     total = query.count()
     total_pages = (total + page_size - 1) // page_size
@@ -96,7 +102,7 @@ def get_policies(
         "has_next": page < total_pages,
         "has_prev": page > 1
     }
-
+    
 
 def update_policy(
     db: Session,

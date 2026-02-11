@@ -37,13 +37,14 @@ def list_policies(
     plan: str = Query(None),
     feature: str = Query(None),
     is_active: bool = Query(None),
+    search: str = Query(None),
     db: Session = Depends(get_db)
 ):
     """List all policies for a workspace."""
     workspace = get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise WorkspaceNotFoundError()
-    return services.get_policies(db, workspace_id, page, page_size, plan, feature, is_active)
+    return services.get_policies(db, workspace_id, page, page_size, plan, feature, is_active, search)
 
 
 @router.get("/{workspace_id}/{policy_id}", response_model=PolicyResponse)
