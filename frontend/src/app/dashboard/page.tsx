@@ -3,14 +3,17 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import {
+  getGlobalRecent,
   getGlobalSummary,
   getGlobalTopUsers,
   TopUser,
+  UsageRecord,
   UsageSummary,
 } from "@/lib/dashboard";
 import { getWorkspaces } from "@/lib/workspaces";
 import { DashboardBanner } from "@/components/ui";
 import TopUsersTable from "@/components/dashboard/TopUsersTable";
+import { QuickActions, RecentActivity } from "@/components/dashboard";
 
 function getPlanLimits(plan: string) {
   const plans: Record<
@@ -27,24 +30,27 @@ function getPlanLimits(plan: string) {
   };
   return plans[plan] || plans.free;
 }
-
 export default function DashboardOverview() {
   const { user } = useAuth();
   const [summary, setSummary] = useState<UsageSummary | null>(null);
   const [topUsers, setTopUsers] = useState<TopUser[]>([]);
+  const [recent, setRecent] = useState<UsageRecord[]>([]);
   const [apiKeyCount, setApiKeyCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [summaryData, topUsersData, workspacesData] = await Promise.all([
-          getGlobalSummary(),
-          getGlobalTopUsers(5),
-          getWorkspaces(),
-        ]);
+        const [summaryData, topUsersData, recentData, workspacesData] =
+          await Promise.all([
+            getGlobalSummary(),
+            getGlobalTopUsers(5),
+            getGlobalRecent(1, 5),
+            getWorkspaces(),
+          ]);
         setSummary(summaryData);
         setTopUsers(topUsersData);
+        setRecent(recentData.items);
         setApiKeyCount(workspacesData.items.length);
       } catch {
         // handle error
@@ -70,7 +76,10 @@ export default function DashboardOverview() {
 
       <TopUsersTable users={topUsers} loading={loading} />
 
-      {/* TODO: Quick Actions + Recent Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <QuickActions />
+        <RecentActivity records={recent} loading={loading} />
+      </div>
     </div>
   );
 }
