@@ -7,9 +7,15 @@ interface BarChartProps {
   maxValue?: number;
   height?: number;
   ySteps?: number;
+  valuePrefix?: string;
 }
 
-function formatValue(val: number): string {
+function formatValue(val: number, prefix = ""): string {
+  if (prefix === "$") {
+    if (val >= 1000) return `$${(val / 1000).toFixed(1)}K`;
+    return `$${val.toFixed(val < 10 ? 2 : 0)}`;
+  }
+  if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
   if (val >= 10000) return `${(val / 1000).toFixed(0)}K`;
   if (val >= 1000) return `${(val / 1000).toFixed(1)}K`;
   return val.toString();
@@ -17,12 +23,12 @@ function formatValue(val: number): string {
 
 function getBarColor(value: number, max: number): string {
   const pct = max > 0 ? (value / max) * 100 : 0;
-  if (pct > 85) return "linear-gradient(180deg, #f87171 0%, #ef4444 100%)"; // red — peak
-  if (pct > 70) return "linear-gradient(180deg, #fb923c 0%, #f97316 100%)"; // orange — high
-  if (pct > 55) return "linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%)"; // amber — above avg
-  if (pct > 40) return "linear-gradient(180deg, #a3e635 0%, #84cc16 100%)"; // lime — healthy
-  if (pct > 25) return "linear-gradient(180deg, #22d3ee 0%, #06b6d4 100%)"; // cyan — moderate
-  return "linear-gradient(180deg, #818cf8 0%, #6366f1 100%)"; // indigo — low
+  if (pct > 85) return "linear-gradient(180deg, #f87171 0%, #ef4444 100%)";
+  if (pct > 70) return "linear-gradient(180deg, #fb923c 0%, #f97316 100%)";
+  if (pct > 55) return "linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%)";
+  if (pct > 40) return "linear-gradient(180deg, #a3e635 0%, #84cc16 100%)";
+  if (pct > 25) return "linear-gradient(180deg, #22d3ee 0%, #06b6d4 100%)";
+  return "linear-gradient(180deg, #818cf8 0%, #6366f1 100%)";
 }
 
 export default function BarChart({
@@ -30,6 +36,7 @@ export default function BarChart({
   maxValue,
   height = 200,
   ySteps = 5,
+  valuePrefix = "",
 }: BarChartProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -59,7 +66,7 @@ export default function BarChart({
             key={i}
             className="text-[10px] font-mono text-surface-400 leading-none"
           >
-            {formatValue(label)}
+            {formatValue(label, valuePrefix)}
           </span>
         ))}
       </div>
@@ -67,7 +74,6 @@ export default function BarChart({
       {/* Chart area */}
       <div className="flex-1 flex flex-col min-w-0">
         <div className="relative flex-1">
-          {/* Grid lines */}
           {yLabels.map((_, i) => (
             <div
               key={i}
@@ -76,7 +82,6 @@ export default function BarChart({
             />
           ))}
 
-          {/* Bars */}
           <div className="relative flex items-end gap-1 h-full px-1">
             {data.map((item, i) => {
               const barPct =
@@ -94,6 +99,7 @@ export default function BarChart({
                   {hoveredIndex === i && (
                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-10 px-2.5 py-1 rounded-md bg-surface-800 border border-surface-700/60 shadow-lg whitespace-nowrap">
                       <span className="text-[11px] font-mono text-white font-bold">
+                        {valuePrefix}
                         {item.value.toLocaleString()}
                       </span>
                     </div>
@@ -117,7 +123,6 @@ export default function BarChart({
           </div>
         </div>
 
-        {/* X axis labels */}
         <div className="flex gap-1 mt-2 px-1 shrink-0">
           {data.map((item, i) => (
             <div key={i} className="flex-1 text-center">

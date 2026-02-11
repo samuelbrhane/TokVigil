@@ -1,11 +1,50 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui";
 import Card from "@/components/ui/Card";
 import { BarChart } from "@/components/charts";
 
 // ── Data ──────────────────────────────────────────────
+
+const dailyDataByMetric: Record<string, { label: string; value: number }[]> = {
+  requests: [
+    { label: "Feb 1", value: 1800 },
+    { label: "Feb 2", value: 2100 },
+    { label: "Feb 3", value: 1600 },
+    { label: "Feb 4", value: 2400 },
+    { label: "Feb 5", value: 2200 },
+    { label: "Feb 6", value: 1900 },
+    { label: "Feb 7", value: 2600 },
+    { label: "Feb 8", value: 2300 },
+    { label: "Feb 9", value: 1500 },
+    { label: "Feb 10", value: 2800 },
+  ],
+  tokens: [
+    { label: "Feb 1", value: 245000 },
+    { label: "Feb 2", value: 312000 },
+    { label: "Feb 3", value: 198000 },
+    { label: "Feb 4", value: 387000 },
+    { label: "Feb 5", value: 340000 },
+    { label: "Feb 6", value: 275000 },
+    { label: "Feb 7", value: 410000 },
+    { label: "Feb 8", value: 355000 },
+    { label: "Feb 9", value: 189000 },
+    { label: "Feb 10", value: 425000 },
+  ],
+  cost: [
+    { label: "Feb 1", value: 12.5 },
+    { label: "Feb 2", value: 15.8 },
+    { label: "Feb 3", value: 10.2 },
+    { label: "Feb 4", value: 18.9 },
+    { label: "Feb 5", value: 16.4 },
+    { label: "Feb 6", value: 13.7 },
+    { label: "Feb 7", value: 20.1 },
+    { label: "Feb 8", value: 17.3 },
+    { label: "Feb 9", value: 9.8 },
+    { label: "Feb 10", value: 22.4 },
+  ],
+};
 
 const usageByModel = [
   { label: "gpt-4o-mini", value: 8500 },
@@ -19,19 +58,6 @@ const usageByFeature = [
   { label: "summarize", value: 3400 },
   { label: "extract", value: 2100 },
   { label: "classify", value: 1147 },
-];
-
-const dailyData = [
-  { label: "Feb 1", value: 1800 },
-  { label: "Feb 2", value: 2100 },
-  { label: "Feb 3", value: 1600 },
-  { label: "Feb 4", value: 2400 },
-  { label: "Feb 5", value: 2200 },
-  { label: "Feb 6", value: 1900 },
-  { label: "Feb 7", value: 2600 },
-  { label: "Feb 8", value: 2300 },
-  { label: "Feb 9", value: 1500 },
-  { label: "Feb 10", value: 2800 },
 ];
 
 const usageRecords = [
@@ -87,6 +113,32 @@ const usageRecords = [
   },
 ];
 
+// ── Distribution Bar Color ────────────────────────────
+
+function getDistributionColor(pct: number): string {
+  if (pct > 50) return "bg-red-500";
+  if (pct > 30) return "bg-orange-500";
+  if (pct > 20) return "bg-amber-400";
+  if (pct > 10) return "bg-emerald-500";
+  return "bg-indigo-500";
+}
+
+function getDistributionDotColor(pct: number): string {
+  if (pct > 50) return "bg-red-500";
+  if (pct > 30) return "bg-orange-500";
+  if (pct > 20) return "bg-amber-400";
+  if (pct > 10) return "bg-emerald-500";
+  return "bg-indigo-500";
+}
+
+function getDistributionTextColor(pct: number): string {
+  if (pct > 50) return "text-red-400";
+  if (pct > 30) return "text-orange-400";
+  if (pct > 20) return "text-amber-400";
+  if (pct > 10) return "text-emerald-400";
+  return "text-indigo-400";
+}
+
 // ── Mini Stat ─────────────────────────────────────────
 
 function MiniStat({
@@ -105,9 +157,7 @@ function MiniStat({
       <p className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
         {label}
       </p>
-      <p className="text-xl font-bold font-mono text-surface-100 mt-1">
-        {value}
-      </p>
+      <p className="text-xl font-bold font-mono text-white mt-1">{value}</p>
       <p className={`text-xs font-mono mt-0.5 ${subColor}`}>{sub}</p>
     </div>
   );
@@ -123,16 +173,8 @@ function UsageBanner() {
     { model: "claude-3", pct: 4 },
   ];
 
-  const colors = [
-    "bg-brand-500",
-    "bg-emerald-500",
-    "bg-amber-400",
-    "bg-violet-500",
-  ];
-
   return (
     <div className="relative rounded-2xl border border-surface-700/40 bg-gradient-to-br from-surface-900/80 via-surface-950 to-surface-900/60 overflow-hidden mb-8">
-      {/* Grid overlay */}
       <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
@@ -158,28 +200,32 @@ function UsageBanner() {
         />
       </div>
 
-      {/* Model distribution bar */}
+      {/* Model distribution bar — colors based on value */}
       <div className="relative px-5 py-4">
         <p className="text-[11px] font-mono text-surface-400 uppercase tracking-wider mb-3">
           Model Distribution
         </p>
         <div className="h-3 rounded-full overflow-hidden flex bg-surface-800/60">
-          {liveModels.map((m, i) => (
+          {liveModels.map((m) => (
             <div
               key={m.model}
-              className={`${colors[i]} transition-all duration-700 ease-out`}
+              className={`${getDistributionColor(m.pct)} transition-all duration-700 ease-out`}
               style={{ width: `${m.pct}%` }}
             />
           ))}
         </div>
         <div className="flex flex-wrap gap-4 mt-3">
-          {liveModels.map((m, i) => (
+          {liveModels.map((m) => (
             <div key={m.model} className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${colors[i]}`} />
-              <span className="text-xs font-mono text-surface-400">
+              <span
+                className={`w-2 h-2 rounded-full ${getDistributionDotColor(m.pct)}`}
+              />
+              <span className="text-xs font-mono text-surface-300">
                 {m.model}
               </span>
-              <span className="text-xs font-mono text-surface-300 font-bold">
+              <span
+                className={`text-xs font-mono font-bold ${getDistributionTextColor(m.pct)}`}
+              >
                 {m.pct}%
               </span>
             </div>
@@ -197,6 +243,8 @@ export default function UsagePage() {
     "requests",
   );
 
+  const chartPrefix = activeTab === "cost" ? "$" : "";
+
   return (
     <div className="space-y-8">
       {/* Filters */}
@@ -205,23 +253,30 @@ export default function UsagePage() {
           (filter) => (
             <button
               key={filter}
-              className="px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-800/40 text-xs font-mono text-surface-400 hover:border-surface-700/60 transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-700/40 text-xs font-mono text-surface-300 hover:border-surface-600/50 transition-colors"
             >
-              {filter} <span className="text-surface-600 ml-1">▾</span>
+              {filter} <span className="text-surface-500 ml-1">▾</span>
             </button>
           ),
         )}
-        <button className="px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-800/40 text-xs font-mono text-surface-400 hover:border-surface-700/60 transition-colors">
-          Feb 1 – Feb 10 <span className="text-surface-600 ml-1">◫</span>
+        <button className="px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-700/40 text-xs font-mono text-surface-300 hover:border-surface-600/50 transition-colors">
+          Feb 1 – Feb 10 <span className="text-surface-500 ml-1">◫</span>
         </button>
       </div>
 
-      {/* Banner replaces stat cards */}
+      {/* Banner */}
       <UsageBanner />
 
-      {/* Main chart */}
+      {/* Main chart — switches data based on tab */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
+          <h3 className="text-sm font-mono font-bold text-white">
+            {activeTab === "requests"
+              ? "Daily Requests"
+              : activeTab === "tokens"
+                ? "Daily Tokens"
+                : "Daily Cost"}
+          </h3>
           <div className="flex gap-1">
             {(["requests", "tokens", "cost"] as const).map((tab) => (
               <button
@@ -229,8 +284,8 @@ export default function UsagePage() {
                 onClick={() => setActiveTab(tab)}
                 className={`px-3 py-1.5 rounded text-xs font-mono capitalize transition-colors ${
                   activeTab === tab
-                    ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
-                    : "text-surface-500 hover:text-surface-300"
+                    ? "bg-brand-500/15 text-brand-300 border border-brand-500/30"
+                    : "text-surface-400 hover:text-white"
                 }`}
               >
                 {tab}
@@ -238,19 +293,23 @@ export default function UsagePage() {
             ))}
           </div>
         </div>
-        <BarChart data={dailyData} height={250} />
+        <BarChart
+          data={dailyDataByMetric[activeTab]}
+          height={250}
+          valuePrefix={chartPrefix}
+        />
       </Card>
 
       {/* Breakdown charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="p-6">
-          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">
+          <h3 className="text-sm font-mono font-bold text-white mb-4">
             By Model
           </h3>
           <BarChart data={usageByModel} height={180} />
         </Card>
         <Card className="p-6">
-          <h3 className="text-sm font-mono font-bold text-surface-200 mb-4">
+          <h3 className="text-sm font-mono font-bold text-white mb-4">
             By Feature
           </h3>
           <BarChart data={usageByFeature} height={180} />
@@ -259,15 +318,15 @@ export default function UsagePage() {
 
       {/* Usage table */}
       <Card className="overflow-hidden">
-        <div className="px-6 py-4 border-b border-surface-800/30">
-          <h3 className="text-sm font-mono font-bold text-surface-200">
+        <div className="px-6 py-4 border-b border-surface-700/40">
+          <h3 className="text-sm font-mono font-bold text-white">
             Recent Calls
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-surface-800/30">
+              <tr className="border-b border-surface-700/40">
                 {[
                   "Request ID",
                   "User",
@@ -280,7 +339,7 @@ export default function UsagePage() {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-500 uppercase tracking-wider"
+                    className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-400 uppercase tracking-wider"
                   >
                     {h}
                   </th>
@@ -291,24 +350,24 @@ export default function UsagePage() {
               {usageRecords.map((record) => (
                 <tr
                   key={record.id}
-                  className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors"
+                  className="border-b border-surface-800/20 hover:bg-surface-900/40 transition-colors"
                 >
-                  <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                  <td className="px-4 py-3 text-xs font-mono text-surface-300">
                     {record.id}
                   </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-300">
+                  <td className="px-4 py-3 text-xs font-mono text-white">
                     {record.user}
                   </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                  <td className="px-4 py-3 text-xs font-mono text-surface-300">
                     {record.feature}
                   </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                  <td className="px-4 py-3 text-xs font-mono text-surface-300">
                     {record.model}
                   </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                  <td className="px-4 py-3 text-xs font-mono text-violet-400">
                     {record.tokens.toLocaleString()}
                   </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                  <td className="px-4 py-3 text-xs font-mono text-emerald-400">
                     {record.cost}
                   </td>
                   <td className="px-4 py-3">
@@ -320,7 +379,7 @@ export default function UsagePage() {
                       {record.status}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-500">
+                  <td className="px-4 py-3 text-xs font-mono text-surface-400">
                     {record.time}
                   </td>
                 </tr>

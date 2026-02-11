@@ -72,7 +72,7 @@ export default function DashboardHeader() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      {/* <div className="flex items-center gap-3">
         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/60 border border-surface-700/50 hover:border-brand-500/30 transition-colors">
           <span className="text-brand-400 text-xs">⌕</span>
           <input
@@ -83,7 +83,7 @@ export default function DashboardHeader() {
             ⌘K
           </kbd>
         </div>
-      </div>
+      </div> */}
     </header>
   );
 }
