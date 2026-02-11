@@ -30,7 +30,7 @@ export default function HeroSection() {
         >
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium tracking-widest uppercase text-brand-400 border border-brand-500/20 bg-brand-500/5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
-            Now in public beta
+            Now available
           </span>
         </div>
 
@@ -55,8 +55,8 @@ export default function HeroSection() {
             transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s",
           }}
         >
-          Enforce budgets, rate limits, and policies on every AI call — per user,
-          per feature, per plan. Three lines of code.
+          Enforce budgets, rate limits, and policies on every AI call - per
+          user, per feature, per plan. Three lines of code.
         </p>
 
         {/* Typed code line */}
@@ -83,9 +83,15 @@ export default function HeroSection() {
           }}
         >
           <Link href="/signup">
-            <Button variant="primary" size="lg">Get Started Free →</Button>
+            <Button variant="primary" size="lg">
+              Get Started Free →
+            </Button>
           </Link>
-          <Button variant="secondary" size="lg">View Documentation</Button>
+          <Link href="/docs">
+            <Button variant="secondary" size="lg">
+              View Documentation
+            </Button>
+          </Link>
         </div>
 
         {/* Stats */}
