@@ -8,7 +8,10 @@ export default function CTASection() {
   const [ref, visible] = useInView(0.1);
 
   return (
-    <section ref={ref as React.RefObject<HTMLElement>} className="relative py-32">
+    <section
+      ref={ref as React.RefObject<HTMLElement>}
+      className="relative py-32"
+    >
       <div className="max-w-3xl mx-auto px-6 text-center">
         <div
           className="relative p-12 rounded-2xl border border-surface-800/40 bg-surface-900/40 overflow-hidden"
@@ -34,9 +37,15 @@ export default function CTASection() {
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/signup">
-                <Button variant="primary" size="lg">Start Free →</Button>
+                <Button variant="primary" size="lg">
+                  Start Free →
+                </Button>
               </Link>
-              <Button variant="secondary" size="lg">Talk to Sales</Button>
+              <Link href="/contact">
+                <Button variant="secondary" size="lg">
+                  Talk to Sales
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
