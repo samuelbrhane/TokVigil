@@ -32,59 +32,58 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Logo size="md" />
 
-        {/* Desktop nav */}
+        {/* Desktop nav — always visible */}
+        <div className="hidden md:flex items-center gap-8">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className={`text-sm font-mono transition-colors duration-200 ${
+                pathname === link.href
+                  ? "text-brand-400"
+                  : "text-surface-400 hover:text-brand-400"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Desktop auth buttons — hide on auth pages */}
         {!isAuthPage && (
-          <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className={`text-sm font-mono transition-colors duration-200 ${
-                  pathname === link.href
-                    ? "text-brand-400"
-                    : "text-surface-400 hover:text-brand-400"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden md:flex items-center gap-3">
+            <Link href="/login">
+              <Button variant="ghost" size="sm">
+                Log in
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button variant="primary" size="sm">
+                Get Started →
+              </Button>
+            </Link>
           </div>
         )}
 
-        <div className="flex items-center gap-3">
-          <Link href="/login">
-            <Button variant="ghost" size="sm">
-              Log in
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button variant="primary" size="sm">
-              Get Started →
-            </Button>
-          </Link>
-        </div>
-
         {/* Mobile hamburger */}
-        {!isAuthPage && (
-          <button
-            className="md:hidden flex flex-col gap-1.5 p-2"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            <span
-              className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}
-            />
-            <span
-              className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "opacity-0" : ""}`}
-            />
-            <span
-              className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}
-            />
-          </button>
-        )}
+        <button
+          className="md:hidden flex flex-col gap-1.5 p-2"
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
+          <span
+            className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}
+          />
+          <span
+            className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "opacity-0" : ""}`}
+          />
+          <span
+            className={`w-5 h-0.5 bg-surface-400 transition-all ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}
+          />
+        </button>
       </div>
 
       {/* Mobile menu */}
-      {mobileOpen && !isAuthPage && (
+      {mobileOpen && (
         <div className="md:hidden bg-surface-950/95 backdrop-blur-xl border-b border-surface-800/40 animate-slide-down">
           <div className="px-6 py-4 space-y-3">
             {NAV_LINKS.map((link) => (
@@ -97,6 +96,20 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {!isAuthPage && (
+              <div className="border-t border-surface-800/40 pt-4 mt-4 flex flex-col gap-2">
+                <Link href="/login" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" size="sm" className="w-full">
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                  <Button variant="primary" size="sm" className="w-full">
+                    Get Started →
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}
