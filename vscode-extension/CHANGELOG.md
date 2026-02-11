@@ -14,4 +14,3 @@ All notable changes to the TokenFence VS Code extension.
 - Sidebar panel with usage stats
 - Commands for testing, dashboard, and configuration
 - Status bar integration
-- Environment switching (dev/staging/prod)
