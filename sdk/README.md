@@ -4,19 +4,19 @@ Official SDKs for the UsageSentinel platform.
 
 ## Packages
 
-| SDK        | Directory     | Package                  |
-| ---------- | ------------- | ------------------------ |
-| Python     | `python/`     | `pip install tokenfence` |
-| TypeScript | `typescript/` | `npm install tokenfence` |
+| SDK        | Directory     | Package                     |
+| ---------- | ------------- | --------------------------- |
+| Python     | `python/`     | `pip install usagesentinel` |
+| TypeScript | `typescript/` | `npm install usagesentinel` |
 
 ## Quick Start
 
 ### Python
 
 ```python
-from tokenfence import UsageSentinel
+from usagesentinel import UsageSentinel
 
-tf = UsageSentinel(api_key="us_live_...")
+us =UsageSentinel(api_key="us_live_...")
 
 result = us.evaluate(
     user_id="user_123",
@@ -39,9 +39,9 @@ if result.allowed:
 ### TypeScript
 
 ```typescript
-import { UsageSentinel } from "tokenfence";
+import { UsageSentinel } from "usagesentinel";
 
-const tf = new UsageSentinel({ apiKey: "us_live_..." });
+const us = new UsageSentinel({ apiKey: "us_live_..." });
 
 const result = await us.evaluate({
   userId: "user_123",

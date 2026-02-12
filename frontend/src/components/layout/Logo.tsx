@@ -35,7 +35,7 @@ export default function Logo({
           "font-bold tracking-tight text-surface-100 font-mono",
         )}
       >
-        Token<span className="text-brand-500">Fence</span>
+        Usage<span className="text-brand-500">Sentinel</span>
       </span>
     </div>
   );

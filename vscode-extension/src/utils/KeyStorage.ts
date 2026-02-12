@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-const SECRET_KEY = "tokenfence.apiKey";
+const SECRET_KEY = "usagesentinel.apiKey";
 
 export class keyStorage {
   private secretStorage: vscode.SecretStorage;

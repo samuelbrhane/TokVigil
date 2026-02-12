@@ -16,11 +16,11 @@ const TOC = [
   { id: "reason-codes", title: "Reason Codes" },
 ];
 
-const CODE_INSTALL = `pip install tokenfence`;
+const CODE_INSTALL = `pip install usagesentinel`;
 
-const CODE_INIT = `from tokenfence import UsageSentinel
+const CODE_INIT = `from usagesentinel import UsageSentinel
 
-tf = UsageSentinel(
+us =UsageSentinel(
     api_key="us_live_...",       # Required: your API key
     base_url="https://api.usagesentinel.com",  # Optional, default
     timeout=30,                  # Optional, seconds
@@ -106,7 +106,7 @@ blocked = us.get_blocked_requests(page=1, page_size=20)
 for record in blocked.items:
     print(f"{record.user_id}: {record.reason_code}")`;
 
-const CODE_ERRORS = `from tokenfence import (
+const CODE_ERRORS = `from usagesentinel import (
     UsageSentinel,
     UsageSentinelError,
     AuthenticationError,
@@ -116,7 +116,7 @@ const CODE_ERRORS = `from tokenfence import (
     APIError,
 )
 
-tf = UsageSentinel(api_key="us_live_...")
+us =UsageSentinel(api_key="us_live_...")
 
 try:
     result = us.evaluate(user_id="user_123", model="gpt-4o-mini")

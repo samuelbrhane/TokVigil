@@ -87,8 +87,8 @@ export const FEATURES = [
     description:
       "Python & TypeScript SDKs wrap your LLM calls. Three lines of code to full governance.",
     details: [
-      "Python SDK: pip install tokenfence",
-      "TypeScript SDK: npm install tokenfence",
+      "Python SDK: pip install usagesentinel",
+      "TypeScript SDK: npm install usagesentinel",
       "OpenAI adapter built-in, more coming soon",
       "BYOK (Bring Your Own Key) with consistent tracking",
     ],
@@ -104,16 +104,16 @@ export const STEPS = [
     title: "Install & initialize",
     description:
       "Add the SDK and connect to your UsageSentinel workspace with one API key.",
-    python: `pip install tokenfence
+    python: `pip install usagesentinel
 
-from tokenfence import UsageSentinel
+from usagesentinel import UsageSentinel
 
-tf = UsageSentinel(api_key="us_live_...")`,
-    typescript: `npm install tokenfence
+us =UsageSentinel(api_key="us_live_...")`,
+    typescript: `npm install usagesentinel
 
-import { UsageSentinel } from "tokenfence";
+import { UsageSentinel } from "usagesentinel";
 
-const tf = new UsageSentinel({ apiKey: "us_live_..." });`,
+const us =new UsageSentinel({ apiKey: "us_live_..." });`,
   },
   {
     num: "02",

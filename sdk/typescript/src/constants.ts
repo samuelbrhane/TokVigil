@@ -20,5 +20,5 @@ export const DEFAULT_RETRY_DELAY = 1000; // milliseconds
 
 // SDK Info
 export const SDK_VERSION = "0.1.0";
-export const SDK_NAME = "tokenfence-node";
+export const SDK_NAME = "usagesentinel-node";
 export const USER_AGENT = `${SDK_NAME}/${SDK_VERSION}`;

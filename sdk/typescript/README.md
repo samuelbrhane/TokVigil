@@ -7,20 +7,20 @@ Manage rate limits, budgets, and policies for your AI-powered applications.
 ## Installation
 
 ```bash
-npm install tokenfence
+npm install usagesentinel
 # or
-yarn add tokenfence
+yarn add usagesentinel
 # or
-pnpm add tokenfence
+pnpm add usagesentinel
 ```
 
 ## Quick Start
 
 ```typescript
-import { UsageSentinel } from "tokenfence";
+import { UsageSentinel } from "usagesentinel";
 
 // Initialize client
-const tf = new UsageSentinel({ apiKey: "us_live_xxx" });
+const us = new UsageSentinel({ apiKey: "us_live_xxx" });
 
 // Check if request is allowed
 const result = await us.evaluate({
@@ -160,9 +160,13 @@ for (const group of byFeature.items) {
 ## Error Handling
 
 ```typescript
-import { UsageSentinel, RateLimitError, AuthenticationError } from "tokenfence";
+import {
+  UsageSentinel,
+  RateLimitError,
+  AuthenticationError,
+} from "usagesentinel";
 
-const tf = new UsageSentinel({ apiKey: "us_live_xxx" });
+const us = new UsageSentinel({ apiKey: "us_live_xxx" });
 
 try {
   const result = await us.evaluate({
@@ -183,7 +187,7 @@ try {
 ## Configuration
 
 ```typescript
-const tf = new UsageSentinel({
+const us = new UsageSentinel({
   apiKey: "us_live_xxx",
   baseUrl: "https://api.usagesentinel.com", // Custom API URL
   timeout: 30000, // Request timeout in milliseconds

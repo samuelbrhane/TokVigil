@@ -21,12 +21,12 @@ describe("UsageSentinel", () => {
     });
 
     it("should initialize with API key", () => {
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       expect(tf).toBeInstanceOf(UsageSentinel);
     });
 
     it("should use custom base URL", () => {
-      const tf = new UsageSentinel({
+      const us = new UsageSentinel({
         apiKey: TEST_API_KEY,
         baseUrl: TEST_BASE_URL,
       });
@@ -34,7 +34,7 @@ describe("UsageSentinel", () => {
     });
 
     it("should use custom timeout", () => {
-      const tf = new UsageSentinel({
+      const us = new UsageSentinel({
         apiKey: TEST_API_KEY,
         timeout: 60000,
       });
@@ -42,7 +42,7 @@ describe("UsageSentinel", () => {
     });
 
     it("should use custom retry settings", () => {
-      const tf = new UsageSentinel({
+      const us = new UsageSentinel({
         apiKey: TEST_API_KEY,
         retryCount: 5,
         retryDelay: 2000,
@@ -79,7 +79,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -114,7 +114,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -141,7 +141,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -167,7 +167,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -193,7 +193,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -215,7 +215,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.evaluate({
         userId: "user_123",
         model: "gpt-4o",
@@ -240,7 +240,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -271,7 +271,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.logUsage({
         requestId: "req_123",
         userId: "user_123",
@@ -302,7 +302,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.logUsage({
         requestId: "req_456",
         userId: "user_123",
@@ -338,7 +338,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.getUsageSummary();
 
       expect(result.totalRequests).toBe(100);
@@ -362,7 +362,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.getUsageSummary({
         startDate: "2025-01-01",
         endDate: "2025-01-31",
@@ -407,7 +407,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.getRecentUsage({ page: 1, pageSize: 20 });
 
       expect(result.items.length).toBe(1);
@@ -432,7 +432,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.getRecentUsage({ userId: "user_456" });
 
       expect(result.items.length).toBe(0);
@@ -464,7 +464,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.getUsageByUser();
 
       expect(result.items.length).toBe(2);
@@ -498,7 +498,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.getUsageByFeature();
 
       expect(result.items.length).toBe(2);
@@ -543,7 +543,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await us.getBlockedRequests();
 
       expect(result.items.length).toBe(1);
@@ -571,7 +571,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       await expect(
         us.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
@@ -591,7 +591,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       await expect(
         us.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
@@ -612,7 +612,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       try {
         await us.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
@@ -636,7 +636,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       await expect(
         us.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
@@ -656,7 +656,7 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       await expect(
         us.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),

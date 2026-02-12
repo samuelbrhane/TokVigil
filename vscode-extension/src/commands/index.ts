@@ -15,45 +15,51 @@ export function registerCommands(
 ): void {
   // Test Evaluate
   context.subscriptions.push(
-    vscode.commands.registerCommand("tokenfence.testEvaluate", () =>
+    vscode.commands.registerCommand("usagesentinel.testEvaluate", () =>
       testEvaluate(apiClient),
     ),
   );
 
   // Open Dashboard
   context.subscriptions.push(
-    vscode.commands.registerCommand("tokenfence.openDashboard", openDashboard),
+    vscode.commands.registerCommand(
+      "usagesentinel.openDashboard",
+      openDashboard,
+    ),
   );
 
   // Open Docs
   context.subscriptions.push(
-    vscode.commands.registerCommand("tokenfence.openDocs", openDocs),
+    vscode.commands.registerCommand("usagesentinel.openDocs", openDocs),
   );
 
   // Open API Reference
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      "tokenfence.openApiReference",
+      "usagesentinel.openApiReference",
       openApiReference,
     ),
   );
 
   // Set API Key
   context.subscriptions.push(
-    vscode.commands.registerCommand("tokenfence.setApiKey", () =>
+    vscode.commands.registerCommand("usagesentinel.setApiKey", () =>
       setApiKeyCommand(apiClient, sidebarProvider),
     ),
   );
 
   // Refresh Usage
   context.subscriptions.push(
-    vscode.commands.registerCommand("tokenfence.refreshUsage", () =>
+    vscode.commands.registerCommand("usagesentinel.refreshUsage", () =>
       refreshUsage(apiClient, sidebarProvider),
     ),
   );
 
   // Insert Snippet
   context.subscriptions.push(
-    vscode.commands.registerCommand("tokenfence.insertSnippet", insertSnippet),
+    vscode.commands.registerCommand(
+      "usagesentinel.insertSnippet",
+      insertSnippet,
+    ),
   );
 }

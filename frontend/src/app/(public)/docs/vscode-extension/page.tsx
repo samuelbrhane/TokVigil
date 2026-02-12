@@ -41,8 +41,8 @@ const COMMAND_ROWS: [string, string][] = [
 ];
 
 const CODE_SETTINGS = `{
-  "tokenfence.apiKey": "us_live_...",
-  "tokenfence.baseUrl": "https://api.usagesentinel.com"
+  "usagesentinel.apiKey": "us_live_...",
+  "usagesentinel.baseUrl": "https://api.usagesentinel.com"
 }`;
 
 export default function VSCodeExtensionPage() {

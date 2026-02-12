@@ -11,26 +11,26 @@ const snippets: SnippetOption[] = [
   {
     label: "$(file-add) Import",
     description: "Import UsageSentinel SDK",
-    snippet: `import { UsageSentinel } from "tokenfence";
+    snippet: `import { UsageSentinel } from "usagesentinel";
 
 \$0`,
-    pythonSnippet: `from tokenfence import UsageSentinel
+    pythonSnippet: `from usagesentinel import UsageSentinel
 
 \$0`,
   },
   {
     label: "$(plug) Initialize Client",
     description: "Create UsageSentinel client instance",
-    snippet: `import { UsageSentinel } from "tokenfence";
+    snippet: `import { UsageSentinel } from "usagesentinel";
 
-const tf = new UsageSentinel({
+const us =new UsageSentinel({
   apiKey: "\${1:your_api_key}",
 });
 
 \$0`,
-    pythonSnippet: `from tokenfence import UsageSentinel
+    pythonSnippet: `from usagesentinel import UsageSentinel
 
-tf = UsageSentinel(
+us =UsageSentinel(
     api_key="\${1:your_api_key}"
 )
 
@@ -94,9 +94,9 @@ else:
   {
     label: "$(rocket) Full Flow",
     description: "Complete evaluate, call AI, and log flow",
-    snippet: `import { UsageSentinel } from "tokenfence";
+    snippet: `import { UsageSentinel } from "usagesentinel";
 
-const tf = new UsageSentinel({ apiKey: "\${1:your_api_key}" });
+const us =new UsageSentinel({ apiKey: "\${1:your_api_key}" });
 
 async function handleAiRequest(userId: string, prompt: string) {
   const result = await us.evaluate({
@@ -129,10 +129,10 @@ async function handleAiRequest(userId: string, prompt: string) {
 
   return { success: true };
 }`,
-    pythonSnippet: `from tokenfence import UsageSentinel
+    pythonSnippet: `from usagesentinel import UsageSentinel
 import uuid
 
-tf = UsageSentinel(api_key="\${1:your_api_key}")
+us =UsageSentinel(api_key="\${1:your_api_key}")
 
 def handle_ai_request(user_id: str, prompt: str):
     result = us.evaluate(
@@ -167,9 +167,9 @@ def handle_ai_request(user_id: str, prompt: str):
   {
     label: "$(shield) Error Handling",
     description: "UsageSentinel with try/catch error handling",
-    snippet: `import { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } from "tokenfence";
+    snippet: `import { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } from "usagesentinel";
 
-const tf = new UsageSentinel({ apiKey: "\${1:your_api_key}" });
+const us =new UsageSentinel({ apiKey: "\${1:your_api_key}" });
 
 try {
   const result = await us.evaluate({
@@ -191,9 +191,9 @@ try {
     throw error;
   }
 }`,
-    pythonSnippet: `from tokenfence import UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError
+    pythonSnippet: `from usagesentinel import UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError
 
-tf = UsageSentinel(api_key="\${1:your_api_key}")
+us =UsageSentinel(api_key="\${1:your_api_key}")
 
 try:
     result = us.evaluate(

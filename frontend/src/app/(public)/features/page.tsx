@@ -288,7 +288,7 @@ for (const feature of byFeature.items) {
 
   "Multi-Environment": {
     python: `# Separate environments with distinct API keys
-from tokenfence import UsageSentinel
+from usagesentinel import UsageSentinel
 
 # Production - real usage tracking
 us_prod = UsageSentinel(api_key="us_live_xxxxxxxxxxxx")
@@ -307,7 +307,7 @@ result = us_prod.evaluate(
 prod_summary = us_prod.get_usage_summary()
 dev_summary = us_dev.get_usage_summary()`,
     typescript: `// Separate environments with distinct API keys
-import { UsageSentinel } from "tokenfence";
+import { UsageSentinel } from "usagesentinel";
 
 // Production - real usage tracking
 const tfProd = new UsageSentinel({ apiKey: "us_live_xxxxxxxxxxxx" });
@@ -328,7 +328,7 @@ const devSummary = await tfDev.getUsageSummary();`,
   },
 
   "Error Handling": {
-    python: `from tokenfence import (
+    python: `from usagesentinel import (
     UsageSentinel,
     RateLimitError,
     AuthenticationError,
@@ -336,7 +336,7 @@ const devSummary = await tfDev.getUsageSummary();`,
     UsageSentinelError
 )
 
-tf = UsageSentinel(api_key="us_live_...")
+us =UsageSentinel(api_key="us_live_...")
 
 try:
     result = us.evaluate(
@@ -357,9 +357,9 @@ except UsageSentinelError as e:
   AuthenticationError,
   ValidationError,
   UsageSentinelError,
-} from "tokenfence";
+} from "usagesentinel";
 
-const tf = new UsageSentinel({ apiKey: "us_live_..." });
+const us =new UsageSentinel({ apiKey: "us_live_..." });
 
 try {
   const result = await us.evaluate({

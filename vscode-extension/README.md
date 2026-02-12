@@ -76,15 +76,15 @@ Access via Command Palette (`Ctrl+Shift+P`):
 
 Open Settings (`Ctrl+,`) and search for "UsageSentinel":
 
-| Setting                         | Description              | Default                         |
-| ------------------------------- | ------------------------ | ------------------------------- |
-| `tokenfence.apiKey`             | Your API key             | —                               |
-| `tokenfence.baseUrl`            | API base URL             | `https://api.usagesentinel.com` |
-| `tokenfence.environment`        | Current environment      | `development`                   |
-| `tokenfence.showStatusBar`      | Show status bar item     | `true`                          |
-| `tokenfence.enableAutocomplete` | Enable autocomplete      | `true`                          |
-| `tokenfence.enableHover`        | Enable hover docs        | `true`                          |
-| `tokenfence.enableDiagnostics`  | Enable inline validation | `true`                          |
+| Setting                            | Description              | Default                         |
+| ---------------------------------- | ------------------------ | ------------------------------- |
+| `usagesentinel.apiKey`             | Your API key             | —                               |
+| `usagesentinel.baseUrl`            | API base URL             | `https://api.usagesentinel.com` |
+| `usagesentinel.environment`        | Current environment      | `development`                   |
+| `usagesentinel.showStatusBar`      | Show status bar item     | `true`                          |
+| `usagesentinel.enableAutocomplete` | Enable autocomplete      | `true`                          |
+| `usagesentinel.enableHover`        | Enable hover docs        | `true`                          |
+| `usagesentinel.enableDiagnostics`  | Enable inline validation | `true`                          |
 
 ## Getting Started
 

@@ -4,7 +4,7 @@ import { getConfig } from "../config/settings";
 import { UsageSummary, UsageByGroup } from "../types";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = "tokenfence-sidebar";
+  public static readonly viewType = "usagesentinel-sidebar";
 
   private _view?: vscode.WebviewView;
   private _extensionUri: vscode.Uri;
@@ -36,22 +36,22 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           await this.refresh();
           break;
         case "openDashboard":
-          vscode.commands.executeCommand("tokenfence.openDashboard");
+          vscode.commands.executeCommand("usagesentinel.openDashboard");
           break;
         case "openDocs":
-          vscode.commands.executeCommand("tokenfence.openDocs");
+          vscode.commands.executeCommand("usagesentinel.openDocs");
           break;
         case "setApiKey":
-          vscode.commands.executeCommand("tokenfence.setApiKey");
+          vscode.commands.executeCommand("usagesentinel.setApiKey");
           break;
         case "switchEnvironment":
-          vscode.commands.executeCommand("tokenfence.switchEnvironment");
+          vscode.commands.executeCommand("usagesentinel.switchEnvironment");
           break;
         case "testEvaluate":
-          vscode.commands.executeCommand("tokenfence.testEvaluate");
+          vscode.commands.executeCommand("usagesentinel.testEvaluate");
           break;
         case "insertSnippet":
-          vscode.commands.executeCommand("tokenfence.insertSnippet");
+          vscode.commands.executeCommand("usagesentinel.insertSnippet");
           break;
       }
     });

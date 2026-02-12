@@ -36,9 +36,9 @@ export class CodeActionProvider implements vscode.CodeActionProvider {
     let importStatement: string;
 
     if (languageId === "python") {
-      importStatement = "from tokenfence import UsageSentinel\n";
+      importStatement = "from usagesentinel import UsageSentinel\n";
     } else {
-      importStatement = 'import { UsageSentinel } from "tokenfence";\n';
+      importStatement = 'import { UsageSentinel } from "usagesentinel";\n';
     }
 
     const action = new vscode.CodeAction(
@@ -66,7 +66,7 @@ export class CodeActionProvider implements vscode.CodeActionProvider {
     );
 
     action.command = {
-      command: "tokenfence.setApiKey",
+      command: "usagesentinel.setApiKey",
       title: "Set API Key",
     };
 

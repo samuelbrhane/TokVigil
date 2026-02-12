@@ -31,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
   const sidebarProvider = new SidebarProvider(context.extensionUri, apiClient);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
-      "tokenfence-sidebar",
+      "usagesentinel-sidebar",
       sidebarProvider,
     ),
   );
@@ -60,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Diagnostic provider (inline validation)
   diagnosticCollection =
-    vscode.languages.createDiagnosticCollection("tokenfence");
+    vscode.languages.createDiagnosticCollection("usagesentinel");
   context.subscriptions.push(diagnosticCollection);
 
   const diagnosticProvider = new DiagnosticProvider(diagnosticCollection);
@@ -84,7 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.StatusBarAlignment.Right,
       100,
     );
-    statusBarItem.command = "tokenfence.openDashboard";
+    statusBarItem.command = "usagesentinel.openDashboard";
     statusBarItem.text = "$(pulse) UsageSentinel";
     statusBarItem.tooltip = "Click to open UsageSentinel dashboard";
     statusBarItem.show();
@@ -97,7 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Listen for configuration changes
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration("tokenfence")) {
+      if (e.affectsConfiguration("usagesentinel")) {
         const newConfig = getConfig();
         apiClient.updateConfig(newConfig);
         updateStatusBar();

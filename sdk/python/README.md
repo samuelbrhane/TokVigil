@@ -7,16 +7,16 @@ Manage rate limits, budgets, and policies for your AI-powered applications.
 ## Installation
 
 ```bash
-pip install tokenfence
+pip install usagesentinel
 ```
 
 ## Quick Start
 
 ```python
-from tokenfence import UsageSentinel
+from usagesentinel import UsageSentinel
 
 # Initialize client
-tf = UsageSentinel(api_key="us_live_xxx")
+us =UsageSentinel(api_key="us_live_xxx")
 
 # Check if request is allowed
 result = us.evaluate(
@@ -149,9 +149,9 @@ for group in by_feature.items:
 ## Error Handling
 
 ```python
-from tokenfence import UsageSentinel, RateLimitError, AuthenticationError
+from usagesentinel import UsageSentinel, RateLimitError, AuthenticationError
 
-tf = UsageSentinel(api_key="us_live_xxx")
+us =UsageSentinel(api_key="us_live_xxx")
 
 try:
     result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
@@ -166,7 +166,7 @@ except UsageSentinelError as e:
 ## Configuration
 
 ```python
-tf = UsageSentinel(
+us =UsageSentinel(
     api_key="us_live_xxx",
     base_url="https://api.usagesentinel.com",  # Custom API URL
     timeout=30,           # Request timeout in seconds

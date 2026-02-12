@@ -4,7 +4,7 @@ from typing import Optional, List, Dict, Any
 
 import requests as http_requests
 
-from tokenfence.constants import (
+from usagesentinel.constants import (
     DEFAULT_BASE_URL,
     ENDPOINTS,
     DEFAULT_TIMEOUT,
@@ -12,7 +12,7 @@ from tokenfence.constants import (
     DEFAULT_RETRY_DELAY,
     USER_AGENT,
 )
-from tokenfence.exceptions import (
+from usagesentinel.exceptions import (
     UsageSentinelError,
     AuthenticationError,
     RateLimitError,
@@ -22,7 +22,7 @@ from tokenfence.exceptions import (
     ConnectionError,
     TimeoutError,
 )
-from tokenfence.models import (
+from usagesentinel.models import (
     EvaluateResult,
     UsageLogResult,
     UsageRecord,
@@ -37,7 +37,7 @@ class UsageSentinel:
     UsageSentinel SDK client.
     
     Usage:
-        tf = UsageSentinel(api_key="us_live_xxx")
+        us =UsageSentinel(api_key="us_live_xxx")
         
         # Check if request is allowed
         result = us.evaluate(

@@ -95,9 +95,9 @@ export class HoverProvider implements vscode.HoverProvider {
     markdown.appendMarkdown("**Quick Start:**\n\n");
 
     markdown.appendCodeblock(
-      `from tokenfence import UsageSentinel
+      `from usagesentinel import UsageSentinel
 
-tf = UsageSentinel(api_key="us_live_xxx")
+us =UsageSentinel(api_key="us_live_xxx")
 
 result = us.evaluate(
     user_id="user_123",

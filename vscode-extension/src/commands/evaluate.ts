@@ -14,7 +14,7 @@ export async function testEvaluate(
       "Set API Key",
     );
     if (setKey === "Set API Key") {
-      vscode.commands.executeCommand("tokenfence.setApiKey");
+      vscode.commands.executeCommand("usagesentinel.setApiKey");
     }
     return;
   }
@@ -127,7 +127,7 @@ export async function testEvaluate(
 
 function showResultDetails(result: any): void {
   const panel = vscode.window.createWebviewPanel(
-    "tokenfenceResult",
+    "usagesentinelResult",
     "UsageSentinel Evaluate Result",
     vscode.ViewColumn.Beside,
     {},

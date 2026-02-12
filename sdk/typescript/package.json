@@ -1,5 +1,5 @@
 {
-  "name": "tokenfence",
+  "name": "usagesentinel",
   "version": "0.1.0",
   "description": "TypeScript SDK for UsageSentinel - AI usage control platform",
   "main": "dist/index.js",
@@ -24,17 +24,17 @@
     "usage-control",
     "openai",
     "anthropic",
-    "tokenfence"
+    "usagesentinel"
   ],
   "author": "UsageSentinel <support@usagesentinel.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/samuelbrhane/tokenfence"
+    "url": "https://github.com/samuelbrhane/usagesentinel"
   },
   "homepage": "https://usagesentinel.com",
   "bugs": {
-    "url": "https://github.com/samuelbrhane/tokenfence/issues"
+    "url": "https://github.com/samuelbrhane/usagesentinel/issues"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

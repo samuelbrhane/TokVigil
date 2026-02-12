@@ -12,7 +12,7 @@ export const ENDPOINTS = {
   apiKeyInfo: "/api/v1/auth/api-key-info",
 };
 
-export const EXTENSION_ID = "tokenfence.tokenfence";
+export const EXTENSION_ID = "usagesentinel.usagesentinel";
 export const EXTENSION_NAME = "UsageSentinel";
 
 export const SUPPORTED_LANGUAGES = ["python", "typescript", "javascript"];

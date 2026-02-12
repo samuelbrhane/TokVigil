@@ -1,5 +1,5 @@
-from tokenfence.client import UsageSentinel
-from tokenfence.models import (
+from usagesentinel.client import UsageSentinel
+from usagesentinel.models import (
     EvaluateResult,
     UsageLogResult,
     UsageRecord,
@@ -8,7 +8,7 @@ from tokenfence.models import (
     LimitState,
     PaginatedResponse,
 )
-from tokenfence.exceptions import (
+from usagesentinel.exceptions import (
     UsageSentinelError,
     AuthenticationError,
     RateLimitError,
@@ -18,7 +18,7 @@ from tokenfence.exceptions import (
     ConnectionError,
     TimeoutError,
 )
-from tokenfence.constants import SDK_VERSION
+from usagesentinel.constants import SDK_VERSION
 
 __version__ = SDK_VERSION
 __all__ = [

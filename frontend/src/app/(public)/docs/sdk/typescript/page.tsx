@@ -16,13 +16,13 @@ const TOC = [
   { id: "reason-codes", title: "Reason Codes" },
 ];
 
-const CODE_INSTALL = `npm install tokenfence
+const CODE_INSTALL = `npm install usagesentinel
 # or
-yarn add tokenfence`;
+yarn add usagesentinel`;
 
-const CODE_INIT = `import { UsageSentinel } from "tokenfence";
+const CODE_INIT = `import { UsageSentinel } from "usagesentinel";
 
-const tf = new UsageSentinel({
+const us =new UsageSentinel({
   apiKey: "us_live_...",           // Required: your API key
   baseUrl: "https://api.usagesentinel.com",  // Optional, default
   timeout: 30000,                  // Optional, milliseconds
@@ -128,9 +128,9 @@ const CODE_ERRORS = `import {
   ValidationError,
   NotFoundError,
   APIError,
-} from "tokenfence";
+} from "usagesentinel";
 
-const tf = new UsageSentinel({ apiKey: "us_live_..." });
+const us =new UsageSentinel({ apiKey: "us_live_..." });
 
 try {
   const result = await us.evaluate({ userId: "user_123", model: "gpt-4o-mini" });

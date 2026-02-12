@@ -1,6 +1,6 @@
 import pytest
 import responses
-from tokenfence import UsageSentinel, EvaluateResult, AuthenticationError, RateLimitError
+from usagesentinel import UsageSentinel, EvaluateResult, AuthenticationError, RateLimitError
 
 
 class TestUsageSentinel:
@@ -10,11 +10,11 @@ class TestUsageSentinel:
             UsageSentinel(api_key="")
     
     def test_init_with_api_key(self):
-        tf = UsageSentinel(api_key="us_test_xxx")
+        us =UsageSentinel(api_key="us_test_xxx")
         assert us.api_key == "us_test_xxx"
     
     def test_init_custom_base_url(self):
-        tf = UsageSentinel(api_key="us_test_xxx", base_url="http://localhost:8000")
+        us =UsageSentinel(api_key="us_test_xxx", base_url="http://localhost:8000")
         assert us.base_url == "http://localhost:8000"
     
     @responses.activate
@@ -36,7 +36,7 @@ class TestUsageSentinel:
             status=200,
         )
         
-        tf = UsageSentinel(api_key="us_test_xxx")
+        us =UsageSentinel(api_key="us_test_xxx")
         result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert result.allowed is True
@@ -62,7 +62,7 @@ class TestUsageSentinel:
             status=200,
         )
         
-        tf = UsageSentinel(api_key="us_test_xxx")
+        us =UsageSentinel(api_key="us_test_xxx")
         result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert result.allowed is False
@@ -82,7 +82,7 @@ class TestUsageSentinel:
             status=401,
         )
         
-        tf = UsageSentinel(api_key="us_test_invalid")
+        us =UsageSentinel(api_key="us_test_invalid")
         
         with pytest.raises(AuthenticationError) as exc:
             us.evaluate(user_id="user_123", model="gpt-4o-mini")
@@ -104,7 +104,7 @@ class TestUsageSentinel:
             status=429,
         )
         
-        tf = UsageSentinel(api_key="us_test_xxx")
+        us =UsageSentinel(api_key="us_test_xxx")
         
         with pytest.raises(RateLimitError) as exc:
             us.evaluate(user_id="user_123", model="gpt-4o-mini")
@@ -125,7 +125,7 @@ class TestUsageSentinel:
             status=201,
         )
         
-        tf = UsageSentinel(api_key="us_test_xxx")
+        us =UsageSentinel(api_key="us_test_xxx")
         result = us.log_usage(
             request_id="req_123",
             user_id="user_123",

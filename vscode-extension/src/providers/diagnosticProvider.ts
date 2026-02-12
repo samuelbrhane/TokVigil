@@ -43,7 +43,7 @@ export class DiagnosticProvider {
         diagnostics.push(
           new vscode.Diagnostic(
             range,
-            "UsageSentinel is used but not imported. Add: from tokenfence import UsageSentinel",
+            "UsageSentinel is used but not imported. Add: from usagesentinel import UsageSentinel",
             vscode.DiagnosticSeverity.Warning,
           ),
         );
@@ -126,9 +126,9 @@ export class DiagnosticProvider {
 
   private hasUsageSentinelImport(text: string, languageId: string): boolean {
     if (languageId === "python") {
-      return /from\s+tokenfence\s+import|import\s+tokenfence/.test(text);
+      return /from\s+usagesentinel\s+import|import\s+usagesentinel/.test(text);
     } else {
-      return /import\s+.*UsageSentinel.*from\s+["']tokenfence["']|require\s*\(\s*["']tokenfence["']\s*\)/.test(
+      return /import\s+.*UsageSentinel.*from\s+["']usagesentinel["']|require\s*\(\s*["']usagesentinel["']\s*\)/.test(
         text,
       );
     }

@@ -20,5 +20,5 @@ DEFAULT_RETRY_DELAY = 1  # seconds
 
 # SDK Info
 SDK_VERSION = "0.1.0"
-SDK_NAME = "tokenfence-python"
+SDK_NAME = "usagesentinel-python"
 USER_AGENT = f"{SDK_NAME}/{SDK_VERSION}"

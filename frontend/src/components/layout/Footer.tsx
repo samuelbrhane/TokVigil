@@ -17,7 +17,7 @@ export default function Footer() {
                 className="h-8 w-8 rounded-lg"
               />
               <span className="text-lg font-bold font-mono text-surface-100">
-                Token<span className="text-brand-400">Fence</span>
+                Usage<span className="text-brand-400">Sentinel</span>
               </span>
             </Link>
             <p className="text-sm text-surface-500 leading-relaxed max-w-xs">

@@ -1,15 +1,15 @@
 {
   "UsageSentinel Import": {
     "prefix": "tfimport",
-    "body": ["const { UsageSentinel } = require(\"tokenfence\");", "", "$0"],
+    "body": ["const { UsageSentinel } = require(\"usagesentinel\");", "", "$0"],
     "description": "Import UsageSentinel SDK",
   },
   "UsageSentinel Initialize": {
     "prefix": "tfinit",
     "body": [
-      "const { UsageSentinel } = require(\"tokenfence\");",
+      "const { UsageSentinel } = require(\"usagesentinel\");",
       "",
-      "const tf = new UsageSentinel({",
+      "const us =new UsageSentinel({",
       "  apiKey: \"${1:your_api_key}\",",
       "});",
       "",
@@ -55,10 +55,10 @@
   "UsageSentinel Full Flow": {
     "prefix": "tfflow",
     "body": [
-      "const { UsageSentinel } = require(\"tokenfence\");",
+      "const { UsageSentinel } = require(\"usagesentinel\");",
       "const crypto = require(\"crypto\");",
       "",
-      "const tf = new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
+      "const us =new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
       "",
       "async function handleAiRequest() {",
       "  // Check if request is allowed",
@@ -110,9 +110,9 @@
   "UsageSentinel Error Handling": {
     "prefix": "tferror",
     "body": [
-      "const { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } = require(\"tokenfence\");",
+      "const { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } = require(\"usagesentinel\");",
       "",
-      "const tf = new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
+      "const us =new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
       "",
       "try {",
       "  const result = await us.evaluate({",
