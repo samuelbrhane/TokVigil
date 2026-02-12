@@ -1,33 +1,40 @@
-# TokenFence Frontend
+# TokenFence Backend
 
-Next.js dashboard and landing page for the TokenFence platform.
+FastAPI backend for the TokenFence platform.
 
 ## Tech
 
-- Next.js 14 (App Router)
-- TypeScript
-- Tailwind CSS
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- Redis
+- Alembic (migrations)
 
 ## Setup
 
 ```bash
-npm install
-cp .env.example .env.local
-npm run dev
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+alembic upgrade head
+uvicorn app.main:app --reload
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+API runs at [http://localhost:8000](http://localhost:8000).
 
 ## Environment Variables
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:8000
+DATABASE_URL=postgresql://user:pass@localhost:5432/tokenfence
+REDIS_URL=redis://localhost:6379
+SECRET_KEY=your-secret-key
 ```
 
 ## Scripts
 
 ```bash
-npm run dev        # Development server
-npm run build      # Production build
-npm run lint       # Run ESLint
+uvicorn app.main:app --reload          # Development server
+alembic revision --autogenerate -m ""  # Generate migration
+alembic upgrade head                   # Run migrations
 ```
