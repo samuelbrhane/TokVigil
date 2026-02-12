@@ -222,7 +222,7 @@ export default function TypeScriptSDKPage() {
           <DocNote type="tip">
             Use environment variables for your API key in production:{" "}
             <code className="text-brand-400">
-              new UsageSentinel({"{"} apiKey: process.env.TOKENFENCE_API_KEY{" "}
+              new UsageSentinel({"{"} apiKey: process.env.USAGESENTINEL_API_KEY{" "}
               {"}"})
             </code>
           </DocNote>

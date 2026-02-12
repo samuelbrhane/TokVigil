@@ -1,5 +1,5 @@
 # UsageSentinel platform plans for developers
-TOKENFENCE_PLANS = {
+USAGESENTINEL_PLANS = {
     "free": {
         "name": "Free",
         "price_monthly": 0,
@@ -52,7 +52,7 @@ TOKENFENCE_PLANS = {
 
 def get_plan(plan_name: str) -> dict:
     """Get plan details by name."""
-    return TOKENFENCE_PLANS.get(plan_name, TOKENFENCE_PLANS["free"])
+    return USAGESENTINEL_PLANS.get(plan_name, USAGESENTINEL_PLANS["free"])
 
 
 def get_rate_limit(plan_name: str) -> int:
@@ -63,7 +63,7 @@ def get_rate_limit(plan_name: str) -> int:
 
 def get_all_plans() -> dict:
     """Get all available plans."""
-    return TOKENFENCE_PLANS
+    return USAGESENTINEL_PLANS
 
 
 def is_feature_enabled(plan_name: str, feature: str) -> bool:

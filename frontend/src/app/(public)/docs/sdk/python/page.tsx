@@ -199,7 +199,7 @@ export default function PythonSDKPage() {
           <DocNote type="tip">
             Use environment variables for your API key in production:{" "}
             <code className="text-brand-400">
-              UsageSentinel(api_key=os.environ[&quot;TOKENFENCE_API_KEY&quot;])
+              UsageSentinel(api_key=os.environ[&quot;USAGESENTINEL_API_KEY&quot;])
             </code>
           </DocNote>
         </DocSection>
