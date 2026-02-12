@@ -10,7 +10,6 @@ export interface UsageFilters {
   user_id: string | null;
   feature: string | null;
   model: string | null;
-  status: string | null;
   days: number;
 }
 
@@ -25,7 +24,6 @@ export const DEFAULT_FILTERS: UsageFilters = {
   user_id: null,
   feature: null,
   model: null,
-  status: null,
   days: 7,
 };
 
@@ -104,13 +102,11 @@ export default function UsageFilterBar({
   const [environments, setEnvironments] = useState<Environment[]>([]);
   const [loadingEnvs, setLoadingEnvs] = useState(false);
 
-  // Load workspaces on mount
   useEffect(() => {
     const load = async () => {
       try {
         const data = await getWorkspaces(1, 100);
         setWorkspaces(data.items);
-        // Auto-select first workspace if only one
         if (data.items.length === 1) {
           onChange({
             ...filters,
@@ -125,7 +121,6 @@ export default function UsageFilterBar({
     load();
   }, []);
 
-  // Load environments when workspace changes
   useEffect(() => {
     if (!filters.workspace_id) {
       setEnvironments([]);
@@ -136,7 +131,6 @@ export default function UsageFilterBar({
       try {
         const envs = await getEnvironments(filters.workspace_id!);
         setEnvironments(envs);
-        // Auto-select first environment if only one
         if (envs.length === 1) {
           onChange({ ...filters, environment_id: envs[0].id });
         }
@@ -153,7 +147,6 @@ export default function UsageFilterBar({
 
   return (
     <div className="flex flex-wrap items-end gap-3">
-      {/* Required: Workspace */}
       <SelectFilter
         label="Workspace"
         value={filters.workspace_id?.toString() || ""}
@@ -171,7 +164,6 @@ export default function UsageFilterBar({
         placeholder="Select workspace"
       />
 
-      {/* Required: Environment */}
       <SelectFilter
         label="Environment"
         value={filters.environment_id?.toString() || ""}
@@ -186,10 +178,8 @@ export default function UsageFilterBar({
         placeholder={loadingEnvs ? "Loading..." : "Select environment"}
       />
 
-      {/* Divider */}
       <div className="hidden md:block w-px h-8 bg-surface-700/40" />
 
-      {/* Date Range */}
       <SelectFilter
         label="Period"
         value={filters.days.toString()}
@@ -202,20 +192,6 @@ export default function UsageFilterBar({
         disabled={!hasScope}
       />
 
-      {/* Optional: Status */}
-      <SelectFilter
-        label="Status"
-        value={filters.status || ""}
-        options={[
-          { label: "Allowed", value: "allowed" },
-          { label: "Blocked", value: "blocked" },
-        ]}
-        onChange={(val) => onChange({ ...filters, status: val || null })}
-        disabled={!hasScope}
-        placeholder="All"
-      />
-
-      {/* Optional: User */}
       <TextFilter
         label="User"
         value={filters.user_id || ""}
@@ -224,7 +200,6 @@ export default function UsageFilterBar({
         disabled={!hasScope}
       />
 
-      {/* Optional: Model */}
       <TextFilter
         label="Model"
         value={filters.model || ""}
@@ -233,7 +208,6 @@ export default function UsageFilterBar({
         disabled={!hasScope}
       />
 
-      {/* Optional: Feature */}
       <TextFilter
         label="Feature"
         value={filters.feature || ""}
@@ -242,11 +216,7 @@ export default function UsageFilterBar({
         disabled={!hasScope}
       />
 
-      {/* Clear filters */}
-      {(filters.user_id ||
-        filters.model ||
-        filters.feature ||
-        filters.status) && (
+      {(filters.user_id || filters.model || filters.feature) && (
         <button
           onClick={() =>
             onChange({
@@ -254,7 +224,6 @@ export default function UsageFilterBar({
               user_id: null,
               feature: null,
               model: null,
-              status: null,
             })
           }
           className="px-3 py-1.5 rounded-lg text-xs font-mono text-surface-400 hover:text-white transition-colors"
