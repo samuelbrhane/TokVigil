@@ -1,14 +1,15 @@
 from app.db.redis import get_redis
-from app.core.plans import get_rate_limit
 from app.core.exceptions import RateLimitExceededError
 
+DEFAULT_RATE_LIMIT = 10000 
 
-def check_rate_limit(api_key_id: int, user_plan: str) -> dict:
+
+def check_rate_limit(api_key_id: int) -> dict:
     redis = get_redis()
     if not redis:
         return {"limited": False}
     
-    rate_limit = get_rate_limit(user_plan)
+    rate_limit = DEFAULT_RATE_LIMIT
     cache_key = f"rate:{api_key_id}"
     
     current = redis.get(cache_key)

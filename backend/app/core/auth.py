@@ -67,9 +67,7 @@ async def get_api_key_auth(
     if not environment.is_active:
         raise EnvironmentInactiveError()
     
-    owner = db.query(User).filter(User.id == workspace.owner_id).first()
-    
-    rate_limit_info = check_rate_limit(api_key.id, owner.plan)
+    rate_limit_info = check_rate_limit(api_key.id)
     
     return AuthenticatedRequest(api_key, rate_limit_info)
 
