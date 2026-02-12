@@ -24,11 +24,8 @@ const DOCS_NAV = [
     title: "Tools",
     links: [{ label: "VS Code Extension", href: "/docs/vscode-extension" }],
   },
-  {
-    title: "Reference",
-    links: [{ label: "API Reference", href: "/docs/api-reference" }],
-  },
 ];
+
 export default function DocsLayout({
   children,
 }: {
