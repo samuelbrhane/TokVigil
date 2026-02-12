@@ -6,6 +6,9 @@ export interface UsageSummary {
   total_cost_usd: number;
   allowed_count: number;
   blocked_count: number;
+  workspace_count: number;
+  policy_count: number;
+  api_key_count: number;
 }
 
 export interface UsageRecord {

@@ -27,7 +27,6 @@ export default function DashboardOverview() {
   const [topUsers, setTopUsers] = useState<TopUser[]>([]);
   const [recent, setRecent] = useState<UsageRecord[]>([]);
   const [chartData, setChartData] = useState<Record<string, DailyUsage[]>>({});
-  const [apiKeyCount, setApiKeyCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,7 +49,6 @@ export default function DashboardOverview() {
         setTopUsers(topUsersData);
         setRecent(recentData.items);
         setChartData({ "7d": dailyData });
-        setApiKeyCount(workspacesData.items.length);
       } catch {
         // handle error
       } finally {
@@ -73,11 +71,7 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-8">
-      <DashboardBanner
-        summary={summary}
-        loading={loading}
-        apiKeyCount={apiKeyCount}
-      />
+      <DashboardBanner summary={summary} loading={loading} />
 
       <RequestsChart
         data={chartData}

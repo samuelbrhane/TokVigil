@@ -70,13 +70,11 @@ function formatNumber(n: number): string {
 interface DashboardBannerProps {
   summary: UsageSummary | null;
   loading: boolean;
-  apiKeyCount: number;
 }
 
 export default function DashboardBanner({
   summary,
   loading,
-  apiKeyCount,
 }: DashboardBannerProps) {
   if (loading) {
     return (
@@ -166,7 +164,18 @@ export default function DashboardBanner({
 
       {/* Bottom ticker */}
       <div className="relative flex items-center px-2 py-2 border-t border-surface-700/40 bg-surface-950/50 overflow-x-auto">
-        <TickerItem label="API Keys" value={`${apiKeyCount} active`} />
+        <TickerItem
+          label="Workspaces"
+          value={`${summary?.workspace_count || 0}`}
+        />
+        <TickerItem
+          label="Policies"
+          value={`${summary?.policy_count || 0} active`}
+        />
+        <TickerItem
+          label="API Keys"
+          value={`${summary?.api_key_count || 0} active`}
+        />
         <TickerItem label="Block Rate" value={`${blockRate}%`} />
         <TickerItem
           label="Avg Cost/Req"
