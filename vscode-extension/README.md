@@ -1,37 +1,43 @@
 # TokenFence VS Code Extension
 
-AI usage control for VS Code - manage rate limits, budgets, and policies for your AI-powered applications.
+AI usage control for VS Code — manage rate limits, budgets, and policies for your AI-powered applications.
 
 ## Features
 
-### 🚀 Code Snippets
+### Code Snippets
 
 Quickly insert TokenFence code with snippets:
 
-| Prefix      | Description           |
-| ----------- | --------------------- |
-| `tfimport`  | Import TokenFence SDK |
-| `tfinit`    | Initialize client     |
-| `tfeval`    | Evaluate request      |
-| `tflog`     | Log usage             |
-| `tfflow`    | Complete flow         |
-| `tferror`   | Error handling        |
-| `tfsummary` | Get usage summary     |
+| Prefix        | Description           |
+| ------------- | --------------------- |
+| `tfimport`    | Import TokenFence SDK |
+| `tfinit`      | Initialize client     |
+| `tfeval`      | Evaluate request      |
+| `tflog`       | Log usage             |
+| `tfflow`      | Complete flow         |
+| `tfcheck`     | Check and call        |
+| `tferror`     | Error handling        |
+| `tfsummary`   | Get usage summary     |
+| `tfbyuser`    | Get usage by user     |
+| `tfbyfeature` | Get usage by feature  |
+| `tfblocked`   | Get blocked requests  |
+| `tfrecent`    | Get recent usage      |
 
-### 📝 Autocomplete
+### Autocomplete
 
 Get intelligent suggestions when typing `tf.`:
 
-- `evaluate()` - Check if request is allowed
-- `logUsage()` - Log AI usage
-- `getUsageSummary()` - Get usage stats
+- `evaluate()` — Check if request is allowed
+- `logUsage()` — Log AI usage
+- `checkAndCall()` — Evaluate, call, and log in one step
+- `getUsageSummary()` — Get usage stats
 - And more...
 
-### 📚 Hover Documentation
+### Hover Documentation
 
 Hover over any TokenFence method to see documentation and parameter info.
 
-### ⚠️ Inline Validation
+### Inline Validation
 
 Get real-time warnings for:
 
@@ -39,7 +45,7 @@ Get real-time warnings for:
 - Empty or placeholder API keys
 - Missing required parameters
 
-### 📊 Sidebar Panel
+### Sidebar Panel
 
 View your usage stats directly in VS Code:
 
@@ -47,18 +53,17 @@ View your usage stats directly in VS Code:
 - Top users and features
 - Quick actions
 
-### 🎮 Commands
+### Commands
 
 Access via Command Palette (`Ctrl+Shift+P`):
 
-| Command                           | Description                          |
-| --------------------------------- | ------------------------------------ |
-| `TokenFence: Test Evaluate`       | Test evaluate with custom parameters |
-| `TokenFence: Open Dashboard`      | Open web dashboard                   |
-| `TokenFence: Set API Key`         | Configure API key                    |
-| `TokenFence: Switch Environment`  | Switch dev/staging/prod              |
-| `TokenFence: Insert Code Snippet` | Insert code snippet                  |
-| `TokenFence: Refresh Usage`       | Refresh usage stats                  |
+| Command                      | Description                          |
+| ---------------------------- | ------------------------------------ |
+| `TokenFence: Set API Key`    | Configure API key                    |
+| `TokenFence: Test Evaluate`  | Test evaluate with custom parameters |
+| `TokenFence: Open Dashboard` | Open web dashboard                   |
+| `TokenFence: Insert Snippet` | Insert code snippet                  |
+| `TokenFence: Refresh Usage`  | Refresh usage stats                  |
 
 ## Installation
 
@@ -73,7 +78,7 @@ Open Settings (`Ctrl+,`) and search for "TokenFence":
 
 | Setting                         | Description              | Default                     |
 | ------------------------------- | ------------------------ | --------------------------- |
-| `tokenfence.apiKey`             | Your API key             | -                           |
+| `tokenfence.apiKey`             | Your API key             | —                           |
 | `tokenfence.baseUrl`            | API base URL             | `https://api.tokenfence.io` |
 | `tokenfence.environment`        | Current environment      | `development`               |
 | `tokenfence.showStatusBar`      | Show status bar item     | `true`                      |
@@ -85,14 +90,9 @@ Open Settings (`Ctrl+,`) and search for "TokenFence":
 
 1. Install the extension
 2. Set your API key: `Ctrl+Shift+P` → "TokenFence: Set API Key"
-3. Start coding with snippets: Type `tfinit` and press Tab
+3. Start coding with snippets: type `tfinit` and press Tab
 
 ## Links
 
-- [Documentation](https://docs.tokenfence.io)
-- [Dashboard](https://app.tokenfence.io)
-- [GitHub](https://github.com/samuelbrhane/tokenfence)
-
-## License
-
-MIT
+- [Documentation](https://tokenfence.io/docs)
+- [Dashboard](https://tokenfence.io/dashboard)
