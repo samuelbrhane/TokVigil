@@ -112,7 +112,6 @@ export default function SignupPage() {
               required
             />
           </div>
-
           <InputField
             label="Work email"
             type="email"
@@ -141,7 +140,6 @@ export default function SignupPage() {
             icon={<span className="text-xs">⬡</span>}
             required
           />
-
           <label className="flex items-start gap-2.5 cursor-pointer pt-1">
             <input
               type="checkbox"
@@ -150,11 +148,10 @@ export default function SignupPage() {
             />
             <span className="text-xs text-surface-500 leading-relaxed">
               I agree to the{" "}
-              <a href="#" className="text-brand-500/70 hover:text-brand-400">
-                Terms of Service
-              </a>{" "}
-              and{" "}
-              <a href="#" className="text-brand-500/70 hover:text-brand-400">
+              <a
+                href="/privacy"
+                className="text-brand-500/70 hover:text-brand-400"
+              >
                 Privacy Policy
               </a>
             </span>
