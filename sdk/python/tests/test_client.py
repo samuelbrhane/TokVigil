@@ -10,12 +10,12 @@ class TestUsageSentinel:
             UsageSentinel(api_key="")
     
     def test_init_with_api_key(self):
-        tf = UsageSentinel(api_key="tf_test_xxx")
-        assert tf.api_key == "tf_test_xxx"
+        tf = UsageSentinel(api_key="us_test_xxx")
+        assert us.api_key == "us_test_xxx"
     
     def test_init_custom_base_url(self):
-        tf = UsageSentinel(api_key="tf_test_xxx", base_url="http://localhost:8000")
-        assert tf.base_url == "http://localhost:8000"
+        tf = UsageSentinel(api_key="us_test_xxx", base_url="http://localhost:8000")
+        assert us.base_url == "http://localhost:8000"
     
     @responses.activate
     def test_evaluate_allowed(self):
@@ -36,8 +36,8 @@ class TestUsageSentinel:
             status=200,
         )
         
-        tf = UsageSentinel(api_key="tf_test_xxx")
-        result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
+        tf = UsageSentinel(api_key="us_test_xxx")
+        result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert result.allowed is True
         assert result.reason_code == "ALLOWED"
@@ -62,8 +62,8 @@ class TestUsageSentinel:
             status=200,
         )
         
-        tf = UsageSentinel(api_key="tf_test_xxx")
-        result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
+        tf = UsageSentinel(api_key="us_test_xxx")
+        result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert result.allowed is False
         assert result.reason_code == "DAILY_REQUEST_LIMIT_EXCEEDED"
@@ -82,10 +82,10 @@ class TestUsageSentinel:
             status=401,
         )
         
-        tf = UsageSentinel(api_key="tf_test_invalid")
+        tf = UsageSentinel(api_key="us_test_invalid")
         
         with pytest.raises(AuthenticationError) as exc:
-            tf.evaluate(user_id="user_123", model="gpt-4o-mini")
+            us.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert exc.value.error_code == "INVALID_API_KEY"
     
@@ -104,10 +104,10 @@ class TestUsageSentinel:
             status=429,
         )
         
-        tf = UsageSentinel(api_key="tf_test_xxx")
+        tf = UsageSentinel(api_key="us_test_xxx")
         
         with pytest.raises(RateLimitError) as exc:
-            tf.evaluate(user_id="user_123", model="gpt-4o-mini")
+            us.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert exc.value.retry_after == 30
     
@@ -125,8 +125,8 @@ class TestUsageSentinel:
             status=201,
         )
         
-        tf = UsageSentinel(api_key="tf_test_xxx")
-        result = tf.log_usage(
+        tf = UsageSentinel(api_key="us_test_xxx")
+        result = us.log_usage(
             request_id="req_123",
             user_id="user_123",
             model="gpt-4o-mini",

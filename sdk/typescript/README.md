@@ -20,10 +20,10 @@ pnpm add tokenfence
 import { UsageSentinel } from "tokenfence";
 
 // Initialize client
-const tf = new UsageSentinel({ apiKey: "tf_live_xxx" });
+const tf = new UsageSentinel({ apiKey: "us_live_xxx" });
 
 // Check if request is allowed
-const result = await tf.evaluate({
+const result = await us.evaluate({
   userId: "user_123",
   plan: "free",
   feature: "chat",
@@ -39,7 +39,7 @@ if (result.allowed) {
   });
 
   // Log the usage
-  await tf.logUsage({
+  await us.logUsage({
     requestId: "req_123",
     userId: "user_123",
     model: "gpt-4o-mini",
@@ -65,7 +65,7 @@ if (result.allowed) {
 ### Evaluate Request
 
 ```typescript
-const result = await tf.evaluate({
+const result = await us.evaluate({
   userId: "user_123",
   model: "gpt-4o-mini",
   plan: "free", // optional
@@ -85,7 +85,7 @@ console.log(result.limitState?.requestsLimitDaily); // 50
 ### Log Usage
 
 ```typescript
-await tf.logUsage({
+await us.logUsage({
   requestId: "req_123",
   userId: "user_123",
   model: "gpt-4o-mini",
@@ -103,7 +103,7 @@ await tf.logUsage({
 Automatically evaluate, call AI, and log usage:
 
 ```typescript
-const { result, response } = await tf.checkAndCall(
+const { result, response } = await us.checkAndCall(
   {
     userId: "user_123",
     model: "gpt-4o-mini",
@@ -133,25 +133,25 @@ if (result.allowed && response) {
 
 ```typescript
 // Summary
-const summary = await tf.getUsageSummary();
+const summary = await us.getUsageSummary();
 console.log(summary.totalRequests);
 console.log(summary.totalTokens);
 console.log(summary.totalCostUsd);
 
 // Recent usage
-const recent = await tf.getRecentUsage({ page: 1, pageSize: 20 });
+const recent = await us.getRecentUsage({ page: 1, pageSize: 20 });
 for (const record of recent.items) {
   console.log(`${record.userId}: ${record.totalTokens} tokens`);
 }
 
 // Usage by user
-const byUser = await tf.getUsageByUser();
+const byUser = await us.getUsageByUser();
 for (const group of byUser.items) {
   console.log(`${group.group}: ${group.requests} requests, $${group.costUsd}`);
 }
 
 // Usage by feature
-const byFeature = await tf.getUsageByFeature();
+const byFeature = await us.getUsageByFeature();
 for (const group of byFeature.items) {
   console.log(`${group.group}: ${group.requests} requests`);
 }
@@ -162,10 +162,10 @@ for (const group of byFeature.items) {
 ```typescript
 import { UsageSentinel, RateLimitError, AuthenticationError } from "tokenfence";
 
-const tf = new UsageSentinel({ apiKey: "tf_live_xxx" });
+const tf = new UsageSentinel({ apiKey: "us_live_xxx" });
 
 try {
-  const result = await tf.evaluate({
+  const result = await us.evaluate({
     userId: "user_123",
     model: "gpt-4o-mini",
   });
@@ -184,7 +184,7 @@ try {
 
 ```typescript
 const tf = new UsageSentinel({
-  apiKey: "tf_live_xxx",
+  apiKey: "us_live_xxx",
   baseUrl: "https://api.usagesentinel.com", // Custom API URL
   timeout: 30000, // Request timeout in milliseconds
   retryCount: 3, // Number of retries

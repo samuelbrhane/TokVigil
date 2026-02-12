@@ -21,14 +21,14 @@ const CODE_INSTALL = `pip install tokenfence`;
 const CODE_INIT = `from tokenfence import UsageSentinel
 
 tf = UsageSentinel(
-    api_key="tf_live_...",       # Required: your API key
+    api_key="us_live_...",       # Required: your API key
     base_url="https://api.usagesentinel.com",  # Optional, default
     timeout=30,                  # Optional, seconds
     retry_count=3,               # Optional
     retry_delay=1,               # Optional, seconds
 )`;
 
-const CODE_EVALUATE = `result = tf.evaluate(
+const CODE_EVALUATE = `result = us.evaluate(
     user_id="user_123",       # Required: your app's user ID
     model="gpt-4o-mini",      # Required: AI model name
     feature="chat",           # Optional: feature being used
@@ -46,7 +46,7 @@ else:
 print(f"Requests today: {result.limit_state.requests_today}")
 print(f"Daily limit: {result.limit_state.requests_limit_daily}")`;
 
-const CODE_LOG = `tf.log_usage(
+const CODE_LOG = `us.log_usage(
     request_id="req_123",      # Required: unique request ID
     user_id="user_123",        # Required: your app's user ID
     model="gpt-4o-mini",       # Required: AI model name
@@ -67,7 +67,7 @@ def call_openai():
     )
 
 # Evaluate + call + log in one step
-result, response = tf.check_and_call(
+result, response = us.check_and_call(
     user_id="user_123",
     model="gpt-4o-mini",
     feature="chat",
@@ -80,29 +80,29 @@ else:
     print(f"Blocked: {result.reason_code}")`;
 
 const CODE_ANALYTICS = `# Get usage summary for your workspace
-summary = tf.get_usage_summary()
+summary = us.get_usage_summary()
 print(f"Total requests: {summary.total_requests}")
 print(f"Total tokens: {summary.total_tokens}")
 print(f"Total cost: \${summary.total_cost_usd:.2f}")
 print(f"Blocked: {summary.blocked_count}")
 
 # Get usage grouped by user
-by_user = tf.get_usage_by_user(page=1, page_size=10)
+by_user = us.get_usage_by_user(page=1, page_size=10)
 for user in by_user.items:
     print(f"{user.group}: {user.requests} requests, \${user.cost_usd:.2f}")
 
 # Get usage grouped by feature
-by_feature = tf.get_usage_by_feature(page=1, page_size=10)
+by_feature = us.get_usage_by_feature(page=1, page_size=10)
 for feature in by_feature.items:
     print(f"{feature.group}: {feature.tokens} tokens")
 
 # Get recent usage records (with optional filters)
-recent = tf.get_recent_usage(page=1, page_size=20, user_id="user_123")
+recent = us.get_recent_usage(page=1, page_size=20, user_id="user_123")
 for record in recent.items:
     print(f"{record.model}: {record.total_tokens} tokens")
 
 # Get blocked requests
-blocked = tf.get_blocked_requests(page=1, page_size=20)
+blocked = us.get_blocked_requests(page=1, page_size=20)
 for record in blocked.items:
     print(f"{record.user_id}: {record.reason_code}")`;
 
@@ -116,10 +116,10 @@ const CODE_ERRORS = `from tokenfence import (
     APIError,
 )
 
-tf = UsageSentinel(api_key="tf_live_...")
+tf = UsageSentinel(api_key="us_live_...")
 
 try:
-    result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
+    result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
 except AuthenticationError as e:
     # Invalid or missing API key (401, 403)
     print(f"Auth error: {e.message}")
@@ -154,12 +154,12 @@ REASON_CODES = {
 }
 
 # Handle specific reason codes
-result = tf.evaluate(user_id="user_123", model="gpt-4o")
+result = us.evaluate(user_id="user_123", model="gpt-4o")
 
 if not result.allowed:
     if result.reason_code == "MODEL_NOT_ALLOWED":
         # Fallback to an allowed model
-        result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
+        result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
     elif result.reason_code == "DAILY_REQUEST_LIMIT_EXCEEDED":
         print("You've reached your daily limit. Try again tomorrow.")
     elif result.reason_code == "DAILY_BUDGET_EXCEEDED":

@@ -39,7 +39,7 @@ tf = UsageSentinel(
   {
     label: "$(play) Evaluate Request",
     description: "Check if request is allowed",
-    snippet: `const result = await tf.evaluate({
+    snippet: `const result = await us.evaluate({
   userId: "\${1:user_id}",
   model: "\${2:gpt-4o-mini}",
   plan: "\${3:free}",
@@ -51,7 +51,7 @@ if (result.allowed) {
 } else {
   console.log(\`Blocked: \\\${result.message}\`);
 }`,
-    pythonSnippet: `result = tf.evaluate(
+    pythonSnippet: `result = us.evaluate(
     user_id="\${1:user_id}",
     model="\${2:gpt-4o-mini}",
     plan="\${3:free}",
@@ -66,7 +66,7 @@ else:
   {
     label: "$(history) Log Usage",
     description: "Log AI call after completion",
-    snippet: `await tf.logUsage({
+    snippet: `await us.logUsage({
   requestId: "\${1:request_id}",
   userId: "\${2:user_id}",
   model: "\${3:gpt-4o-mini}",
@@ -78,7 +78,7 @@ else:
 });
 
 \$0`,
-    pythonSnippet: `tf.log_usage(
+    pythonSnippet: `us.log_usage(
     request_id="\${1:request_id}",
     user_id="\${2:user_id}",
     model="\${3:gpt-4o-mini}",
@@ -99,7 +99,7 @@ else:
 const tf = new UsageSentinel({ apiKey: "\${1:your_api_key}" });
 
 async function handleAiRequest(userId: string, prompt: string) {
-  const result = await tf.evaluate({
+  const result = await us.evaluate({
     userId,
     model: "\${2:gpt-4o-mini}",
     plan: "\${3:free}",
@@ -116,7 +116,7 @@ async function handleAiRequest(userId: string, prompt: string) {
   // const response = await openai.chat.completions.create({...});
   \$0
 
-  await tf.logUsage({
+  await us.logUsage({
     requestId,
     userId,
     model: "\${2:gpt-4o-mini}",
@@ -135,7 +135,7 @@ import uuid
 tf = UsageSentinel(api_key="\${1:your_api_key}")
 
 def handle_ai_request(user_id: str, prompt: str):
-    result = tf.evaluate(
+    result = us.evaluate(
         user_id=user_id,
         model="\${2:gpt-4o-mini}",
         plan="\${3:free}",
@@ -151,7 +151,7 @@ def handle_ai_request(user_id: str, prompt: str):
     # response = openai.chat.completions.create(...)
     \$0
 
-    tf.log_usage(
+    us.log_usage(
         request_id=request_id,
         user_id=user_id,
         model="\${2:gpt-4o-mini}",
@@ -172,7 +172,7 @@ def handle_ai_request(user_id: str, prompt: str):
 const tf = new UsageSentinel({ apiKey: "\${1:your_api_key}" });
 
 try {
-  const result = await tf.evaluate({
+  const result = await us.evaluate({
     userId: "\${2:user_id}",
     model: "\${3:gpt-4o-mini}",
   });
@@ -196,7 +196,7 @@ try {
 tf = UsageSentinel(api_key="\${1:your_api_key}")
 
 try:
-    result = tf.evaluate(
+    result = us.evaluate(
         user_id="\${2:user_id}",
         model="\${3:gpt-4o-mini}"
     )
@@ -213,7 +213,7 @@ except UsageSentinelError as e:
   {
     label: "$(graph) Usage Summary",
     description: "Get usage summary statistics",
-    snippet: `const summary = await tf.getUsageSummary();
+    snippet: `const summary = await us.getUsageSummary();
 
 console.log("Total requests:", summary.totalRequests);
 console.log("Total tokens:", summary.totalTokens);
@@ -221,7 +221,7 @@ console.log("Total cost: $" + summary.totalCostUsd.toFixed(2));
 console.log("Blocked:", summary.blockedCount);
 
 \$0`,
-    pythonSnippet: `summary = tf.get_usage_summary()
+    pythonSnippet: `summary = us.get_usage_summary()
 
 print(f"Total requests: {summary.total_requests}")
 print(f"Total tokens: {summary.total_tokens}")
@@ -233,7 +233,7 @@ print(f"Blocked: {summary.blocked_count}")
   {
     label: "$(person) Usage By User",
     description: "Get usage grouped by user",
-    snippet: `const byUser = await tf.getUsageByUser();
+    snippet: `const byUser = await us.getUsageByUser();
 
 console.log("Usage by user:");
 for (const user of byUser.items) {
@@ -241,7 +241,7 @@ for (const user of byUser.items) {
 }
 
 \$0`,
-    pythonSnippet: `by_user = tf.get_usage_by_user()
+    pythonSnippet: `by_user = us.get_usage_by_user()
 
 print("Usage by user:")
 for user in by_user.items:
@@ -252,7 +252,7 @@ for user in by_user.items:
   {
     label: "$(symbol-property) Usage By Feature",
     description: "Get usage grouped by feature",
-    snippet: `const byFeature = await tf.getUsageByFeature();
+    snippet: `const byFeature = await us.getUsageByFeature();
 
 console.log("Usage by feature:");
 for (const feature of byFeature.items) {
@@ -260,7 +260,7 @@ for (const feature of byFeature.items) {
 }
 
 \$0`,
-    pythonSnippet: `by_feature = tf.get_usage_by_feature()
+    pythonSnippet: `by_feature = us.get_usage_by_feature()
 
 print("Usage by feature:")
 for feature in by_feature.items:
@@ -271,7 +271,7 @@ for feature in by_feature.items:
   {
     label: "$(error) Blocked Requests",
     description: "Get list of blocked requests",
-    snippet: `const blocked = await tf.getBlockedRequests();
+    snippet: `const blocked = await us.getBlockedRequests();
 
 console.log("Total blocked:", blocked.total);
 for (const record of blocked.items) {
@@ -279,7 +279,7 @@ for (const record of blocked.items) {
 }
 
 \$0`,
-    pythonSnippet: `blocked = tf.get_blocked_requests()
+    pythonSnippet: `blocked = us.get_blocked_requests()
 
 print(f"Total blocked: {blocked.total}")
 for record in blocked.items:
@@ -290,7 +290,7 @@ for record in blocked.items:
   {
     label: "$(zap) Check and Call",
     description: "Evaluate, call AI, and auto-log in one step",
-    snippet: `const { result, response } = await tf.checkAndCall(
+    snippet: `const { result, response } = await us.checkAndCall(
   {
     userId: "\${1:user_id}",
     model: "\${2:gpt-4o-mini}",
@@ -323,7 +323,7 @@ if (result.allowed && response) {
         messages=[{"role": "user", "content": "\${5:Hello}"}]
     )
 
-result, response = tf.check_and_call(
+result, response = us.check_and_call(
     user_id="\${1:user_id}",
     model="\${2:gpt-4o-mini}",
     ai_function=call_ai,
@@ -340,7 +340,7 @@ else:
   {
     label: "$(list-unordered) Recent Usage",
     description: "Get recent usage records with pagination",
-    snippet: `const recent = await tf.getRecentUsage({ page: 1, pageSize: 10 });
+    snippet: `const recent = await us.getRecentUsage({ page: 1, pageSize: 10 });
 
 console.log("Total records:", recent.total);
 console.log("Page:", recent.page, "/", recent.totalPages);
@@ -350,7 +350,7 @@ for (const record of recent.items) {
 }
 
 \$0`,
-    pythonSnippet: `recent = tf.get_recent_usage(page=1, page_size=10)
+    pythonSnippet: `recent = us.get_recent_usage(page=1, page_size=10)
 
 print(f"Total records: {recent.total}")
 print(f"Page: {recent.page} / {recent.total_pages}")

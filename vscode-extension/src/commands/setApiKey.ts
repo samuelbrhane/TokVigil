@@ -11,15 +11,15 @@ export async function setApiKeyCommand(
 
   const apiKey = await vscode.window.showInputBox({
     prompt: "Enter your UsageSentinel API key",
-    placeHolder: "tf_live_xxxxxxxxxxxxxxxx",
+    placeHolder: "us_live_xxxxxxxxxxxxxxxx",
     value: config.apiKey,
     password: false,
     validateInput: (value) => {
       if (!value) {
         return "API key is required";
       }
-      if (!value.startsWith("tf_live_") && !value.startsWith("tf_test_")) {
-        return "Invalid API key format. Should start with tf_live_ or tf_test_";
+      if (!value.startsWith("us_live_") && !value.startsWith("us_test_")) {
+        return "Invalid API key format. Should start with us_live_ or us_test_";
       }
       return null;
     },

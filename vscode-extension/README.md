@@ -25,7 +25,7 @@ Quickly insert UsageSentinel code with snippets:
 
 ### Autocomplete
 
-Get intelligent suggestions when typing `tf.`:
+Get intelligent suggestions when typing `us.`:
 
 - `evaluate()` — Check if request is allowed
 - `logUsage()` — Log AI usage

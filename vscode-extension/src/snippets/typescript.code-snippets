@@ -20,7 +20,7 @@
   "UsageSentinel Evaluate": {
     "prefix": "tfeval",
     "body": [
-      "const result = await tf.evaluate({",
+      "const result = await us.evaluate({",
       "  userId: \"${1:user_id}\",",
       "  model: \"${2:gpt-4o-mini}\",",
       "  plan: \"${3:free}\",",
@@ -38,7 +38,7 @@
   "UsageSentinel Log Usage": {
     "prefix": "tflog",
     "body": [
-      "await tf.logUsage({",
+      "await us.logUsage({",
       "  requestId: \"${1:request_id}\",",
       "  userId: \"${2:user_id}\",",
       "  model: \"${3:gpt-4o-mini}\",",
@@ -61,7 +61,7 @@
       "",
       "async function handleAiRequest() {",
       "  // Check if request is allowed",
-      "  const result = await tf.evaluate({",
+      "  const result = await us.evaluate({",
       "    userId: \"${2:user_id}\",",
       "    model: \"${3:gpt-4o-mini}\",",
       "    plan: \"${4:free}\",",
@@ -77,7 +77,7 @@
       "    $0",
       "    ",
       "    // Log the usage",
-      "    await tf.logUsage({",
+      "    await us.logUsage({",
       "      requestId,",
       "      userId: \"${2:user_id}\",",
       "      model: \"${3:gpt-4o-mini}\",",
@@ -99,7 +99,7 @@
   "UsageSentinel Usage Summary": {
     "prefix": "tfsummary",
     "body": [
-      "const summary = await tf.getUsageSummary();",
+      "const summary = await us.getUsageSummary();",
       "console.log(`Total requests: \\${summary.totalRequests}`);",
       "console.log(`Total tokens: \\${summary.totalTokens}`);",
       "console.log(`Total cost: \\$\\${summary.totalCostUsd}`);",
@@ -110,7 +110,7 @@
   "UsageSentinel Usage By User": {
     "prefix": "tfbyuser",
     "body": [
-      "const byUser = await tf.getUsageByUser();",
+      "const byUser = await us.getUsageByUser();",
       "for (const user of byUser.items) {",
       "  console.log(`\\${user.group}: \\${user.requests} requests, \\${user.tokens} tokens`);",
       "}",
@@ -121,7 +121,7 @@
   "UsageSentinel Check and Call": {
     "prefix": "tfcheck",
     "body": [
-      "const { result, response } = await tf.checkAndCall(",
+      "const { result, response } = await us.checkAndCall(",
       "  {",
       "    userId: \"${1:user_id}\",",
       "    model: \"${2:gpt-4o-mini}\",",
@@ -158,7 +158,7 @@
       "const tf = new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
       "",
       "try {",
-      "  const result = await tf.evaluate({",
+      "  const result = await us.evaluate({",
       "    userId: \"${2:user_id}\",",
       "    model: \"${3:gpt-4o-mini}\",",
       "  });",
@@ -178,7 +178,7 @@
   "UsageSentinel Blocked Requests": {
     "prefix": "tfblocked",
     "body": [
-      "const blocked = await tf.getBlockedRequests();",
+      "const blocked = await us.getBlockedRequests();",
       "console.log(`Total blocked: \\${blocked.total}`);",
       "for (const record of blocked.items) {",
       "  console.log(`\\${record.userId}: \\${record.reasonCode}`);",

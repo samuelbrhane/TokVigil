@@ -16,7 +16,7 @@ export class CompletionProvider implements vscode.CompletionItemProvider {
     const lineText = document.lineAt(position).text;
     const linePrefix = lineText.substring(0, position.character);
 
-    // Check if user is typing after "tf." or "tokenfence."
+    // Check if user is typing after "us." or "tokenfence."
     const tfMatch = linePrefix.match(/(tf|tokenfence|client)\.\s*$/i);
     if (!tfMatch) {
       return undefined;

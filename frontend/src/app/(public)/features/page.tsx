@@ -116,7 +116,7 @@ const featureCodeExamples: Record<
 > = {
   "Rate Limiting": {
     python: `# Check limits before each AI call
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     plan="free",
@@ -130,7 +130,7 @@ else:
     print(f"Requests today: {result.limit_state.requests_today}")
     print(f"Limit: {result.limit_state.requests_limit_daily}")`,
     typescript: `// Check limits before each AI call
-const result = await tf.evaluate({
+const result = await us.evaluate({
   userId: "user_123",
   model: "gpt-4o-mini",
   plan: "free",
@@ -147,7 +147,7 @@ if (result.allowed) {
 
   "Budget Control": {
     python: `# Budget limits enforced automatically
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     model="gpt-4o",
     plan="pro"
@@ -160,7 +160,7 @@ if not result.allowed:
     elif result.reason_code == "MAX_COST_EXCEEDED":
         print("Request too expensive, try a smaller model")`,
     typescript: `// Budget limits enforced automatically
-const result = await tf.evaluate({
+const result = await us.evaluate({
   userId: "user_123",
   model: "gpt-4o",
   plan: "pro",
@@ -178,7 +178,7 @@ if (!result.allowed) {
 
   "Token Limits": {
     python: `# Token limits checked automatically
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     plan="free",
@@ -192,7 +192,7 @@ else:
         print(f"Tokens today: {result.limit_state.tokens_today}")
         print(f"Limit: {result.limit_state.tokens_limit_daily}")`,
     typescript: `// Token limits checked automatically
-const result = await tf.evaluate({
+const result = await us.evaluate({
   userId: "user_123",
   model: "gpt-4o-mini",
   plan: "free",
@@ -214,7 +214,7 @@ if (result.allowed) {
 # Free plan: only gpt-4o-mini allowed
 # Pro plan: gpt-4o-mini, gpt-4o, claude-3-sonnet
 
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     model="gpt-4o",  # Not allowed on free plan
     plan="free"
@@ -223,7 +223,7 @@ result = tf.evaluate(
 if result.reason_code == "MODEL_NOT_ALLOWED":
     print("Upgrade to Pro for GPT-4o access")
     # Fallback to allowed model
-    result = tf.evaluate(
+    result = us.evaluate(
         user_id="user_123",
         model="gpt-4o-mini",
         plan="free"
@@ -232,7 +232,7 @@ if result.reason_code == "MODEL_NOT_ALLOWED":
 // Free plan: only gpt-4o-mini allowed
 // Pro plan: gpt-4o-mini, gpt-4o, claude-3-sonnet
 
-const result = await tf.evaluate({
+const result = await us.evaluate({
   userId: "user_123",
   model: "gpt-4o", // Not allowed on free plan
   plan: "free",
@@ -241,7 +241,7 @@ const result = await tf.evaluate({
 if (result.reasonCode === "MODEL_NOT_ALLOWED") {
   console.log("Upgrade to Pro for GPT-4o access");
   // Fallback to allowed model
-  const fallback = await tf.evaluate({
+  const fallback = await us.evaluate({
     userId: "user_123",
     model: "gpt-4o-mini",
     plan: "free",
@@ -251,36 +251,36 @@ if (result.reasonCode === "MODEL_NOT_ALLOWED") {
 
   "Usage Analytics": {
     python: `# Get usage summary
-summary = tf.get_usage_summary()
+summary = us.get_usage_summary()
 print(f"Total requests: {summary.total_requests}")
 print(f"Total tokens: {summary.total_tokens}")
 print(f"Total cost: \${summary.total_cost_usd:.2f}")
 print(f"Blocked: {summary.blocked_count}")
 
 # Usage breakdown by user
-by_user = tf.get_usage_by_user()
+by_user = us.get_usage_by_user()
 for user in by_user.items:
     print(f"{user.group}: {user.requests} requests")
 
 # Usage breakdown by feature
-by_feature = tf.get_usage_by_feature()
+by_feature = us.get_usage_by_feature()
 for feature in by_feature.items:
     print(f"{feature.group}: \${feature.cost_usd:.2f}")`,
     typescript: `// Get usage summary
-const summary = await tf.getUsageSummary();
+const summary = await us.getUsageSummary();
 console.log(\`Total requests: \${summary.totalRequests}\`);
 console.log(\`Total tokens: \${summary.totalTokens}\`);
 console.log(\`Total cost: $\${summary.totalCostUsd.toFixed(2)}\`);
 console.log(\`Blocked: \${summary.blockedCount}\`);
 
 // Usage breakdown by user
-const byUser = await tf.getUsageByUser();
+const byUser = await us.getUsageByUser();
 for (const user of byUser.items) {
   console.log(\`\${user.group}: \${user.requests} requests\`);
 }
 
 // Usage breakdown by feature
-const byFeature = await tf.getUsageByFeature();
+const byFeature = await us.getUsageByFeature();
 for (const feature of byFeature.items) {
   console.log(\`\${feature.group}: $\${feature.costUsd.toFixed(2)}\`);
 }`,
@@ -291,29 +291,29 @@ for (const feature of byFeature.items) {
 from tokenfence import UsageSentinel
 
 # Production - real usage tracking
-tf_prod = UsageSentinel(api_key="tf_live_xxxxxxxxxxxx")
+us_prod = UsageSentinel(api_key="us_live_xxxxxxxxxxxx")
 
 # Development - isolated testing  
-tf_dev = UsageSentinel(api_key="tf_test_xxxxxxxxxxxx")
+us_dev = UsageSentinel(api_key="us_test_xxxxxxxxxxxx")
 
 # Same code works in both environments
-result = tf_prod.evaluate(
+result = us_prod.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     plan="free"
 )
 
 # Usage data is completely isolated
-prod_summary = tf_prod.get_usage_summary()
-dev_summary = tf_dev.get_usage_summary()`,
+prod_summary = us_prod.get_usage_summary()
+dev_summary = us_dev.get_usage_summary()`,
     typescript: `// Separate environments with distinct API keys
 import { UsageSentinel } from "tokenfence";
 
 // Production - real usage tracking
-const tfProd = new UsageSentinel({ apiKey: "tf_live_xxxxxxxxxxxx" });
+const tfProd = new UsageSentinel({ apiKey: "us_live_xxxxxxxxxxxx" });
 
 // Development - isolated testing
-const tfDev = new UsageSentinel({ apiKey: "tf_test_xxxxxxxxxxxx" });
+const tfDev = new UsageSentinel({ apiKey: "us_test_xxxxxxxxxxxx" });
 
 // Same code works in both environments
 const result = await tfProd.evaluate({
@@ -336,10 +336,10 @@ const devSummary = await tfDev.getUsageSummary();`,
     UsageSentinelError
 )
 
-tf = UsageSentinel(api_key="tf_live_...")
+tf = UsageSentinel(api_key="us_live_...")
 
 try:
-    result = tf.evaluate(
+    result = us.evaluate(
         user_id="user_123",
         model="gpt-4o-mini"
     )
@@ -359,10 +359,10 @@ except UsageSentinelError as e:
   UsageSentinelError,
 } from "tokenfence";
 
-const tf = new UsageSentinel({ apiKey: "tf_live_..." });
+const tf = new UsageSentinel({ apiKey: "us_live_..." });
 
 try {
-  const result = await tf.evaluate({
+  const result = await us.evaluate({
     userId: "user_123",
     model: "gpt-4o-mini",
   });
@@ -381,7 +381,7 @@ try {
 
   "One-Line Integration": {
     python: `# Full flow in one function call
-result, response = tf.check_and_call(
+result, response = us.check_and_call(
     user_id="user_123",
     model="gpt-4o-mini",
     plan="free",
@@ -402,7 +402,7 @@ if result.allowed:
 else:
     print(f"Blocked: {result.reason_code}")`,
     typescript: `// Full flow in one function call
-const { result, response } = await tf.checkAndCall(
+const { result, response } = await us.checkAndCall(
   {
     userId: "user_123",
     model: "gpt-4o-mini",

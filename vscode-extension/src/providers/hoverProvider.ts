@@ -97,9 +97,9 @@ export class HoverProvider implements vscode.HoverProvider {
     markdown.appendCodeblock(
       `from tokenfence import UsageSentinel
 
-tf = UsageSentinel(api_key="tf_live_xxx")
+tf = UsageSentinel(api_key="us_live_xxx")
 
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     model="gpt-4o-mini"
 )

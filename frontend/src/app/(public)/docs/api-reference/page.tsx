@@ -9,7 +9,7 @@ const ENDPOINTS = [
     path: "/api/v1/evaluate",
     title: "Evaluate Request",
     description: "Check if an AI request should be allowed based on policies.",
-    headers: `X-API-Key: tf_live_...
+    headers: `X-API-Key: us_live_...
 Content-Type: application/json`,
     request: `{
   "user_id": "user_123",
@@ -39,7 +39,7 @@ Content-Type: application/json`,
     path: "/api/v1/usage",
     title: "Log Usage",
     description: "Log an AI request after completion.",
-    headers: `X-API-Key: tf_live_...
+    headers: `X-API-Key: us_live_...
 Content-Type: application/json`,
     request: `{
   "request_id": "req_123",
@@ -62,7 +62,7 @@ Content-Type: application/json`,
     path: "/api/v1/usage/summary",
     title: "Usage Summary",
     description: "Get aggregated usage statistics.",
-    headers: `X-API-Key: tf_live_...`,
+    headers: `X-API-Key: us_live_...`,
     request: `# Query parameters (optional)
 ?start_date=2025-01-01T00:00:00Z
 &end_date=2025-01-31T23:59:59Z`,
@@ -79,7 +79,7 @@ Content-Type: application/json`,
     path: "/api/v1/usage/by-user",
     title: "Usage by User",
     description: "Get usage grouped by user ID.",
-    headers: `X-API-Key: tf_live_...`,
+    headers: `X-API-Key: us_live_...`,
     request: `# Query parameters
 ?page=1
 &page_size=20`,
@@ -105,7 +105,7 @@ Content-Type: application/json`,
     path: "/api/v1/usage/by-feature",
     title: "Usage by Feature",
     description: "Get usage grouped by feature.",
-    headers: `X-API-Key: tf_live_...`,
+    headers: `X-API-Key: us_live_...`,
     request: `# Query parameters
 ?page=1
 &page_size=20`,
@@ -131,10 +131,10 @@ Content-Type: application/json`,
     path: "/api/v1/auth/api-key-info",
     title: "API Key Info",
     description: "Get information about the current API key.",
-    headers: `X-API-Key: tf_live_...`,
+    headers: `X-API-Key: us_live_...`,
     request: `# No request body`,
     response: `{
-  "key_prefix": "tf_live_52de2ea4",
+  "key_prefix": "us_live_52de2ea4",
   "name": "Production Key",
   "environment_id": 12,
   "environment_name": "production",
@@ -238,7 +238,7 @@ export default function APIReferencePage() {
         </p>
         <CodeBlock
           code={`curl -X POST https://api.usagesentinel.com/api/v1/evaluate \\
-  -H "X-API-Key: tf_live_..." \\
+  -H "X-API-Key: us_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{"user_id": "user_123", "model": "gpt-4o-mini"}'`}
           language="bash"

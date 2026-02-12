@@ -41,7 +41,7 @@ const COMMAND_ROWS: [string, string][] = [
 ];
 
 const CODE_SETTINGS = `{
-  "tokenfence.apiKey": "tf_live_...",
+  "tokenfence.apiKey": "us_live_...",
   "tokenfence.baseUrl": "https://api.usagesentinel.com"
 }`;
 
@@ -85,7 +85,7 @@ export default function VSCodeExtensionPage() {
             steps={[
               'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code> to open Command Palette',
               'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">UsageSentinel: Set API Key</code>',
-              'Enter your API key (starts with <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">tf_live_</code>)',
+              'Enter your API key (starts with <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">us_live_</code>)',
             ]}
           />
           <p className="text-surface-400 mb-4">
@@ -109,7 +109,7 @@ export default function VSCodeExtensionPage() {
           <DocFeature
             icon="⚡"
             title="Autocomplete"
-            description="Get intelligent suggestions when typing tf. in your code:"
+            description="Get intelligent suggestions when typing us. in your code:"
             items={[
               "All SDK methods with documentation",
               "Parameter hints and types",

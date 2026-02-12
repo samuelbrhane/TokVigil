@@ -16,9 +16,9 @@ Official SDKs for the UsageSentinel platform.
 ```python
 from tokenfence import UsageSentinel
 
-tf = UsageSentinel(api_key="tf_live_...")
+tf = UsageSentinel(api_key="us_live_...")
 
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     feature="chat"
@@ -26,7 +26,7 @@ result = tf.evaluate(
 
 if result.allowed:
     # make your AI call, then log it
-    tf.log_usage(
+    us.log_usage(
         request_id="req_123",
         user_id="user_123",
         model="gpt-4o-mini",
@@ -41,9 +41,9 @@ if result.allowed:
 ```typescript
 import { UsageSentinel } from "tokenfence";
 
-const tf = new UsageSentinel({ apiKey: "tf_live_..." });
+const tf = new UsageSentinel({ apiKey: "us_live_..." });
 
-const result = await tf.evaluate({
+const result = await us.evaluate({
   userId: "user_123",
   model: "gpt-4o-mini",
   feature: "chat",
@@ -51,7 +51,7 @@ const result = await tf.evaluate({
 
 if (result.allowed) {
   // make your AI call, then log it
-  await tf.logUsage({
+  await us.logUsage({
     requestId: "req_123",
     userId: "user_123",
     model: "gpt-4o-mini",

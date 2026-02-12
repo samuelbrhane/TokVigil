@@ -16,10 +16,10 @@ pip install tokenfence
 from tokenfence import UsageSentinel
 
 # Initialize client
-tf = UsageSentinel(api_key="tf_live_xxx")
+tf = UsageSentinel(api_key="us_live_xxx")
 
 # Check if request is allowed
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     plan="free",
     feature="chat",
@@ -35,7 +35,7 @@ if result.allowed:
     )
 
     # Log the usage
-    tf.log_usage(
+    us.log_usage(
         request_id="req_123",
         user_id="user_123",
         model="gpt-4o-mini",
@@ -63,7 +63,7 @@ else:
 ### Evaluate Request
 
 ```python
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     plan="free",           # optional
@@ -83,7 +83,7 @@ print(result.limit_state.requests_limit_daily)  # 50
 ### Log Usage
 
 ```python
-tf.log_usage(
+us.log_usage(
     request_id="req_123",
     user_id="user_123",
     model="gpt-4o-mini",
@@ -107,7 +107,7 @@ def call_openai():
         messages=[{"role": "user", "content": "Hello"}]
     )
 
-result, response = tf.check_and_call(
+result, response = us.check_and_call(
     user_id="user_123",
     model="gpt-4o-mini",
     ai_function=call_openai,
@@ -125,23 +125,23 @@ else:
 
 ```python
 # Summary
-summary = tf.get_usage_summary()
+summary = us.get_usage_summary()
 print(summary.total_requests)
 print(summary.total_tokens)
 print(summary.total_cost_usd)
 
 # Recent usage
-recent = tf.get_recent_usage(page=1, page_size=20)
+recent = us.get_recent_usage(page=1, page_size=20)
 for record in recent.items:
     print(f"{record.user_id}: {record.total_tokens} tokens")
 
 # Usage by user
-by_user = tf.get_usage_by_user()
+by_user = us.get_usage_by_user()
 for group in by_user.items:
     print(f"{group.group}: {group.requests} requests, ${group.cost_usd}")
 
 # Usage by feature
-by_feature = tf.get_usage_by_feature()
+by_feature = us.get_usage_by_feature()
 for group in by_feature.items:
     print(f"{group.group}: {group.requests} requests")
 ```
@@ -151,10 +151,10 @@ for group in by_feature.items:
 ```python
 from tokenfence import UsageSentinel, RateLimitError, AuthenticationError
 
-tf = UsageSentinel(api_key="tf_live_xxx")
+tf = UsageSentinel(api_key="us_live_xxx")
 
 try:
-    result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
+    result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
 except AuthenticationError as e:
     print(f"Invalid API key: {e.message}")
 except RateLimitError as e:
@@ -167,7 +167,7 @@ except UsageSentinelError as e:
 
 ```python
 tf = UsageSentinel(
-    api_key="tf_live_xxx",
+    api_key="us_live_xxx",
     base_url="https://api.usagesentinel.com",  # Custom API URL
     timeout=30,           # Request timeout in seconds
     retry_count=3,        # Number of retries

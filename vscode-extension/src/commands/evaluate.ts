@@ -217,7 +217,7 @@ async function insertEvaluateCode(
   let code: string;
 
   if (languageId === "python") {
-    code = `result = tf.evaluate(
+    code = `result = us.evaluate(
     user_id="${userId}",
     model="${model}",
     plan="${plan || "free"}",
@@ -231,7 +231,7 @@ else:
     print(f"Blocked: {result.message}")
 `;
   } else {
-    code = `const result = await tf.evaluate({
+    code = `const result = await us.evaluate({
   userId: "${userId}",
   model: "${model}",
   plan: "${plan || "free"}",

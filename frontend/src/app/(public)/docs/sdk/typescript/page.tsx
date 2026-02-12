@@ -23,14 +23,14 @@ yarn add tokenfence`;
 const CODE_INIT = `import { UsageSentinel } from "tokenfence";
 
 const tf = new UsageSentinel({
-  apiKey: "tf_live_...",           // Required: your API key
+  apiKey: "us_live_...",           // Required: your API key
   baseUrl: "https://api.usagesentinel.com",  // Optional, default
   timeout: 30000,                  // Optional, milliseconds
   retryCount: 3,                   // Optional
   retryDelay: 1000,                // Optional, milliseconds
 });`;
 
-const CODE_EVALUATE = `const result = await tf.evaluate({
+const CODE_EVALUATE = `const result = await us.evaluate({
   userId: "user_123",       // Required: your app's user ID
   model: "gpt-4o-mini",     // Required: AI model name
   feature: "chat",          // Optional: feature being used
@@ -49,7 +49,7 @@ if (result.allowed) {
 console.log(\`Requests today: \${result.limitState.requestsToday}\`);
 console.log(\`Daily limit: \${result.limitState.requestsLimitDaily}\`);`;
 
-const CODE_LOG = `await tf.logUsage({
+const CODE_LOG = `await us.logUsage({
   requestId: "req_123",      // Required: unique request ID
   userId: "user_123",        // Required: your app's user ID
   model: "gpt-4o-mini",      // Required: AI model name
@@ -65,7 +65,7 @@ const CODE_CHECK_AND_CALL = `import OpenAI from "openai";
 
 const openai = new OpenAI();
 
-const { result, response } = await tf.checkAndCall(
+const { result, response } = await us.checkAndCall(
   {
     userId: "user_123",
     model: "gpt-4o-mini",
@@ -90,32 +90,32 @@ if (result.allowed && response) {
 }`;
 
 const CODE_ANALYTICS = `// Get usage summary for your workspace
-const summary = await tf.getUsageSummary();
+const summary = await us.getUsageSummary();
 console.log(\`Total requests: \${summary.totalRequests}\`);
 console.log(\`Total tokens: \${summary.totalTokens}\`);
 console.log(\`Total cost: $\${summary.totalCostUsd.toFixed(2)}\`);
 console.log(\`Blocked: \${summary.blockedCount}\`);
 
 // Get usage grouped by user
-const byUser = await tf.getUsageByUser({ page: 1, pageSize: 10 });
+const byUser = await us.getUsageByUser({ page: 1, pageSize: 10 });
 for (const user of byUser.items) {
   console.log(\`\${user.group}: \${user.requests} requests, $\${user.costUsd.toFixed(2)}\`);
 }
 
 // Get usage grouped by feature
-const byFeature = await tf.getUsageByFeature({ page: 1, pageSize: 10 });
+const byFeature = await us.getUsageByFeature({ page: 1, pageSize: 10 });
 for (const feature of byFeature.items) {
   console.log(\`\${feature.group}: \${feature.tokens} tokens\`);
 }
 
 // Get recent usage records (with optional filters)
-const recent = await tf.getRecentUsage({ page: 1, pageSize: 20, userId: "user_123" });
+const recent = await us.getRecentUsage({ page: 1, pageSize: 20, userId: "user_123" });
 for (const record of recent.items) {
   console.log(\`\${record.model}: \${record.totalTokens} tokens\`);
 }
 
 // Get blocked requests
-const blocked = await tf.getBlockedRequests({ page: 1, pageSize: 20 });
+const blocked = await us.getBlockedRequests({ page: 1, pageSize: 20 });
 for (const record of blocked.items) {
   console.log(\`\${record.userId}: \${record.reasonCode}\`);
 }`;
@@ -130,10 +130,10 @@ const CODE_ERRORS = `import {
   APIError,
 } from "tokenfence";
 
-const tf = new UsageSentinel({ apiKey: "tf_live_..." });
+const tf = new UsageSentinel({ apiKey: "us_live_..." });
 
 try {
-  const result = await tf.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
+  const result = await us.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
 } catch (error) {
   if (error instanceof AuthenticationError) {
     // Invalid or missing API key (401, 403)
@@ -171,13 +171,13 @@ const REASON_CODES = {
 };
 
 // Handle specific reason codes
-const result = await tf.evaluate({ userId: "user_123", model: "gpt-4o" });
+const result = await us.evaluate({ userId: "user_123", model: "gpt-4o" });
 
 if (!result.allowed) {
   switch (result.reasonCode) {
     case "MODEL_NOT_ALLOWED":
       // Fallback to an allowed model
-      const fallback = await tf.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
+      const fallback = await us.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
       break;
     case "DAILY_REQUEST_LIMIT_EXCEEDED":
       console.log("You've reached your daily limit. Try again tomorrow.");

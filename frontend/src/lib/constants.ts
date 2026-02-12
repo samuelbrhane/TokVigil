@@ -108,12 +108,12 @@ export const STEPS = [
 
 from tokenfence import UsageSentinel
 
-tf = UsageSentinel(api_key="tf_live_...")`,
+tf = UsageSentinel(api_key="us_live_...")`,
     typescript: `npm install tokenfence
 
 import { UsageSentinel } from "tokenfence";
 
-const tf = new UsageSentinel({ apiKey: "tf_live_..." });`,
+const tf = new UsageSentinel({ apiKey: "us_live_..." });`,
   },
   {
     num: "02",
@@ -121,7 +121,7 @@ const tf = new UsageSentinel({ apiKey: "tf_live_..." });`,
     description:
       "Check policies before each AI call, then log usage automatically. One function handles the full flow.",
     python: `# Check → Call AI → Log usage (all in one)
-result, response = tf.check_and_call(
+result, response = us.check_and_call(
     user_id="user_123",
     model="gpt-4o-mini",
     plan="free",
@@ -137,7 +137,7 @@ if result.allowed:
 else:
     print(f"Blocked: {result.reason_code}")`,
     typescript: `// Check → Call AI → Log usage (all in one)
-const { result, response } = await tf.checkAndCall(
+const { result, response } = await us.checkAndCall(
   {
     userId: "user_123",
     model: "gpt-4o-mini",
@@ -162,21 +162,21 @@ if (result.allowed && response) {
     description:
       "Track usage, catch blocked requests, and handle errors from code, VS Code, or the dashboard.",
     python: `# Usage summary
-summary = tf.get_usage_summary()
+summary = us.get_usage_summary()
 print(f"Requests: {summary.total_requests}")
 print(f"Cost: \${summary.total_cost_usd}")
 
 # Check blocked requests
-blocked = tf.get_blocked_requests()
+blocked = us.get_blocked_requests()
 for record in blocked.items:
     print(f"{record.user_id}: {record.reason_code}")`,
     typescript: `// Usage summary
-const summary = await tf.getUsageSummary();
+const summary = await us.getUsageSummary();
 console.log(\`Requests: \${summary.totalRequests}\`);
 console.log(\`Cost: $\${summary.totalCostUsd}\`);
 
 // Check blocked requests  
-const blocked = await tf.getBlockedRequests();
+const blocked = await us.getBlockedRequests();
 for (const record of blocked.items) {
   console.log(\`\${record.userId}: \${record.reasonCode}\`);
 }`,
@@ -293,7 +293,7 @@ export const PRICING_FAQ = [
   {
     question: "What counts as an evaluate call?",
     answer:
-      "One evaluate call = one POST to /api/v1/evaluate. When your SDK calls tf.evaluate() or tf.checkAndCall(), that counts as 1 evaluate call. Usage logging (POST /api/v1/usage) does not count toward your limit.",
+      "One evaluate call = one POST to /api/v1/evaluate. When your SDK calls us.evaluate() or us.checkAndCall(), that counts as 1 evaluate call. Usage logging (POST /api/v1/usage) does not count toward your limit.",
   },
   {
     question: "Can I switch plans anytime?",

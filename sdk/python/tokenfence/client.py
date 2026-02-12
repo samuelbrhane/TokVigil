@@ -37,10 +37,10 @@ class UsageSentinel:
     UsageSentinel SDK client.
     
     Usage:
-        tf = UsageSentinel(api_key="tf_live_xxx")
+        tf = UsageSentinel(api_key="us_live_xxx")
         
         # Check if request is allowed
-        result = tf.evaluate(
+        result = us.evaluate(
             user_id="user_123",
             plan="free",
             feature="chat",
@@ -53,7 +53,7 @@ class UsageSentinel:
             response = openai.chat.completions.create(...)
             
             # Log the usage
-            tf.log_usage(
+            us.log_usage(
                 request_id=result.request_id,
                 user_id="user_123",
                 model="gpt-4o-mini",
@@ -202,7 +202,7 @@ class UsageSentinel:
             EvaluateResult with allowed status and limit information
         
         Example:
-            result = tf.evaluate(
+            result = us.evaluate(
                 user_id="user_123",
                 plan="free",
                 feature="chat",
@@ -274,7 +274,7 @@ class UsageSentinel:
             UsageLogResult confirming the log
         
         Example:
-            tf.log_usage(
+            us.log_usage(
                 request_id="req_123",
                 user_id="user_123",
                 model="gpt-4o-mini",
@@ -347,7 +347,7 @@ class UsageSentinel:
                     messages=[{"role": "user", "content": "Hello"}]
                 )
             
-            result, response = tf.check_and_call(
+            result, response = us.check_and_call(
                 user_id="user_123",
                 model="gpt-4o-mini",
                 ai_function=call_openai,
