@@ -51,7 +51,7 @@ const sections = [
     title: "6. Data Retention",
     content: [
       "Account data is retained as long as your account is active.",
-      "Usage records are retained according to your plan (Free: 30 days, Pro: 90 days, Premium: 180 days, Enterprise: 1 year).",
+      "Usage records are retained for 90 days by default.",
       "Audit logs follow the same retention schedule.",
       "You can request deletion of your account and associated data at any time by contacting support@tokenfence.io.",
     ],
@@ -62,7 +62,7 @@ const sections = [
       "Access: You can request a copy of your data at any time.",
       "Correction: You can update your account information through the dashboard.",
       "Deletion: You can request account deletion by contacting us.",
-      "Export: Usage data can be exported via the API or dashboard (paid plans).",
+      "Export: Usage data can be exported via the API or dashboard.",
     ],
   },
   {
