@@ -371,5 +371,5 @@ export const DASHBOARD_NAV = [
 
 export const DASHBOARD_NAV_BOTTOM = [
   { label: "Settings", href: "/dashboard/settings", icon: "settings" },
-  { label: "Billing", href: "/dashboard/billing", icon: "credit-card" },
+  // { label: "Billing", href: "/dashboard/billing", icon: "credit-card" },
 ] as const;
