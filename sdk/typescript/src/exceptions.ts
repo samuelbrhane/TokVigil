@@ -2,7 +2,7 @@ export interface ErrorDetails {
   [key: string]: unknown;
 }
 
-export class TokenFenceError extends Error {
+export class UsageSentinelError extends Error {
   public errorCode: string | null;
   public details: ErrorDetails | null;
 
@@ -12,13 +12,13 @@ export class TokenFenceError extends Error {
     details: ErrorDetails | null = null,
   ) {
     super(message);
-    this.name = "TokenFenceError";
+    this.name = "UsageSentinelError";
     this.errorCode = errorCode;
     this.details = details;
   }
 }
 
-export class AuthenticationError extends TokenFenceError {
+export class AuthenticationError extends UsageSentinelError {
   constructor(
     message: string = "Unauthorized",
     errorCode: string | null = null,
@@ -29,7 +29,7 @@ export class AuthenticationError extends TokenFenceError {
   }
 }
 
-export class RateLimitError extends TokenFenceError {
+export class RateLimitError extends UsageSentinelError {
   public retryAfter: number | null;
 
   constructor(
@@ -44,7 +44,7 @@ export class RateLimitError extends TokenFenceError {
   }
 }
 
-export class ValidationError extends TokenFenceError {
+export class ValidationError extends UsageSentinelError {
   constructor(
     message: string = "Validation error",
     errorCode: string | null = null,
@@ -55,7 +55,7 @@ export class ValidationError extends TokenFenceError {
   }
 }
 
-export class NotFoundError extends TokenFenceError {
+export class NotFoundError extends UsageSentinelError {
   constructor(
     message: string = "Resource not found",
     errorCode: string | null = null,
@@ -66,7 +66,7 @@ export class NotFoundError extends TokenFenceError {
   }
 }
 
-export class APIError extends TokenFenceError {
+export class APIError extends UsageSentinelError {
   public statusCode: number | null;
 
   constructor(
@@ -81,7 +81,7 @@ export class APIError extends TokenFenceError {
   }
 }
 
-export class ConnectionError extends TokenFenceError {
+export class ConnectionError extends UsageSentinelError {
   constructor(
     message: string = "Connection failed",
     errorCode: string | null = null,
@@ -92,7 +92,7 @@ export class ConnectionError extends TokenFenceError {
   }
 }
 
-export class TimeoutError extends TokenFenceError {
+export class TimeoutError extends UsageSentinelError {
   constructor(
     message: string = "Request timed out",
     errorCode: string | null = null,

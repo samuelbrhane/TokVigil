@@ -13,7 +13,7 @@ from tokenfence.constants import (
     USER_AGENT,
 )
 from tokenfence.exceptions import (
-    TokenFenceError,
+    UsageSentinelError,
     AuthenticationError,
     RateLimitError,
     ValidationError,
@@ -32,12 +32,12 @@ from tokenfence.models import (
 )
 
 
-class TokenFence:
+class UsageSentinel:
     """
-    TokenFence SDK client.
+    UsageSentinel SDK client.
     
     Usage:
-        tf = TokenFence(api_key="tf_live_xxx")
+        tf = UsageSentinel(api_key="tf_live_xxx")
         
         # Check if request is allowed
         result = tf.evaluate(
@@ -114,11 +114,11 @@ class TokenFence:
             except http_requests.exceptions.Timeout:
                 last_exception = TimeoutError(f"Request timed out after {self.timeout}s")
             except http_requests.exceptions.ConnectionError:
-                last_exception = ConnectionError("Failed to connect to TokenFence API")
+                last_exception = ConnectionError("Failed to connect to UsageSentinel API")
             except RateLimitError as e:
                 # Don't retry rate limits, raise immediately
                 raise e
-            except TokenFenceError as e:
+            except UsageSentinelError as e:
                 # Don't retry client errors (4xx), raise immediately
                 raise e
             except Exception as e:

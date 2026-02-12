@@ -1,6 +1,6 @@
-export { TokenFence } from "./client";
+export { UsageSentinel } from "./client";
 export type {
-  TokenFenceConfig,
+  UsageSentinelConfig,
   EvaluateParams,
   EvaluateResult,
   LogUsageParams,
@@ -15,7 +15,7 @@ export type {
   UsageSummaryParams,
 } from "./types";
 export {
-  TokenFenceError,
+  UsageSentinelError,
   AuthenticationError,
   RateLimitError,
   ValidationError,

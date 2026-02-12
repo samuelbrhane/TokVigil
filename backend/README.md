@@ -1,6 +1,6 @@
-# TokenFence Backend
+# UsageSentinel Backend
 
-FastAPI backend for the TokenFence platform.
+FastAPI backend for the UsageSentinel platform.
 
 ## Tech
 

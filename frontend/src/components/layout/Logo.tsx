@@ -26,7 +26,7 @@ export default function Logo({
     <div className="flex items-center gap-2.5">
       <img
         src="/logo.png"
-        alt="TokenFence"
+        alt="UsageSentinel"
         className={cn(imgSize[size], "rounded-lg")}
       />
       <span

@@ -18,7 +18,7 @@ const TOC = [
 ];
 
 const SNIPPET_ROWS: [string, string][] = [
-  ["tfimport", "Import TokenFence SDK"],
+  ["tfimport", "Import UsageSentinel SDK"],
   ["tfinit", "Initialize client"],
   ["tfeval", "Evaluate request"],
   ["tflog", "Log usage"],
@@ -33,11 +33,11 @@ const SNIPPET_ROWS: [string, string][] = [
 ];
 
 const COMMAND_ROWS: [string, string][] = [
-  ["TokenFence: Set API Key", "Configure your API key"],
-  ["TokenFence: Test Evaluate", "Test evaluate with custom parameters"],
-  ["TokenFence: Open Dashboard", "Open web dashboard"],
-  ["TokenFence: Insert Snippet", "Insert code snippet"],
-  ["TokenFence: Refresh Usage", "Refresh usage stats in sidebar"],
+  ["UsageSentinel: Set API Key", "Configure your API key"],
+  ["UsageSentinel: Test Evaluate", "Test evaluate with custom parameters"],
+  ["UsageSentinel: Open Dashboard", "Open web dashboard"],
+  ["UsageSentinel: Insert Snippet", "Insert code snippet"],
+  ["UsageSentinel: Refresh Usage", "Refresh usage stats in sidebar"],
 ];
 
 const CODE_SETTINGS = `{
@@ -67,7 +67,7 @@ export default function VSCodeExtensionPage() {
             steps={[
               "Open VS Code",
               'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+X</code> to open Extensions',
-              'Search for <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokenFence</code>',
+              'Search for <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">UsageSentinel</code>',
               "Click Install",
             ]}
           />
@@ -84,7 +84,7 @@ export default function VSCodeExtensionPage() {
           <DocSteps
             steps={[
               'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code> to open Command Palette',
-              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokenFence: Set API Key</code>',
+              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">UsageSentinel: Set API Key</code>',
               'Enter your API key (starts with <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">tf_live_</code>)',
             ]}
           />
@@ -119,14 +119,14 @@ export default function VSCodeExtensionPage() {
           <DocFeature
             icon="📚"
             title="Hover Documentation"
-            description="Hover over any TokenFence method to see documentation, parameters, and examples."
+            description="Hover over any UsageSentinel method to see documentation, parameters, and examples."
           />
           <DocFeature
             icon="⚠️"
             title="Inline Validation"
             description="Get real-time warnings for common issues:"
             items={[
-              "Missing TokenFence import",
+              "Missing UsageSentinel import",
               "Empty or placeholder API keys",
               "Missing required parameters",
             ]}
@@ -164,7 +164,7 @@ export default function VSCodeExtensionPage() {
           <DocSteps
             steps={[
               'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code>',
-              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokenFence: Test Evaluate</code>',
+              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">UsageSentinel: Test Evaluate</code>',
               "Enter user ID, select model, and set feature",
               "See the result: allowed or blocked with reason code",
             ]}

@@ -22,12 +22,17 @@ export class DiagnosticProvider {
     const text = document.getText();
     const diagnostics: vscode.Diagnostic[] = [];
 
-    // Check for TokenFence import/usage
-    const hasTokenFenceImport = this.hasTokenFenceImport(text, languageId);
-    const hasTokenFenceUsage = this.hasTokenFenceUsage(text);
+    // Check for UsageSentinel import/usage
+    const hasUsageSentinelImport = this.hasUsageSentinelImport(
+      text,
+      languageId,
+    );
+    const hasUsageSentinelUsage = this.hasUsageSentinelUsage(text);
 
-    if (hasTokenFenceUsage && !hasTokenFenceImport) {
-      const usageMatch = text.match(/(TokenFence|tf\.evaluate|tf\.logUsage)/);
+    if (hasUsageSentinelUsage && !hasUsageSentinelImport) {
+      const usageMatch = text.match(
+        /(UsageSentinel|tf\.evaluate|tf\.logUsage)/,
+      );
       if (usageMatch && usageMatch.index !== undefined) {
         const position = document.positionAt(usageMatch.index);
         const range = new vscode.Range(
@@ -38,7 +43,7 @@ export class DiagnosticProvider {
         diagnostics.push(
           new vscode.Diagnostic(
             range,
-            "TokenFence is used but not imported. Add: from tokenfence import TokenFence",
+            "UsageSentinel is used but not imported. Add: from tokenfence import UsageSentinel",
             vscode.DiagnosticSeverity.Warning,
           ),
         );
@@ -65,7 +70,7 @@ export class DiagnosticProvider {
         diagnostics.push(
           new vscode.Diagnostic(
             range,
-            "API key is empty or placeholder. Set your actual TokenFence API key.",
+            "API key is empty or placeholder. Set your actual UsageSentinel API key.",
             vscode.DiagnosticSeverity.Error,
           ),
         );
@@ -119,18 +124,18 @@ export class DiagnosticProvider {
     this.diagnosticCollection.set(document.uri, diagnostics);
   }
 
-  private hasTokenFenceImport(text: string, languageId: string): boolean {
+  private hasUsageSentinelImport(text: string, languageId: string): boolean {
     if (languageId === "python") {
       return /from\s+tokenfence\s+import|import\s+tokenfence/.test(text);
     } else {
-      return /import\s+.*TokenFence.*from\s+["']tokenfence["']|require\s*\(\s*["']tokenfence["']\s*\)/.test(
+      return /import\s+.*UsageSentinel.*from\s+["']tokenfence["']|require\s*\(\s*["']tokenfence["']\s*\)/.test(
         text,
       );
     }
   }
 
-  private hasTokenFenceUsage(text: string): boolean {
-    return /TokenFence|tf\.evaluate|tf\.logUsage|tf\.getUsageSummary/.test(
+  private hasUsageSentinelUsage(text: string): boolean {
+    return /UsageSentinel|tf\.evaluate|tf\.logUsage|tf\.getUsageSummary/.test(
       text,
     );
   }

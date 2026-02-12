@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
-  TokenFence,
+  UsageSentinel,
   AuthenticationError,
   RateLimitError,
   ValidationError,
@@ -11,41 +11,43 @@ import {
 const TEST_API_KEY = "tf_test_xxx";
 const TEST_BASE_URL = "http://localhost:8001";
 
-describe("TokenFence", () => {
+describe("UsageSentinel", () => {
   // ==================== Initialization ====================
   describe("initialization", () => {
     it("should require API key", () => {
-      expect(() => new TokenFence({ apiKey: "" })).toThrow(AuthenticationError);
+      expect(() => new UsageSentinel({ apiKey: "" })).toThrow(
+        AuthenticationError,
+      );
     });
 
     it("should initialize with API key", () => {
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
-      expect(tf).toBeInstanceOf(TokenFence);
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
+      expect(tf).toBeInstanceOf(UsageSentinel);
     });
 
     it("should use custom base URL", () => {
-      const tf = new TokenFence({
+      const tf = new UsageSentinel({
         apiKey: TEST_API_KEY,
         baseUrl: TEST_BASE_URL,
       });
-      expect(tf).toBeInstanceOf(TokenFence);
+      expect(tf).toBeInstanceOf(UsageSentinel);
     });
 
     it("should use custom timeout", () => {
-      const tf = new TokenFence({
+      const tf = new UsageSentinel({
         apiKey: TEST_API_KEY,
         timeout: 60000,
       });
-      expect(tf).toBeInstanceOf(TokenFence);
+      expect(tf).toBeInstanceOf(UsageSentinel);
     });
 
     it("should use custom retry settings", () => {
-      const tf = new TokenFence({
+      const tf = new UsageSentinel({
         apiKey: TEST_API_KEY,
         retryCount: 5,
         retryDelay: 2000,
       });
-      expect(tf).toBeInstanceOf(TokenFence);
+      expect(tf).toBeInstanceOf(UsageSentinel);
     });
   });
 
@@ -77,7 +79,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -112,7 +114,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -139,7 +141,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -165,7 +167,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -191,7 +193,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -213,7 +215,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.evaluate({
         userId: "user_123",
         model: "gpt-4o",
@@ -238,7 +240,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -269,7 +271,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.logUsage({
         requestId: "req_123",
         userId: "user_123",
@@ -300,7 +302,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.logUsage({
         requestId: "req_456",
         userId: "user_123",
@@ -336,7 +338,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.getUsageSummary();
 
       expect(result.totalRequests).toBe(100);
@@ -360,7 +362,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.getUsageSummary({
         startDate: "2025-01-01",
         endDate: "2025-01-31",
@@ -405,7 +407,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.getRecentUsage({ page: 1, pageSize: 20 });
 
       expect(result.items.length).toBe(1);
@@ -430,7 +432,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.getRecentUsage({ userId: "user_456" });
 
       expect(result.items.length).toBe(0);
@@ -462,7 +464,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.getUsageByUser();
 
       expect(result.items.length).toBe(2);
@@ -496,7 +498,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.getUsageByFeature();
 
       expect(result.items.length).toBe(2);
@@ -541,7 +543,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
       const result = await tf.getBlockedRequests();
 
       expect(result.items.length).toBe(1);
@@ -569,7 +571,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       await expect(
         tf.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
@@ -589,7 +591,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       await expect(
         tf.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
@@ -610,7 +612,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       try {
         await tf.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
@@ -634,7 +636,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       await expect(
         tf.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
@@ -654,7 +656,7 @@ describe("TokenFence", () => {
           }),
       });
 
-      const tf = new TokenFence({ apiKey: TEST_API_KEY });
+      const tf = new UsageSentinel({ apiKey: TEST_API_KEY });
 
       await expect(
         tf.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),

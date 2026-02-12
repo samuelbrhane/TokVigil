@@ -14,18 +14,18 @@ import { SidebarProvider } from "./panels/SidebarProvider";
 import { registerCommands } from "./commands";
 
 // API
-import { TokenFenceApiClient } from "./api/client";
+import { UsageSentinelApiClient } from "./api/client";
 
 let statusBarItem: vscode.StatusBarItem;
 let diagnosticCollection: vscode.DiagnosticCollection;
-let apiClient: TokenFenceApiClient;
+let apiClient: UsageSentinelApiClient;
 
 export function activate(context: vscode.ExtensionContext) {
   console.log(`${EXTENSION_NAME} is now active!`);
 
   // Initialize API client
   const config = getConfig();
-  apiClient = new TokenFenceApiClient(config);
+  apiClient = new UsageSentinelApiClient(config);
 
   // Register sidebar
   const sidebarProvider = new SidebarProvider(context.extensionUri, apiClient);
@@ -85,8 +85,8 @@ export function activate(context: vscode.ExtensionContext) {
       100,
     );
     statusBarItem.command = "tokenfence.openDashboard";
-    statusBarItem.text = "$(pulse) TokenFence";
-    statusBarItem.tooltip = "Click to open TokenFence dashboard";
+    statusBarItem.text = "$(pulse) UsageSentinel";
+    statusBarItem.tooltip = "Click to open UsageSentinel dashboard";
     statusBarItem.show();
     context.subscriptions.push(statusBarItem);
 
@@ -111,7 +111,7 @@ async function updateStatusBar() {
 
   const config = getConfig();
   if (!config.apiKey) {
-    statusBarItem.text = "$(key) TokenFence: Set API Key";
+    statusBarItem.text = "$(key) UsageSentinel: Set API Key";
     statusBarItem.tooltip = "Click to set your API key";
     return;
   }
@@ -119,10 +119,10 @@ async function updateStatusBar() {
   try {
     const summary = await apiClient.getUsageSummary();
     statusBarItem.text = `$(pulse) ${summary.totalRequests} requests`;
-    statusBarItem.tooltip = `TokenFence Usage:\n${summary.totalRequests} requests\n${summary.totalTokens} tokens\n$${summary.totalCostUsd.toFixed(2)} cost`;
+    statusBarItem.tooltip = `UsageSentinel Usage:\n${summary.totalRequests} requests\n${summary.totalTokens} tokens\n$${summary.totalCostUsd.toFixed(2)} cost`;
   } catch (error) {
-    statusBarItem.text = "$(pulse) TokenFence";
-    statusBarItem.tooltip = "TokenFence - Click to open dashboard";
+    statusBarItem.text = "$(pulse) UsageSentinel";
+    statusBarItem.tooltip = "UsageSentinel - Click to open dashboard";
   }
 }
 

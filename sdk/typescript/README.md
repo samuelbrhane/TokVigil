@@ -1,6 +1,6 @@
-# TokenFence Node.js SDK
+# UsageSentinel Node.js SDK
 
-Official TypeScript/JavaScript SDK for [TokenFence](https://tokenfence.io) - AI usage control platform.
+Official TypeScript/JavaScript SDK for [UsageSentinel](https://tokenfence.io) - AI usage control platform.
 
 Manage rate limits, budgets, and policies for your AI-powered applications.
 
@@ -17,10 +17,10 @@ pnpm add tokenfence
 ## Quick Start
 
 ```typescript
-import { TokenFence } from "tokenfence";
+import { UsageSentinel } from "tokenfence";
 
 // Initialize client
-const tf = new TokenFence({ apiKey: "tf_live_xxx" });
+const tf = new UsageSentinel({ apiKey: "tf_live_xxx" });
 
 // Check if request is allowed
 const result = await tf.evaluate({
@@ -160,9 +160,9 @@ for (const group of byFeature.items) {
 ## Error Handling
 
 ```typescript
-import { TokenFence, RateLimitError, AuthenticationError } from "tokenfence";
+import { UsageSentinel, RateLimitError, AuthenticationError } from "tokenfence";
 
-const tf = new TokenFence({ apiKey: "tf_live_xxx" });
+const tf = new UsageSentinel({ apiKey: "tf_live_xxx" });
 
 try {
   const result = await tf.evaluate({
@@ -174,7 +174,7 @@ try {
     console.log(`Invalid API key: ${error.message}`);
   } else if (error instanceof RateLimitError) {
     console.log(`Rate limited. Retry after ${error.retryAfter} seconds`);
-  } else if (error instanceof TokenFenceError) {
+  } else if (error instanceof UsageSentinelError) {
     console.log(`Error: ${error.message}`);
   }
 }
@@ -183,7 +183,7 @@ try {
 ## Configuration
 
 ```typescript
-const tf = new TokenFence({
+const tf = new UsageSentinel({
   apiKey: "tf_live_xxx",
   baseUrl: "https://api.tokenfence.io", // Custom API URL
   timeout: 30000, // Request timeout in milliseconds

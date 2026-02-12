@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import {
-  TokenFenceConfig,
+  UsageSentinelConfig,
   EvaluateParams,
   EvaluateResult,
   UsageSummary,
@@ -53,14 +53,14 @@ interface ApiResponse<T> {
   errorCode?: string;
 }
 
-export class TokenFenceApiClient {
-  private config: TokenFenceConfig;
+export class UsageSentinelApiClient {
+  private config: UsageSentinelConfig;
 
-  constructor(config: TokenFenceConfig) {
+  constructor(config: UsageSentinelConfig) {
     this.config = config;
   }
 
-  updateConfig(config: TokenFenceConfig): void {
+  updateConfig(config: UsageSentinelConfig): void {
     this.config = config;
   }
 

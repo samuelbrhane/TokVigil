@@ -18,9 +18,9 @@ const TOC = [
 
 const CODE_INSTALL = `pip install tokenfence`;
 
-const CODE_INIT = `from tokenfence import TokenFence
+const CODE_INIT = `from tokenfence import UsageSentinel
 
-tf = TokenFence(
+tf = UsageSentinel(
     api_key="tf_live_...",       # Required: your API key
     base_url="https://api.tokenfence.io",  # Optional, default
     timeout=30,                  # Optional, seconds
@@ -107,8 +107,8 @@ for record in blocked.items:
     print(f"{record.user_id}: {record.reason_code}")`;
 
 const CODE_ERRORS = `from tokenfence import (
-    TokenFence,
-    TokenFenceError,
+    UsageSentinel,
+    UsageSentinelError,
     AuthenticationError,
     RateLimitError,
     ValidationError,
@@ -116,7 +116,7 @@ const CODE_ERRORS = `from tokenfence import (
     APIError,
 )
 
-tf = TokenFence(api_key="tf_live_...")
+tf = UsageSentinel(api_key="tf_live_...")
 
 try:
     result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
@@ -135,7 +135,7 @@ except NotFoundError as e:
 except APIError as e:
     # Server errors (5xx)
     print(f"API error: {e.message}")
-except TokenFenceError as e:
+except UsageSentinelError as e:
     # Base exception — catches all above
     print(f"Error: {e.message}")`;
 
@@ -171,7 +171,7 @@ export default function PythonSDKPage() {
       <DocHeader
         icon="🐍"
         title="Python SDK"
-        description="Complete guide to using the TokenFence Python SDK in your applications."
+        description="Complete guide to using the UsageSentinel Python SDK in your applications."
       />
 
       <DocTableOfContents items={TOC} />
@@ -180,7 +180,7 @@ export default function PythonSDKPage() {
         <DocSection
           id="installation"
           title="Installation"
-          description="Install the TokenFence Python SDK using pip:"
+          description="Install the UsageSentinel Python SDK using pip:"
           code={CODE_INSTALL}
           language="bash"
         >
@@ -199,7 +199,7 @@ export default function PythonSDKPage() {
           <DocNote type="tip">
             Use environment variables for your API key in production:{" "}
             <code className="text-brand-400">
-              TokenFence(api_key=os.environ[&quot;TOKENFENCE_API_KEY&quot;])
+              UsageSentinel(api_key=os.environ[&quot;TOKENFENCE_API_KEY&quot;])
             </code>
           </DocNote>
         </DocSection>
@@ -226,7 +226,7 @@ export default function PythonSDKPage() {
         <DocSection
           id="check-and-call"
           title="Check and Call"
-          description="The simplest way to integrate. Pass your AI function and TokenFence handles evaluate → call → log automatically."
+          description="The simplest way to integrate. Pass your AI function and UsageSentinel handles evaluate → call → log automatically."
           code={CODE_CHECK_AND_CALL}
         >
           <DocNote type="tip">

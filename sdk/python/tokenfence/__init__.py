@@ -1,4 +1,4 @@
-from tokenfence.client import TokenFence
+from tokenfence.client import UsageSentinel
 from tokenfence.models import (
     EvaluateResult,
     UsageLogResult,
@@ -9,7 +9,7 @@ from tokenfence.models import (
     PaginatedResponse,
 )
 from tokenfence.exceptions import (
-    TokenFenceError,
+    UsageSentinelError,
     AuthenticationError,
     RateLimitError,
     ValidationError,
@@ -22,7 +22,7 @@ from tokenfence.constants import SDK_VERSION
 
 __version__ = SDK_VERSION
 __all__ = [
-    "TokenFence",
+    "UsageSentinel",
     "EvaluateResult",
     "UsageLogResult",
     "UsageRecord",
@@ -30,7 +30,7 @@ __all__ = [
     "UsageByGroup",
     "LimitState",
     "PaginatedResponse",
-    "TokenFenceError",
+    "UsageSentinelError",
     "AuthenticationError",
     "RateLimitError",
     "ValidationError",

@@ -1,1 +1,1 @@
-export { TokenFenceApiClient } from "./client";
+export { UsageSentinelApiClient } from "./client";

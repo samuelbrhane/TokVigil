@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { TokenFenceApiClient } from "../api/client";
+import { UsageSentinelApiClient } from "../api/client";
 import { getConfig } from "../config/settings";
 import { UsageSummary, UsageByGroup } from "../types";
 
@@ -8,9 +8,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView;
   private _extensionUri: vscode.Uri;
-  private _apiClient: TokenFenceApiClient;
+  private _apiClient: UsageSentinelApiClient;
 
-  constructor(extensionUri: vscode.Uri, apiClient: TokenFenceApiClient) {
+  constructor(extensionUri: vscode.Uri, apiClient: UsageSentinelApiClient) {
     this._extensionUri = extensionUri;
     this._apiClient = apiClient;
   }
@@ -126,7 +126,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>TokenFence</title>
+        <title>UsageSentinel</title>
         <style>
           * {
             margin: 0;
@@ -350,7 +350,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       <body>
         <div class="header">
           <h1>
-            <span>⚡</span> TokenFence
+            <span>⚡</span> UsageSentinel
           </h1>
           <div class="header-actions">
             <button class="icon-btn" onclick="refresh()" title="Refresh">

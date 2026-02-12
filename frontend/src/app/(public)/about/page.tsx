@@ -9,7 +9,7 @@ const values = [
   {
     title: "SDK-first",
     description:
-      "Control belongs in your code, not in a separate dashboard you check once a month. Developers integrate TokenFence in 3 lines policies enforce automatically from there.",
+      "Control belongs in your code, not in a separate dashboard you check once a month. Developers integrate UsageSentinel in 3 lines policies enforce automatically from there.",
   },
   {
     title: "Transparent by default",
@@ -19,7 +19,7 @@ const values = [
   {
     title: "Built for real products",
     description:
-      "TokenFence exists because teams shipping AI in production kept solving the same problems rate limits, cost spikes, per-user tracking. We built the tool we needed.",
+      "UsageSentinel exists because teams shipping AI in production kept solving the same problems rate limits, cost spikes, per-user tracking. We built the tool we needed.",
   },
 ];
 
@@ -50,7 +50,7 @@ export default function AboutPage() {
           >
             <div className="space-y-6 text-surface-400 leading-relaxed">
               <p>
-                TokenFence is an application-layer control plane that helps
+                UsageSentinel is an application-layer control plane that helps
                 teams enforce business rules around AI usage per user, per
                 feature, per plan consistently across services.
               </p>
@@ -58,7 +58,7 @@ export default function AboutPage() {
                 When AI ships inside real products, teams face free-tier abuse,
                 cost spikes, no per-user visibility, and duplicated guardrail
                 logic across services. Infrastructure-level tools can&apos;t
-                reliably enforce business logic. TokenFence does.
+                reliably enforce business logic. UsageSentinel does.
               </p>
               <p>
                 Developers make a controlled call through our SDK. The platform

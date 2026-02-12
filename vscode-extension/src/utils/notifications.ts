@@ -1,15 +1,15 @@
 import * as vscode from "vscode";
 
 export function showInfo(message: string): void {
-  vscode.window.showInformationMessage(`TokenFence: ${message}`);
+  vscode.window.showInformationMessage(`UsageSentinel: ${message}`);
 }
 
 export function showWarning(message: string): void {
-  vscode.window.showWarningMessage(`TokenFence: ${message}`);
+  vscode.window.showWarningMessage(`UsageSentinel: ${message}`);
 }
 
 export function showError(message: string): void {
-  vscode.window.showErrorMessage(`TokenFence: ${message}`);
+  vscode.window.showErrorMessage(`UsageSentinel: ${message}`);
 }
 
 export async function showInfoWithAction(
@@ -17,7 +17,7 @@ export async function showInfoWithAction(
   ...actions: string[]
 ): Promise<string | undefined> {
   return await vscode.window.showInformationMessage(
-    `TokenFence: ${message}`,
+    `UsageSentinel: ${message}`,
     ...actions,
   );
 }
@@ -27,7 +27,7 @@ export async function showWarningWithAction(
   ...actions: string[]
 ): Promise<string | undefined> {
   return await vscode.window.showWarningMessage(
-    `TokenFence: ${message}`,
+    `UsageSentinel: ${message}`,
     ...actions,
   );
 }
@@ -37,7 +37,7 @@ export async function showErrorWithAction(
   ...actions: string[]
 ): Promise<string | undefined> {
   return await vscode.window.showErrorMessage(
-    `TokenFence: ${message}`,
+    `UsageSentinel: ${message}`,
     ...actions,
   );
 }
@@ -49,7 +49,7 @@ export async function showProgress<T>(
   return await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
-      title: `TokenFence: ${title}`,
+      title: `UsageSentinel: ${title}`,
       cancellable: false,
     },
     task,

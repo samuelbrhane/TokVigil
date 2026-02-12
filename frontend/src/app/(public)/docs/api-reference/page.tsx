@@ -212,7 +212,7 @@ export default function APIReferencePage() {
           </h1>
         </div>
         <p className="text-lg text-surface-400 max-w-2xl">
-          Complete REST API documentation for TokenFence.
+          Complete REST API documentation for UsageSentinel.
         </p>
       </div>
 

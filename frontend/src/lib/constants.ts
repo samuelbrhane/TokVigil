@@ -2,7 +2,7 @@
 // BRAND CONSTANTS
 // ============================================================
 export const BRAND = {
-  name: "TokenFence",
+  name: "UsageSentinel",
   tagline: "AI usage control for production teams",
   description:
     "Application-layer AI usage control. Enforce budgets, limits, and policies inside your code.",
@@ -103,17 +103,17 @@ export const STEPS = [
     num: "01",
     title: "Install & initialize",
     description:
-      "Add the SDK and connect to your TokenFence workspace with one API key.",
+      "Add the SDK and connect to your UsageSentinel workspace with one API key.",
     python: `pip install tokenfence
 
-from tokenfence import TokenFence
+from tokenfence import UsageSentinel
 
-tf = TokenFence(api_key="tf_live_...")`,
+tf = UsageSentinel(api_key="tf_live_...")`,
     typescript: `npm install tokenfence
 
-import { TokenFence } from "tokenfence";
+import { UsageSentinel } from "tokenfence";
 
-const tf = new TokenFence({ apiKey: "tf_live_..." });`,
+const tf = new UsageSentinel({ apiKey: "tf_live_..." });`,
   },
   {
     num: "02",
@@ -308,7 +308,7 @@ export const PRICING_FAQ = [
   {
     question: "Do you store my LLM prompts or responses?",
     answer:
-      "No. TokenFence only sees token counts, costs, and metadata. Your prompts and responses go directly between your app and the LLM provider.",
+      "No. UsageSentinel only sees token counts, costs, and metadata. Your prompts and responses go directly between your app and the LLM provider.",
   },
   {
     question: "What does the rate limit apply to?",

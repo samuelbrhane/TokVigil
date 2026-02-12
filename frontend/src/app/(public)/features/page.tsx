@@ -288,13 +288,13 @@ for (const feature of byFeature.items) {
 
   "Multi-Environment": {
     python: `# Separate environments with distinct API keys
-from tokenfence import TokenFence
+from tokenfence import UsageSentinel
 
 # Production - real usage tracking
-tf_prod = TokenFence(api_key="tf_live_xxxxxxxxxxxx")
+tf_prod = UsageSentinel(api_key="tf_live_xxxxxxxxxxxx")
 
 # Development - isolated testing  
-tf_dev = TokenFence(api_key="tf_test_xxxxxxxxxxxx")
+tf_dev = UsageSentinel(api_key="tf_test_xxxxxxxxxxxx")
 
 # Same code works in both environments
 result = tf_prod.evaluate(
@@ -307,13 +307,13 @@ result = tf_prod.evaluate(
 prod_summary = tf_prod.get_usage_summary()
 dev_summary = tf_dev.get_usage_summary()`,
     typescript: `// Separate environments with distinct API keys
-import { TokenFence } from "tokenfence";
+import { UsageSentinel } from "tokenfence";
 
 // Production - real usage tracking
-const tfProd = new TokenFence({ apiKey: "tf_live_xxxxxxxxxxxx" });
+const tfProd = new UsageSentinel({ apiKey: "tf_live_xxxxxxxxxxxx" });
 
 // Development - isolated testing
-const tfDev = new TokenFence({ apiKey: "tf_test_xxxxxxxxxxxx" });
+const tfDev = new UsageSentinel({ apiKey: "tf_test_xxxxxxxxxxxx" });
 
 // Same code works in both environments
 const result = await tfProd.evaluate({
@@ -329,14 +329,14 @@ const devSummary = await tfDev.getUsageSummary();`,
 
   "Error Handling": {
     python: `from tokenfence import (
-    TokenFence,
+    UsageSentinel,
     RateLimitError,
     AuthenticationError,
     ValidationError,
-    TokenFenceError
+    UsageSentinelError
 )
 
-tf = TokenFence(api_key="tf_live_...")
+tf = UsageSentinel(api_key="tf_live_...")
 
 try:
     result = tf.evaluate(
@@ -349,17 +349,17 @@ except AuthenticationError as e:
     print(f"Invalid API key: {e.message}")
 except ValidationError as e:
     print(f"Invalid request: {e.message}")
-except TokenFenceError as e:
+except UsageSentinelError as e:
     print(f"Error: {e.message}")`,
     typescript: `import {
-  TokenFence,
+  UsageSentinel,
   RateLimitError,
   AuthenticationError,
   ValidationError,
-  TokenFenceError,
+  UsageSentinelError,
 } from "tokenfence";
 
-const tf = new TokenFence({ apiKey: "tf_live_..." });
+const tf = new UsageSentinel({ apiKey: "tf_live_..." });
 
 try {
   const result = await tf.evaluate({
@@ -373,7 +373,7 @@ try {
     console.log(\`Invalid API key: \${error.message}\`);
   } else if (error instanceof ValidationError) {
     console.log(\`Invalid request: \${error.message}\`);
-  } else if (error instanceof TokenFenceError) {
+  } else if (error instanceof UsageSentinelError) {
     console.log(\`Error: \${error.message}\`);
   }
 }`,

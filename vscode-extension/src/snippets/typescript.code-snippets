@@ -1,23 +1,23 @@
 {
-  "TokenFence Import": {
+  "UsageSentinel Import": {
     "prefix": "tfimport",
-    "body": ["import { TokenFence } from \"tokenfence\";", "", "$0"],
-    "description": "Import TokenFence SDK",
+    "body": ["import { UsageSentinel } from \"tokenfence\";", "", "$0"],
+    "description": "Import UsageSentinel SDK",
   },
-  "TokenFence Initialize": {
+  "UsageSentinel Initialize": {
     "prefix": "tfinit",
     "body": [
-      "import { TokenFence } from \"tokenfence\";",
+      "import { UsageSentinel } from \"tokenfence\";",
       "",
-      "const tf = new TokenFence({",
+      "const tf = new UsageSentinel({",
       "  apiKey: \"${1:your_api_key}\",",
       "});",
       "",
       "$0",
     ],
-    "description": "Initialize TokenFence client",
+    "description": "Initialize UsageSentinel client",
   },
-  "TokenFence Evaluate": {
+  "UsageSentinel Evaluate": {
     "prefix": "tfeval",
     "body": [
       "const result = await tf.evaluate({",
@@ -35,7 +35,7 @@
     ],
     "description": "Evaluate if request is allowed",
   },
-  "TokenFence Log Usage": {
+  "UsageSentinel Log Usage": {
     "prefix": "tflog",
     "body": [
       "await tf.logUsage({",
@@ -52,12 +52,12 @@
     ],
     "description": "Log AI usage after completion",
   },
-  "TokenFence Full Flow": {
+  "UsageSentinel Full Flow": {
     "prefix": "tfflow",
     "body": [
-      "import { TokenFence } from \"tokenfence\";",
+      "import { UsageSentinel } from \"tokenfence\";",
       "",
-      "const tf = new TokenFence({ apiKey: \"${1:your_api_key}\" });",
+      "const tf = new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
       "",
       "async function handleAiRequest() {",
       "  // Check if request is allowed",
@@ -94,9 +94,9 @@
       "",
       "handleAiRequest();",
     ],
-    "description": "Complete TokenFence flow with evaluate and log",
+    "description": "Complete UsageSentinel flow with evaluate and log",
   },
-  "TokenFence Usage Summary": {
+  "UsageSentinel Usage Summary": {
     "prefix": "tfsummary",
     "body": [
       "const summary = await tf.getUsageSummary();",
@@ -107,7 +107,7 @@
     ],
     "description": "Get usage summary",
   },
-  "TokenFence Usage By User": {
+  "UsageSentinel Usage By User": {
     "prefix": "tfbyuser",
     "body": [
       "const byUser = await tf.getUsageByUser();",
@@ -118,7 +118,7 @@
     ],
     "description": "Get usage grouped by user",
   },
-  "TokenFence Check and Call": {
+  "UsageSentinel Check and Call": {
     "prefix": "tfcheck",
     "body": [
       "const { result, response } = await tf.checkAndCall(",
@@ -150,12 +150,12 @@
     ],
     "description": "Check, call AI, and log automatically",
   },
-  "TokenFence Error Handling": {
+  "UsageSentinel Error Handling": {
     "prefix": "tferror",
     "body": [
-      "import { TokenFence, RateLimitError, AuthenticationError, TokenFenceError } from \"tokenfence\";",
+      "import { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } from \"tokenfence\";",
       "",
-      "const tf = new TokenFence({ apiKey: \"${1:your_api_key}\" });",
+      "const tf = new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
       "",
       "try {",
       "  const result = await tf.evaluate({",
@@ -168,14 +168,14 @@
       "    console.log(`Invalid API key: \\${error.message}`);",
       "  } else if (error instanceof RateLimitError) {",
       "    console.log(`Rate limited. Retry after \\${error.retryAfter} seconds`);",
-      "  } else if (error instanceof TokenFenceError) {",
+      "  } else if (error instanceof UsageSentinelError) {",
       "    console.log(`Error: \\${error.message}`);",
       "  }",
       "}",
     ],
-    "description": "TokenFence with error handling",
+    "description": "UsageSentinel with error handling",
   },
-  "TokenFence Blocked Requests": {
+  "UsageSentinel Blocked Requests": {
     "prefix": "tfblocked",
     "body": [
       "const blocked = await tf.getBlockedRequests();",

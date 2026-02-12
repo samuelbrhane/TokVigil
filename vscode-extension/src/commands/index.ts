@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { TokenFenceApiClient } from "../api/client";
+import { UsageSentinelApiClient } from "../api/client";
 import { SidebarProvider } from "../panels/SidebarProvider";
 
 import { testEvaluate } from "./evaluate";
@@ -10,7 +10,7 @@ import { insertSnippet } from "./insertSnippet";
 
 export function registerCommands(
   context: vscode.ExtensionContext,
-  apiClient: TokenFenceApiClient,
+  apiClient: UsageSentinelApiClient,
   sidebarProvider: SidebarProvider,
 ): void {
   // Test Evaluate

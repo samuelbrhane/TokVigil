@@ -1,4 +1,4 @@
-# TokenFence VS Code Extension
+# UsageSentinel VS Code Extension
 
 AI usage control for VS Code — manage rate limits, budgets, and policies for your AI-powered applications.
 
@@ -6,22 +6,22 @@ AI usage control for VS Code — manage rate limits, budgets, and policies for y
 
 ### Code Snippets
 
-Quickly insert TokenFence code with snippets:
+Quickly insert UsageSentinel code with snippets:
 
-| Prefix        | Description           |
-| ------------- | --------------------- |
-| `tfimport`    | Import TokenFence SDK |
-| `tfinit`      | Initialize client     |
-| `tfeval`      | Evaluate request      |
-| `tflog`       | Log usage             |
-| `tfflow`      | Complete flow         |
-| `tfcheck`     | Check and call        |
-| `tferror`     | Error handling        |
-| `tfsummary`   | Get usage summary     |
-| `tfbyuser`    | Get usage by user     |
-| `tfbyfeature` | Get usage by feature  |
-| `tfblocked`   | Get blocked requests  |
-| `tfrecent`    | Get recent usage      |
+| Prefix        | Description              |
+| ------------- | ------------------------ |
+| `tfimport`    | Import UsageSentinel SDK |
+| `tfinit`      | Initialize client        |
+| `tfeval`      | Evaluate request         |
+| `tflog`       | Log usage                |
+| `tfflow`      | Complete flow            |
+| `tfcheck`     | Check and call           |
+| `tferror`     | Error handling           |
+| `tfsummary`   | Get usage summary        |
+| `tfbyuser`    | Get usage by user        |
+| `tfbyfeature` | Get usage by feature     |
+| `tfblocked`   | Get blocked requests     |
+| `tfrecent`    | Get recent usage         |
 
 ### Autocomplete
 
@@ -35,13 +35,13 @@ Get intelligent suggestions when typing `tf.`:
 
 ### Hover Documentation
 
-Hover over any TokenFence method to see documentation and parameter info.
+Hover over any UsageSentinel method to see documentation and parameter info.
 
 ### Inline Validation
 
 Get real-time warnings for:
 
-- Missing TokenFence import
+- Missing UsageSentinel import
 - Empty or placeholder API keys
 - Missing required parameters
 
@@ -57,24 +57,24 @@ View your usage stats directly in VS Code:
 
 Access via Command Palette (`Ctrl+Shift+P`):
 
-| Command                      | Description                          |
-| ---------------------------- | ------------------------------------ |
-| `TokenFence: Set API Key`    | Configure API key                    |
-| `TokenFence: Test Evaluate`  | Test evaluate with custom parameters |
-| `TokenFence: Open Dashboard` | Open web dashboard                   |
-| `TokenFence: Insert Snippet` | Insert code snippet                  |
-| `TokenFence: Refresh Usage`  | Refresh usage stats                  |
+| Command                         | Description                          |
+| ------------------------------- | ------------------------------------ |
+| `UsageSentinel: Set API Key`    | Configure API key                    |
+| `UsageSentinel: Test Evaluate`  | Test evaluate with custom parameters |
+| `UsageSentinel: Open Dashboard` | Open web dashboard                   |
+| `UsageSentinel: Insert Snippet` | Insert code snippet                  |
+| `UsageSentinel: Refresh Usage`  | Refresh usage stats                  |
 
 ## Installation
 
 1. Open VS Code
 2. Go to Extensions (`Ctrl+Shift+X`)
-3. Search for "TokenFence"
+3. Search for "UsageSentinel"
 4. Click Install
 
 ## Configuration
 
-Open Settings (`Ctrl+,`) and search for "TokenFence":
+Open Settings (`Ctrl+,`) and search for "UsageSentinel":
 
 | Setting                         | Description              | Default                     |
 | ------------------------------- | ------------------------ | --------------------------- |
@@ -89,7 +89,7 @@ Open Settings (`Ctrl+,`) and search for "TokenFence":
 ## Getting Started
 
 1. Install the extension
-2. Set your API key: `Ctrl+Shift+P` → "TokenFence: Set API Key"
+2. Set your API key: `Ctrl+Shift+P` → "UsageSentinel: Set API Key"
 3. Start coding with snippets: type `tfinit` and press Tab
 
 ## Links

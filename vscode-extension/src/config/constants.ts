@@ -13,7 +13,7 @@ export const ENDPOINTS = {
 };
 
 export const EXTENSION_ID = "tokenfence.tokenfence";
-export const EXTENSION_NAME = "TokenFence";
+export const EXTENSION_NAME = "UsageSentinel";
 
 export const SUPPORTED_LANGUAGES = ["python", "typescript", "javascript"];
 

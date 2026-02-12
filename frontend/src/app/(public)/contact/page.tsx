@@ -169,7 +169,7 @@ export default function ContactPage() {
                   Open source & free
                 </h4>
                 <p className="text-sm text-surface-500 leading-relaxed">
-                  TokenFence is free for all developers. If you need help
+                  UsageSentinel is free for all developers. If you need help
                   getting started, have a feature request, or found a bug,
                   don&apos;t hesitate to reach out.
                 </p>

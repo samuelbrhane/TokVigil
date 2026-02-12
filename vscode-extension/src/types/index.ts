@@ -1,4 +1,4 @@
-export interface TokenFenceConfig {
+export interface UsageSentinelConfig {
   apiKey: string;
   baseUrl: string;
 }

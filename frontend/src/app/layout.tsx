@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TokenFence - AI Usage Control for Production Teams",
+  title: "UsageSentinel - AI Usage Control for Production Teams",
   description:
     "Application-layer AI usage control. Enforce budgets, limits, and policies inside your code with Python & TypeScript SDKs.",
   keywords: [

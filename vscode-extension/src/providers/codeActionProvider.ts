@@ -36,13 +36,13 @@ export class CodeActionProvider implements vscode.CodeActionProvider {
     let importStatement: string;
 
     if (languageId === "python") {
-      importStatement = "from tokenfence import TokenFence\n";
+      importStatement = "from tokenfence import UsageSentinel\n";
     } else {
-      importStatement = 'import { TokenFence } from "tokenfence";\n';
+      importStatement = 'import { UsageSentinel } from "tokenfence";\n';
     }
 
     const action = new vscode.CodeAction(
-      "Add TokenFence import",
+      "Add UsageSentinel import",
       vscode.CodeActionKind.QuickFix,
     );
 
@@ -61,7 +61,7 @@ export class CodeActionProvider implements vscode.CodeActionProvider {
 
   private createSetApiKeyAction(): vscode.CodeAction {
     const action = new vscode.CodeAction(
-      "Set TokenFence API Key",
+      "Set UsageSentinel API Key",
       vscode.CodeActionKind.QuickFix,
     );
 

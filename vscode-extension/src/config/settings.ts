@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import { TokenFenceConfig } from "../types";
+import { UsageSentinelConfig } from "../types";
 import { DEFAULT_BASE_URL } from "./constants";
 
-export function getConfig(): TokenFenceConfig {
+export function getConfig(): UsageSentinelConfig {
   const config = vscode.workspace.getConfiguration("tokenfence");
 
   return {

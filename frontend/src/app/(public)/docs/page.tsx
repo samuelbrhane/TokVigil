@@ -7,19 +7,20 @@ import { CodeBlock } from "@/components/ui";
 const CARDS = [
   {
     title: "Python SDK",
-    description: "Full guide to using TokenFence with Python applications.",
+    description: "Full guide to using UsageSentinel with Python applications.",
     href: "/docs/sdk/python",
     icon: "🐍",
   },
   {
     title: "TypeScript SDK",
-    description: "Full guide to using TokenFence with TypeScript/JavaScript.",
+    description:
+      "Full guide to using UsageSentinel with TypeScript/JavaScript.",
     href: "/docs/sdk/typescript",
     icon: "📘",
   },
   {
     title: "REST API",
-    description: "Use TokenFence from any language via HTTP requests.",
+    description: "Use UsageSentinel from any language via HTTP requests.",
     href: "/docs/rest-api",
     icon: "🌐",
   },
@@ -31,9 +32,9 @@ const CARDS = [
   },
 ];
 
-const QUICK_EXAMPLE = `from tokenfence import TokenFence
+const QUICK_EXAMPLE = `from tokenfence import UsageSentinel
 
-tf = TokenFence(api_key="tf_live_...")
+tf = UsageSentinel(api_key="tf_live_...")
 
 # Check if request is allowed
 result = tf.evaluate(
@@ -61,8 +62,9 @@ export default function DocsPage() {
           Documentation
         </h1>
         <p className="text-lg text-surface-400 max-w-2xl">
-          Everything you need to integrate TokenFence into your AI applications.
-          Control usage, enforce limits, and track spending in minutes.
+          Everything you need to integrate UsageSentinel into your AI
+          applications. Control usage, enforce limits, and track spending in
+          minutes.
         </p>
       </div>
 

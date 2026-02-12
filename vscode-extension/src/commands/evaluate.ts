@@ -1,16 +1,16 @@
 import * as vscode from "vscode";
-import { TokenFenceApiClient } from "../api/client";
+import { UsageSentinelApiClient } from "../api/client";
 import { getConfig } from "../config/settings";
 import { AI_MODELS } from "../config/constants";
 
 export async function testEvaluate(
-  apiClient: TokenFenceApiClient,
+  apiClient: UsageSentinelApiClient,
 ): Promise<void> {
   const config = getConfig();
 
   if (!config.apiKey) {
     const setKey = await vscode.window.showErrorMessage(
-      "TokenFence API key not configured",
+      "UsageSentinel API key not configured",
       "Set API Key",
     );
     if (setKey === "Set API Key") {
@@ -66,7 +66,7 @@ export async function testEvaluate(
   await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
-      title: "TokenFence: Testing evaluate...",
+      title: "UsageSentinel: Testing evaluate...",
       cancellable: false,
     },
     async () => {
@@ -78,7 +78,9 @@ export async function testEvaluate(
       });
 
       if (response.error) {
-        vscode.window.showErrorMessage(`TokenFence Error: ${response.error}`);
+        vscode.window.showErrorMessage(
+          `UsageSentinel Error: ${response.error}`,
+        );
         return;
       }
 
@@ -126,7 +128,7 @@ export async function testEvaluate(
 function showResultDetails(result: any): void {
   const panel = vscode.window.createWebviewPanel(
     "tokenfenceResult",
-    "TokenFence Evaluate Result",
+    "UsageSentinel Evaluate Result",
     vscode.ViewColumn.Beside,
     {},
   );

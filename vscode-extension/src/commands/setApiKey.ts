@@ -1,16 +1,16 @@
 import * as vscode from "vscode";
 import { setApiKey, getConfig } from "../config/settings";
-import { TokenFenceApiClient } from "../api/client";
+import { UsageSentinelApiClient } from "../api/client";
 import { SidebarProvider } from "../panels/SidebarProvider";
 
 export async function setApiKeyCommand(
-  apiClient: TokenFenceApiClient,
+  apiClient: UsageSentinelApiClient,
   sidebarProvider: SidebarProvider,
 ): Promise<void> {
   const config = getConfig();
 
   const apiKey = await vscode.window.showInputBox({
-    prompt: "Enter your TokenFence API key",
+    prompt: "Enter your UsageSentinel API key",
     placeHolder: "tf_live_xxxxxxxxxxxxxxxx",
     value: config.apiKey,
     password: false,
@@ -39,7 +39,7 @@ export async function setApiKeyCommand(
   const testResult = await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
-      title: "TokenFence: Testing connection...",
+      title: "UsageSentinel: Testing connection...",
       cancellable: false,
     },
     async () => {
@@ -53,10 +53,12 @@ export async function setApiKeyCommand(
   );
 
   if (testResult.success) {
-    vscode.window.showInformationMessage(`TokenFence: ${testResult.message}`);
+    vscode.window.showInformationMessage(
+      `UsageSentinel: ${testResult.message}`,
+    );
   } else {
     vscode.window.showWarningMessage(
-      `TokenFence: API key saved but connection test failed: ${testResult.message}`,
+      `UsageSentinel: API key saved but connection test failed: ${testResult.message}`,
     );
   }
 }

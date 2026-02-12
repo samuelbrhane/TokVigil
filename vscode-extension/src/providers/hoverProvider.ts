@@ -33,8 +33,8 @@ export class HoverProvider implements vscode.HoverProvider {
       return this.buildReasonCodeHover(reasonCode[0], reasonCode[1]);
     }
 
-    // Check for TokenFence class
-    if (word === "TokenFence") {
+    // Check for UsageSentinel class
+    if (word === "UsageSentinel") {
       return this.buildClassHover();
     }
 
@@ -88,16 +88,16 @@ export class HoverProvider implements vscode.HoverProvider {
   private buildClassHover(): vscode.Hover {
     const markdown = new vscode.MarkdownString();
 
-    markdown.appendMarkdown("### TokenFence\n\n");
+    markdown.appendMarkdown("### UsageSentinel\n\n");
     markdown.appendMarkdown(
       "AI usage control client for managing rate limits, budgets, and policies.\n\n",
     );
     markdown.appendMarkdown("**Quick Start:**\n\n");
 
     markdown.appendCodeblock(
-      `from tokenfence import TokenFence
+      `from tokenfence import UsageSentinel
 
-tf = TokenFence(api_key="tf_live_xxx")
+tf = UsageSentinel(api_key="tf_live_xxx")
 
 result = tf.evaluate(
     user_id="user_123",

@@ -14,7 +14,7 @@ const sections = [
   {
     title: "2. How We Use Your Information",
     content: [
-      "To provide and operate the TokenFence platform, including policy evaluation, usage tracking, and analytics.",
+      "To provide and operate the UsageSentinel platform, including policy evaluation, usage tracking, and analytics.",
       "To enforce rate limits and usage policies as configured by your workspace.",
       "To send transactional emails related to your account (password resets, billing receipts, usage alerts).",
       "To improve the platform and fix bugs.",
@@ -24,7 +24,7 @@ const sections = [
   {
     title: "3. What We Do Not Collect",
     content: [
-      "LLM prompts or inputs — TokenFence never sees the content you send to AI providers.",
+      "LLM prompts or inputs — UsageSentinel never sees the content you send to AI providers.",
       "LLM responses or outputs — your AI responses go directly between your application and the AI provider.",
       "End-user personal data — we only receive the user_id identifier you choose to pass. We recommend using opaque identifiers, not personal information.",
     ],
@@ -96,7 +96,7 @@ export default function PrivacyPage() {
 
           <div className="space-y-10">
             <p className="text-surface-400 leading-relaxed">
-              TokenFence (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is
+              UsageSentinel (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is
               committed to protecting your privacy. This policy explains what
               data we collect, how we use it, and your rights regarding your
               information.

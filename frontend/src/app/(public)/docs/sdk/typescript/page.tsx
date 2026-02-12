@@ -20,9 +20,9 @@ const CODE_INSTALL = `npm install tokenfence
 # or
 yarn add tokenfence`;
 
-const CODE_INIT = `import { TokenFence } from "tokenfence";
+const CODE_INIT = `import { UsageSentinel } from "tokenfence";
 
-const tf = new TokenFence({
+const tf = new UsageSentinel({
   apiKey: "tf_live_...",           // Required: your API key
   baseUrl: "https://api.tokenfence.io",  // Optional, default
   timeout: 30000,                  // Optional, milliseconds
@@ -121,8 +121,8 @@ for (const record of blocked.items) {
 }`;
 
 const CODE_ERRORS = `import {
-  TokenFence,
-  TokenFenceError,
+  UsageSentinel,
+  UsageSentinelError,
   AuthenticationError,
   RateLimitError,
   ValidationError,
@@ -130,7 +130,7 @@ const CODE_ERRORS = `import {
   APIError,
 } from "tokenfence";
 
-const tf = new TokenFence({ apiKey: "tf_live_..." });
+const tf = new UsageSentinel({ apiKey: "tf_live_..." });
 
 try {
   const result = await tf.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
@@ -150,7 +150,7 @@ try {
   } else if (error instanceof APIError) {
     // Server errors (5xx)
     console.log(\`API error: \${error.message}\`);
-  } else if (error instanceof TokenFenceError) {
+  } else if (error instanceof UsageSentinelError) {
     // Base exception — catches all above
     console.log(\`Error: \${error.message}\`);
   }
@@ -194,7 +194,7 @@ export default function TypeScriptSDKPage() {
       <DocHeader
         icon="📘"
         title="TypeScript SDK"
-        description="Complete guide to using the TokenFence TypeScript SDK in your Node.js and browser applications."
+        description="Complete guide to using the UsageSentinel TypeScript SDK in your Node.js and browser applications."
       />
 
       <DocTableOfContents items={TOC} />
@@ -203,7 +203,7 @@ export default function TypeScriptSDKPage() {
         <DocSection
           id="installation"
           title="Installation"
-          description="Install the TokenFence TypeScript SDK using npm or yarn:"
+          description="Install the UsageSentinel TypeScript SDK using npm or yarn:"
           code={CODE_INSTALL}
           language="bash"
         >
@@ -222,7 +222,8 @@ export default function TypeScriptSDKPage() {
           <DocNote type="tip">
             Use environment variables for your API key in production:{" "}
             <code className="text-brand-400">
-              new TokenFence({"{"} apiKey: process.env.TOKENFENCE_API_KEY {"}"})
+              new UsageSentinel({"{"} apiKey: process.env.TOKENFENCE_API_KEY{" "}
+              {"}"})
             </code>
           </DocNote>
         </DocSection>
@@ -249,7 +250,7 @@ export default function TypeScriptSDKPage() {
         <DocSection
           id="check-and-call"
           title="Check and Call"
-          description="The simplest way to integrate. Pass your AI function and TokenFence handles evaluate → call → log automatically. The optional third argument extracts token counts from the response."
+          description="The simplest way to integrate. Pass your AI function and UsageSentinel handles evaluate → call → log automatically. The optional third argument extracts token counts from the response."
           code={CODE_CHECK_AND_CALL}
         >
           <DocNote type="tip">

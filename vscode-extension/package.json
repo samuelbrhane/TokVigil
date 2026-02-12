@@ -1,6 +1,6 @@
 {
   "name": "tokenfence",
-  "displayName": "TokenFence",
+  "displayName": "UsageSentinel",
   "description": "AI usage control - manage rate limits, budgets, and policies for your AI-powered applications",
   "version": "0.1.0",
   "publisher": "tokenfence",
@@ -37,27 +37,27 @@
     "commands": [
       {
         "command": "tokenfence.testEvaluate",
-        "title": "TokenFence: Test Evaluate",
+        "title": "UsageSentinel: Test Evaluate",
         "icon": "$(play)"
       },
       {
         "command": "tokenfence.openDashboard",
-        "title": "TokenFence: Open Dashboard",
+        "title": "UsageSentinel: Open Dashboard",
         "icon": "$(dashboard)"
       },
       {
         "command": "tokenfence.setApiKey",
-        "title": "TokenFence: Set API Key",
+        "title": "UsageSentinel: Set API Key",
         "icon": "$(key)"
       },
       {
         "command": "tokenfence.refreshUsage",
-        "title": "TokenFence: Refresh Usage",
+        "title": "UsageSentinel: Refresh Usage",
         "icon": "$(refresh)"
       },
       {
         "command": "tokenfence.insertSnippet",
-        "title": "TokenFence: Insert Code Snippet",
+        "title": "UsageSentinel: Insert Code Snippet",
         "icon": "$(code)"
       }
     ],
@@ -65,7 +65,7 @@
       "activitybar": [
         {
           "id": "tokenfence-container",
-          "title": "TokenFence",
+          "title": "UsageSentinel",
           "icon": "resources/icons/sidebar.svg"
         }
       ]
@@ -75,23 +75,23 @@
         {
           "type": "webview",
           "id": "tokenfence-sidebar",
-          "name": "TokenFence",
+          "name": "UsageSentinel",
           "icon": "resources/icons/sidebar.svg"
         }
       ]
     },
     "configuration": {
-      "title": "TokenFence",
+      "title": "UsageSentinel",
       "properties": {
         "tokenfence.apiKey": {
           "type": "string",
           "default": "",
-          "description": "Your TokenFence API key"
+          "description": "Your UsageSentinel API key"
         },
         "tokenfence.baseUrl": {
           "type": "string",
           "default": "https://api.tokenfence.io",
-          "description": "TokenFence API base URL"
+          "description": "UsageSentinel API base URL"
         },
         "tokenfence.showStatusBar": {
           "type": "boolean",

@@ -1,6 +1,6 @@
-# TokenFence SDKs
+# UsageSentinel SDKs
 
-Official SDKs for the TokenFence platform.
+Official SDKs for the UsageSentinel platform.
 
 ## Packages
 
@@ -14,9 +14,9 @@ Official SDKs for the TokenFence platform.
 ### Python
 
 ```python
-from tokenfence import TokenFence
+from tokenfence import UsageSentinel
 
-tf = TokenFence(api_key="tf_live_...")
+tf = UsageSentinel(api_key="tf_live_...")
 
 result = tf.evaluate(
     user_id="user_123",
@@ -39,9 +39,9 @@ if result.allowed:
 ### TypeScript
 
 ```typescript
-import { TokenFence } from "tokenfence";
+import { UsageSentinel } from "tokenfence";
 
-const tf = new TokenFence({ apiKey: "tf_live_..." });
+const tf = new UsageSentinel({ apiKey: "tf_live_..." });
 
 const result = await tf.evaluate({
   userId: "user_123",

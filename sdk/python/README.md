@@ -1,6 +1,6 @@
-# TokenFence Python SDK
+# UsageSentinel Python SDK
 
-Official Python SDK for [TokenFence](https://tokenfence.io) - AI usage control platform.
+Official Python SDK for [UsageSentinel](https://tokenfence.io) - AI usage control platform.
 
 Manage rate limits, budgets, and policies for your AI-powered applications.
 
@@ -13,10 +13,10 @@ pip install tokenfence
 ## Quick Start
 
 ```python
-from tokenfence import TokenFence
+from tokenfence import UsageSentinel
 
 # Initialize client
-tf = TokenFence(api_key="tf_live_xxx")
+tf = UsageSentinel(api_key="tf_live_xxx")
 
 # Check if request is allowed
 result = tf.evaluate(
@@ -149,9 +149,9 @@ for group in by_feature.items:
 ## Error Handling
 
 ```python
-from tokenfence import TokenFence, RateLimitError, AuthenticationError
+from tokenfence import UsageSentinel, RateLimitError, AuthenticationError
 
-tf = TokenFence(api_key="tf_live_xxx")
+tf = UsageSentinel(api_key="tf_live_xxx")
 
 try:
     result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
@@ -159,14 +159,14 @@ except AuthenticationError as e:
     print(f"Invalid API key: {e.message}")
 except RateLimitError as e:
     print(f"Rate limited. Retry after {e.retry_after} seconds")
-except TokenFenceError as e:
+except UsageSentinelError as e:
     print(f"Error: {e.message}")
 ```
 
 ## Configuration
 
 ```python
-tf = TokenFence(
+tf = UsageSentinel(
     api_key="tf_live_xxx",
     base_url="https://api.tokenfence.io",  # Custom API URL
     timeout=30,           # Request timeout in seconds

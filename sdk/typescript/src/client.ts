@@ -7,7 +7,7 @@ import {
   USER_AGENT,
 } from "./constants";
 import {
-  TokenFenceError,
+  UsageSentinelError,
   AuthenticationError,
   RateLimitError,
   ValidationError,
@@ -17,7 +17,7 @@ import {
   TimeoutError,
 } from "./exceptions";
 import {
-  TokenFenceConfig,
+  UsageSentinelConfig,
   EvaluateParams,
   EvaluateResult,
   LogUsageParams,
@@ -31,14 +31,14 @@ import {
   UsageSummaryParams,
 } from "./types";
 
-export class TokenFence {
+export class UsageSentinel {
   private apiKey: string;
   private baseUrl: string;
   private timeout: number;
   private retryCount: number;
   private retryDelay: number;
 
-  constructor(config: TokenFenceConfig) {
+  constructor(config: UsageSentinelConfig) {
     if (!config.apiKey) {
       throw new AuthenticationError("API key is required");
     }
@@ -93,7 +93,7 @@ export class TokenFence {
         if (error instanceof RateLimitError) {
           throw error;
         }
-        if (error instanceof TokenFenceError) {
+        if (error instanceof UsageSentinelError) {
           throw error;
         }
         if (error instanceof Error) {
@@ -103,7 +103,7 @@ export class TokenFence {
             );
           } else {
             lastError = new ConnectionError(
-              "Failed to connect to TokenFence API",
+              "Failed to connect to UsageSentinel API",
             );
           }
         }

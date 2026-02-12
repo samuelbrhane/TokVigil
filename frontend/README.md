@@ -1,6 +1,6 @@
-# TokenFence Frontend
+# UsageSentinel Frontend
 
-Next.js dashboard and landing page for the TokenFence platform.
+Next.js dashboard and landing page for the UsageSentinel platform.
 
 ## Tech
 

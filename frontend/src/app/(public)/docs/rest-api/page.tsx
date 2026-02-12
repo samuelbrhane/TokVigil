@@ -239,7 +239,7 @@ export default function RestApiPage() {
       <DocHeader
         icon="🌐"
         title="REST API"
-        description="Use TokenFence from any language by calling the REST API directly. All endpoints use JSON and authenticate via API key header."
+        description="Use UsageSentinel from any language by calling the REST API directly. All endpoints use JSON and authenticate via API key header."
       />
 
       <DocTableOfContents items={TOC} />

@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "tokenfence"
 version = "0.1.0"
-description = "Python SDK for TokenFence - AI usage control platform"
+description = "Python SDK for UsageSentinel - AI usage control platform"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "TokenFence", email = "support@tokenfence.io"}
+    {name = "UsageSentinel", email = "support@tokenfence.io"}
 ]
 keywords = ["ai", "llm", "rate-limiting", "usage-control", "openai", "anthropic"]
 classifiers = [

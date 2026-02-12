@@ -10,27 +10,27 @@ interface SnippetOption {
 const snippets: SnippetOption[] = [
   {
     label: "$(file-add) Import",
-    description: "Import TokenFence SDK",
-    snippet: `import { TokenFence } from "tokenfence";
+    description: "Import UsageSentinel SDK",
+    snippet: `import { UsageSentinel } from "tokenfence";
 
 \$0`,
-    pythonSnippet: `from tokenfence import TokenFence
+    pythonSnippet: `from tokenfence import UsageSentinel
 
 \$0`,
   },
   {
     label: "$(plug) Initialize Client",
-    description: "Create TokenFence client instance",
-    snippet: `import { TokenFence } from "tokenfence";
+    description: "Create UsageSentinel client instance",
+    snippet: `import { UsageSentinel } from "tokenfence";
 
-const tf = new TokenFence({
+const tf = new UsageSentinel({
   apiKey: "\${1:your_api_key}",
 });
 
 \$0`,
-    pythonSnippet: `from tokenfence import TokenFence
+    pythonSnippet: `from tokenfence import UsageSentinel
 
-tf = TokenFence(
+tf = UsageSentinel(
     api_key="\${1:your_api_key}"
 )
 
@@ -94,9 +94,9 @@ else:
   {
     label: "$(rocket) Full Flow",
     description: "Complete evaluate, call AI, and log flow",
-    snippet: `import { TokenFence } from "tokenfence";
+    snippet: `import { UsageSentinel } from "tokenfence";
 
-const tf = new TokenFence({ apiKey: "\${1:your_api_key}" });
+const tf = new UsageSentinel({ apiKey: "\${1:your_api_key}" });
 
 async function handleAiRequest(userId: string, prompt: string) {
   const result = await tf.evaluate({
@@ -129,10 +129,10 @@ async function handleAiRequest(userId: string, prompt: string) {
 
   return { success: true };
 }`,
-    pythonSnippet: `from tokenfence import TokenFence
+    pythonSnippet: `from tokenfence import UsageSentinel
 import uuid
 
-tf = TokenFence(api_key="\${1:your_api_key}")
+tf = UsageSentinel(api_key="\${1:your_api_key}")
 
 def handle_ai_request(user_id: str, prompt: str):
     result = tf.evaluate(
@@ -166,10 +166,10 @@ def handle_ai_request(user_id: str, prompt: str):
   },
   {
     label: "$(shield) Error Handling",
-    description: "TokenFence with try/catch error handling",
-    snippet: `import { TokenFence, RateLimitError, AuthenticationError, TokenFenceError } from "tokenfence";
+    description: "UsageSentinel with try/catch error handling",
+    snippet: `import { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } from "tokenfence";
 
-const tf = new TokenFence({ apiKey: "\${1:your_api_key}" });
+const tf = new UsageSentinel({ apiKey: "\${1:your_api_key}" });
 
 try {
   const result = await tf.evaluate({
@@ -185,15 +185,15 @@ try {
     console.error("Invalid API key:", error.message);
   } else if (error instanceof RateLimitError) {
     console.error("Rate limited. Retry after:", error.retryAfter, "seconds");
-  } else if (error instanceof TokenFenceError) {
-    console.error("TokenFence error:", error.message);
+  } else if (error instanceof UsageSentinelError) {
+    console.error("UsageSentinel error:", error.message);
   } else {
     throw error;
   }
 }`,
-    pythonSnippet: `from tokenfence import TokenFence, RateLimitError, AuthenticationError, TokenFenceError
+    pythonSnippet: `from tokenfence import UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError
 
-tf = TokenFence(api_key="\${1:your_api_key}")
+tf = UsageSentinel(api_key="\${1:your_api_key}")
 
 try:
     result = tf.evaluate(
@@ -207,8 +207,8 @@ except AuthenticationError as e:
     print(f"Invalid API key: {e.message}")
 except RateLimitError as e:
     print(f"Rate limited. Retry after {e.retry_after} seconds")
-except TokenFenceError as e:
-    print(f"TokenFence error: {e.message}")`,
+except UsageSentinelError as e:
+    print(f"UsageSentinel error: {e.message}")`,
   },
   {
     label: "$(graph) Usage Summary",
@@ -371,7 +371,7 @@ export async function insertSnippet(): Promise<void> {
 
   const selected = await vscode.window.showQuickPick(snippets, {
     placeHolder: "Select a code snippet to insert",
-    title: "TokenFence: Insert Snippet",
+    title: "UsageSentinel: Insert Snippet",
   });
 
   if (!selected) {

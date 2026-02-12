@@ -1,20 +1,20 @@
 import pytest
 import responses
-from tokenfence import TokenFence, EvaluateResult, AuthenticationError, RateLimitError
+from tokenfence import UsageSentinel, EvaluateResult, AuthenticationError, RateLimitError
 
 
-class TestTokenFence:
+class TestUsageSentinel:
     
     def test_init_requires_api_key(self):
         with pytest.raises(AuthenticationError):
-            TokenFence(api_key="")
+            UsageSentinel(api_key="")
     
     def test_init_with_api_key(self):
-        tf = TokenFence(api_key="tf_test_xxx")
+        tf = UsageSentinel(api_key="tf_test_xxx")
         assert tf.api_key == "tf_test_xxx"
     
     def test_init_custom_base_url(self):
-        tf = TokenFence(api_key="tf_test_xxx", base_url="http://localhost:8000")
+        tf = UsageSentinel(api_key="tf_test_xxx", base_url="http://localhost:8000")
         assert tf.base_url == "http://localhost:8000"
     
     @responses.activate
@@ -36,7 +36,7 @@ class TestTokenFence:
             status=200,
         )
         
-        tf = TokenFence(api_key="tf_test_xxx")
+        tf = UsageSentinel(api_key="tf_test_xxx")
         result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert result.allowed is True
@@ -62,7 +62,7 @@ class TestTokenFence:
             status=200,
         )
         
-        tf = TokenFence(api_key="tf_test_xxx")
+        tf = UsageSentinel(api_key="tf_test_xxx")
         result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert result.allowed is False
@@ -82,7 +82,7 @@ class TestTokenFence:
             status=401,
         )
         
-        tf = TokenFence(api_key="tf_test_invalid")
+        tf = UsageSentinel(api_key="tf_test_invalid")
         
         with pytest.raises(AuthenticationError) as exc:
             tf.evaluate(user_id="user_123", model="gpt-4o-mini")
@@ -104,7 +104,7 @@ class TestTokenFence:
             status=429,
         )
         
-        tf = TokenFence(api_key="tf_test_xxx")
+        tf = UsageSentinel(api_key="tf_test_xxx")
         
         with pytest.raises(RateLimitError) as exc:
             tf.evaluate(user_id="user_123", model="gpt-4o-mini")
@@ -125,7 +125,7 @@ class TestTokenFence:
             status=201,
         )
         
-        tf = TokenFence(api_key="tf_test_xxx")
+        tf = UsageSentinel(api_key="tf_test_xxx")
         result = tf.log_usage(
             request_id="req_123",
             user_id="user_123",
