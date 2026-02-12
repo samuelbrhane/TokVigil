@@ -135,3 +135,15 @@ def get_usage_summary(
     return services.get_usage_summary(db, workspace_id, environment_id, start_date, end_date)
 
 
+@router.get("/{workspace_id}/{environment_id}/daily")
+def get_scoped_daily(
+    workspace_id: int,
+    environment_id: int,
+    current_user: User = Depends(get_current_user),
+    days: int = Query(7, ge=1, le=90),
+    db: Session = Depends(get_db)
+):
+    workspace = get_workspace(db, workspace_id, current_user.id)
+    if not workspace:
+        raise WorkspaceNotFoundError()
+    return services.get_scoped_daily_usage(db, workspace_id, environment_id, days)

@@ -507,3 +507,65 @@ def get_global_daily_usage(
         return weekly
     
     return daily
+
+
+def get_scoped_daily_usage(
+    db: Session,
+    workspace_id: int,
+    environment_id: int,
+    days: int = 7
+) -> list:
+    start_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    start_date = start_date - timedelta(days=days - 1)
+    
+    results = db.query(
+        func.date(UsageRecord.created_at).label("day"),
+        func.count(UsageRecord.id).label("requests"),
+        func.coalesce(func.sum(UsageRecord.total_tokens), 0).label("tokens"),
+        func.coalesce(func.sum(UsageRecord.estimated_cost_usd), 0).label("cost_usd"),
+    ).filter(
+        UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id,
+        UsageRecord.created_at >= start_date
+    ).group_by(
+        func.date(UsageRecord.created_at)
+    ).order_by(
+        func.date(UsageRecord.created_at)
+    ).all()
+    
+    result_map = {str(r.day): r for r in results}
+    daily = []
+    for i in range(days):
+        day = start_date + timedelta(days=i)
+        day_str = str(day.date())
+        if day_str in result_map:
+            r = result_map[day_str]
+            daily.append({
+                "date": day_str,
+                "requests": r.requests,
+                "tokens": int(r.tokens),
+                "cost_usd": float(r.cost_usd),
+            })
+        else:
+            daily.append({
+                "date": day_str,
+                "requests": 0,
+                "tokens": 0,
+                "cost_usd": 0.0,
+            })
+    
+    if days > 30:
+        weekly = []
+        for i in range(0, len(daily), 7):
+            chunk = daily[i:i + 7]
+            if not chunk:
+                continue
+            weekly.append({
+                "date": chunk[0]["date"],
+                "requests": sum(d["requests"] for d in chunk),
+                "tokens": sum(d["tokens"] for d in chunk),
+                "cost_usd": sum(d["cost_usd"] for d in chunk),
+            })
+        return weekly
+    
+    return daily

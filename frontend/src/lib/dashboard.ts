@@ -156,3 +156,13 @@ export async function getUsageByFeature(
     `/dashboard/usage/${workspaceId}/${environmentId}/by-feature?page=${page}&page_size=${pageSize}`,
   );
 }
+
+export async function getScopedDaily(
+  workspaceId: number,
+  environmentId: number,
+  days = 7,
+): Promise<DailyUsage[]> {
+  return api<DailyUsage[]>(
+    `/dashboard/usage/${workspaceId}/${environmentId}/daily?days=${days}`,
+  );
+}
