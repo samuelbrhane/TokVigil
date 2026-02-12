@@ -18,18 +18,18 @@ const TOC = [
 ];
 
 const SNIPPET_ROWS: [string, string][] = [
-  ["tfimport", "Import UsageSentinel SDK"],
-  ["tfinit", "Initialize client"],
-  ["tfeval", "Evaluate request"],
-  ["tflog", "Log usage"],
-  ["tfflow", "Complete flow"],
-  ["tfcheck", "Check and call"],
-  ["tferror", "Error handling"],
-  ["tfsummary", "Get usage summary"],
-  ["tfbyuser", "Get usage by user"],
-  ["tfbyfeature", "Get usage by feature"],
-  ["tfblocked", "Get blocked requests"],
-  ["tfrecent", "Get recent usage"],
+  ["usimport", "Import UsageSentinel SDK"],
+  ["usinit", "Initialize client"],
+  ["useval", "Evaluate request"],
+  ["uslog", "Log usage"],
+  ["usflow", "Complete flow"],
+  ["uscheck", "Check and call"],
+  ["userror", "Error handling"],
+  ["ussummary", "Get usage summary"],
+  ["usbyuser", "Get usage by user"],
+  ["usbyfeature", "Get usage by feature"],
+  ["usblocked", "Get blocked requests"],
+  ["usrecent", "Get recent usage"],
 ];
 
 const COMMAND_ROWS: [string, string][] = [

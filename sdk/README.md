@@ -16,7 +16,7 @@ Official SDKs for the UsageSentinel platform.
 ```python
 from usagesentinel import UsageSentinel
 
-us =UsageSentinel(api_key="us_live_...")
+us = UsageSentinel(api_key="us_live_...")
 
 result = us.evaluate(
     user_id="user_123",

@@ -37,7 +37,7 @@ class UsageSentinel:
     UsageSentinel SDK client.
     
     Usage:
-        us =UsageSentinel(api_key="us_live_xxx")
+        us = UsageSentinel(api_key="us_live_xxx")
         
         # Check if request is allowed
         result = us.evaluate(

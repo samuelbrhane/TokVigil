@@ -30,7 +30,7 @@ const us =new UsageSentinel({
 \$0`,
     pythonSnippet: `from usagesentinel import UsageSentinel
 
-us =UsageSentinel(
+us = UsageSentinel(
     api_key="\${1:your_api_key}"
 )
 
@@ -132,7 +132,7 @@ async function handleAiRequest(userId: string, prompt: string) {
     pythonSnippet: `from usagesentinel import UsageSentinel
 import uuid
 
-us =UsageSentinel(api_key="\${1:your_api_key}")
+us = UsageSentinel(api_key="\${1:your_api_key}")
 
 def handle_ai_request(user_id: str, prompt: str):
     result = us.evaluate(
@@ -193,7 +193,7 @@ try {
 }`,
     pythonSnippet: `from usagesentinel import UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError
 
-us =UsageSentinel(api_key="\${1:your_api_key}")
+us = UsageSentinel(api_key="\${1:your_api_key}")
 
 try:
     result = us.evaluate(

@@ -20,7 +20,7 @@ const CODE_INSTALL = `pip install usagesentinel`;
 
 const CODE_INIT = `from usagesentinel import UsageSentinel
 
-us =UsageSentinel(
+us = UsageSentinel(
     api_key="us_live_...",       # Required: your API key
     base_url="https://api.usagesentinel.com",  # Optional, default
     timeout=30,                  # Optional, seconds
@@ -116,7 +116,7 @@ const CODE_ERRORS = `from usagesentinel import (
     APIError,
 )
 
-us =UsageSentinel(api_key="us_live_...")
+us = UsageSentinel(api_key="us_live_...")
 
 try:
     result = us.evaluate(user_id="user_123", model="gpt-4o-mini")

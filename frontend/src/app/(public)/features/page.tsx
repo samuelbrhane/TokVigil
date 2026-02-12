@@ -336,7 +336,7 @@ const devSummary = await tfDev.getUsageSummary();`,
     UsageSentinelError
 )
 
-us =UsageSentinel(api_key="us_live_...")
+us = UsageSentinel(api_key="us_live_...")
 
 try:
     result = us.evaluate(

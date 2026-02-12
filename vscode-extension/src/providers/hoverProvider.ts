@@ -97,7 +97,7 @@ export class HoverProvider implements vscode.HoverProvider {
     markdown.appendCodeblock(
       `from usagesentinel import UsageSentinel
 
-us =UsageSentinel(api_key="us_live_xxx")
+us = UsageSentinel(api_key="us_live_xxx")
 
 result = us.evaluate(
     user_id="user_123",

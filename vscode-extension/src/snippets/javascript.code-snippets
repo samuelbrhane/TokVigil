@@ -1,11 +1,11 @@
 {
   "UsageSentinel Import": {
-    "prefix": "tfimport",
+    "prefix": "usimport",
     "body": ["const { UsageSentinel } = require(\"usagesentinel\");", "", "$0"],
     "description": "Import UsageSentinel SDK",
   },
   "UsageSentinel Initialize": {
-    "prefix": "tfinit",
+    "prefix": "usinit",
     "body": [
       "const { UsageSentinel } = require(\"usagesentinel\");",
       "",
@@ -18,7 +18,7 @@
     "description": "Initialize UsageSentinel client",
   },
   "UsageSentinel Evaluate": {
-    "prefix": "tfeval",
+    "prefix": "useval",
     "body": [
       "const result = await us.evaluate({",
       "  userId: \"${1:user_id}\",",
@@ -36,7 +36,7 @@
     "description": "Evaluate if request is allowed",
   },
   "UsageSentinel Log Usage": {
-    "prefix": "tflog",
+    "prefix": "uslog",
     "body": [
       "await us.logUsage({",
       "  requestId: \"${1:request_id}\",",
@@ -53,7 +53,7 @@
     "description": "Log AI usage after completion",
   },
   "UsageSentinel Full Flow": {
-    "prefix": "tfflow",
+    "prefix": "usflow",
     "body": [
       "const { UsageSentinel } = require(\"usagesentinel\");",
       "const crypto = require(\"crypto\");",
@@ -97,7 +97,7 @@
     "description": "Complete UsageSentinel flow with evaluate and log",
   },
   "UsageSentinel Usage Summary": {
-    "prefix": "tfsummary",
+    "prefix": "ussummary",
     "body": [
       "const summary = await us.getUsageSummary();",
       "console.log(`Total requests: ${summary.totalRequests}`);",
@@ -108,7 +108,7 @@
     "description": "Get usage summary",
   },
   "UsageSentinel Error Handling": {
-    "prefix": "tferror",
+    "prefix": "userror",
     "body": [
       "const { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } = require(\"usagesentinel\");",
       "",

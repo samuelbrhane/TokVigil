@@ -16,7 +16,7 @@ pip install usagesentinel
 from usagesentinel import UsageSentinel
 
 # Initialize client
-us =UsageSentinel(api_key="us_live_xxx")
+us = UsageSentinel(api_key="us_live_xxx")
 
 # Check if request is allowed
 result = us.evaluate(
@@ -151,7 +151,7 @@ for group in by_feature.items:
 ```python
 from usagesentinel import UsageSentinel, RateLimitError, AuthenticationError
 
-us =UsageSentinel(api_key="us_live_xxx")
+us = UsageSentinel(api_key="us_live_xxx")
 
 try:
     result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
@@ -166,7 +166,7 @@ except UsageSentinelError as e:
 ## Configuration
 
 ```python
-us =UsageSentinel(
+us = UsageSentinel(
     api_key="us_live_xxx",
     base_url="https://api.usagesentinel.com",  # Custom API URL
     timeout=30,           # Request timeout in seconds

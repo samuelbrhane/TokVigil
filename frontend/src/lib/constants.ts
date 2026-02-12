@@ -108,7 +108,7 @@ export const STEPS = [
 
 from usagesentinel import UsageSentinel
 
-us =UsageSentinel(api_key="us_live_...")`,
+us = UsageSentinel(api_key="us_live_...")`,
     typescript: `npm install usagesentinel
 
 import { UsageSentinel } from "usagesentinel";
