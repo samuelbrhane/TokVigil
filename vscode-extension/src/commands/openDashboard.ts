@@ -4,19 +4,17 @@ import { getConfig } from "../config/settings";
 export async function openDashboard(): Promise<void> {
   const config = getConfig();
 
-  // Default to production dashboard
-  let dashboardUrl = "https://app.tokenfence.io";
+  let dashboardUrl = "https://tokenfence.io/dashboard";
 
-  // Use local URL if base URL is localhost
   if (config.baseUrl.includes("localhost")) {
-    dashboardUrl = "http://localhost:3000";
+    dashboardUrl = "http://localhost:3000/dashboard";
   }
 
   await vscode.env.openExternal(vscode.Uri.parse(dashboardUrl));
 }
 
 export async function openDocs(): Promise<void> {
-  await vscode.env.openExternal(vscode.Uri.parse("https://docs.tokenfence.io"));
+  await vscode.env.openExternal(vscode.Uri.parse("https://tokenfence.io/docs"));
 }
 
 export async function openApiReference(): Promise<void> {
