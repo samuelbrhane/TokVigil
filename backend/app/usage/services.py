@@ -6,6 +6,9 @@ from sqlalchemy import func, Integer
 
 from app.usage.models import UsageRecord
 from app.usage.schemas import UsageLogRequest, UsageSummary, UsageByGroup
+from app.workspaces.models import Workspace, ApiKey
+from app.policies.models import Policy
+    
 
 
 def log_usage(
@@ -282,13 +285,14 @@ def get_global_usage_summary(
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None
 ) -> dict:
-    from app.workspaces.models import Workspace
     
     workspace_ids = db.query(Workspace.id).filter(
         Workspace.owner_id == user_id,
         Workspace.is_deleted == False
     ).all()
     workspace_ids = [w[0] for w in workspace_ids]
+    
+    workspace_count = len(workspace_ids)
     
     if not workspace_ids:
         return {
@@ -297,7 +301,24 @@ def get_global_usage_summary(
             "total_cost_usd": 0.0,
             "allowed_count": 0,
             "blocked_count": 0,
+            "workspace_count": 0,
+            "policy_count": 0,
+            "api_key_count": 0,
         }
+    
+    # Policy count
+    policy_count = db.query(Policy).filter(
+        Policy.workspace_id.in_(workspace_ids),
+        Policy.is_deleted == False,
+        Policy.is_active == True
+    ).count()
+    
+    # API key count
+    api_key_count = db.query(ApiKey).filter(
+        ApiKey.workspace_id.in_(workspace_ids),
+        ApiKey.is_deleted == False,
+        ApiKey.is_active == True
+    ).count()
     
     query = db.query(
         func.count(UsageRecord.id).label("total_requests"),
@@ -322,9 +343,12 @@ def get_global_usage_summary(
         "total_cost_usd": float(r.total_cost_usd),
         "allowed_count": int(r.allowed_count or 0),
         "blocked_count": int(r.blocked_count or 0),
+        "workspace_count": workspace_count,
+        "policy_count": policy_count,
+        "api_key_count": api_key_count,
     }
-
-
+    
+    
 def get_global_recent_usage(
     db: Session,
     user_id: int,

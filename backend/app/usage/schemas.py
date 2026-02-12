@@ -55,6 +55,9 @@ class UsageSummary(BaseModel):
     total_cost_usd: float
     allowed_count: int
     blocked_count: int
+    workspace_count: int = 0
+    policy_count: int = 0
+    api_key_count: int = 0
 
 
 class UsageByGroup(BaseModel):
