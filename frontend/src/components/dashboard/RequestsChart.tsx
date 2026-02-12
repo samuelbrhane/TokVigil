@@ -50,20 +50,38 @@ export default function RequestsChart({
   }
 
   const currentData = data[period] || [];
-  const chartData = currentData.map((d, i) => ({
-    label:
-      currentData.length <= 7
-        ? new Date(d.date + "T00:00:00").toLocaleDateString("en-US", {
-            weekday: "short",
-          })
-        : currentData.length <= 30
-          ? new Date(d.date + "T00:00:00").toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })
-          : `W${i + 1}`,
-    value: d.requests,
-  }));
+  const chartData = currentData.map((d, i) => {
+    let label: string;
+
+    if (period === "7d") {
+      label = new Date(d.date + "T00:00:00").toLocaleDateString("en-US", {
+        weekday: "short",
+      });
+    } else if (period === "30d") {
+      label = new Date(d.date + "T00:00:00").toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+    } else {
+      // 90d weekly — show date range like "Feb 1–7"
+      const start = new Date(d.date + "T00:00:00");
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+
+      const startStr = start.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      const endStr =
+        start.getMonth() === end.getMonth()
+          ? end.getDate().toString()
+          : end.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+      label = `${startStr}–${endStr}`;
+    }
+
+    return { label, value: d.requests };
+  });
 
   return (
     <Card className="p-6">
