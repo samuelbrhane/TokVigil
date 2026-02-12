@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useInView, useTypingEffect } from "@/lib/hooks";
-import { HERO_STATS } from "@/lib/constants";
 import { Button, GridBackground } from "@/components/ui";
+import { useAuth } from "@/lib/auth-context";
 
 export default function HeroSection() {
   const [ref, visible] = useInView(0.1);
+  const { user } = useAuth();
   const tagline = "ai_call(user, prompt, policy)";
   const { displayed } = useTypingEffect(tagline, 40, visible);
 
@@ -17,7 +18,6 @@ export default function HeroSection() {
     >
       <GridBackground opacity={0.03} />
 
-      {/* Ambient glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-brand-500/5 rounded-full blur-[120px]" />
 
       <div className="relative max-w-7xl mx-auto px-6 text-center">
@@ -30,7 +30,7 @@ export default function HeroSection() {
         >
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium tracking-widest uppercase text-brand-400 border border-brand-500/20 bg-brand-500/5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
-            Now available
+            Free &amp; Open
           </span>
         </div>
 
@@ -55,8 +55,8 @@ export default function HeroSection() {
             transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s",
           }}
         >
-          Enforce budgets, rate limits, and policies on every AI call - per
-          user, per feature, per plan. Three lines of code.
+          Enforce budgets, rate limits, and policies on every AI call — per
+          user, per feature, per plan. Three lines of code. Completely free.
         </p>
 
         {/* Typed code line */}
@@ -82,9 +82,9 @@ export default function HeroSection() {
             transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s",
           }}
         >
-          <Link href="/signup">
+          <Link href={user ? "/dashboard" : "/signup"}>
             <Button variant="primary" size="lg">
-              Get Started Free →
+              {user ? "Go to Dashboard →" : "Get Started →"}
             </Button>
           </Link>
           <Link href="/docs">
@@ -92,24 +92,6 @@ export default function HeroSection() {
               View Documentation
             </Button>
           </Link>
-        </div>
-
-        {/* Stats */}
-        <div
-          className="mt-20 grid grid-cols-3 gap-8 max-w-lg mx-auto"
-          style={{
-            opacity: visible ? 1 : 0,
-            transition: "opacity 1s ease 0.7s",
-          }}
-        >
-          {HERO_STATS.map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-2xl font-bold text-surface-200 font-mono">
-                {stat.value}
-              </div>
-              <div className="text-xs text-surface-500 mt-1">{stat.label}</div>
-            </div>
-          ))}
         </div>
       </div>
     </section>
