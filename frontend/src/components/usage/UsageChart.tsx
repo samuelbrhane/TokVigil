@@ -14,18 +14,11 @@ export default function UsageChart({ filters }: UsageChartProps) {
   const [activeTab, setActiveTab] = useState<"requests" | "tokens" | "cost">(
     "requests",
   );
-  const [data, setData] = useState<Record<string, DailyUsage[]>>({});
+  const [data, setData] = useState<DailyUsage[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch data when scope or period changes
   useEffect(() => {
     if (!filters.workspace_id || !filters.environment_id) return;
-
-    const label = `${filters.days}d`;
-    if (data[label]) {
-      setLoading(false);
-      return;
-    }
 
     const load = async () => {
       setLoading(true);
@@ -35,20 +28,15 @@ export default function UsageChart({ filters }: UsageChartProps) {
           filters.environment_id!,
           filters.days,
         );
-        setData((prev) => ({ ...prev, [label]: result }));
+        setData(result);
       } catch {
-        // handle error
+        setData([]);
       } finally {
         setLoading(false);
       }
     };
     load();
   }, [filters.workspace_id, filters.environment_id, filters.days]);
-
-  // Reset cache when scope changes
-  useEffect(() => {
-    setData({});
-  }, [filters.workspace_id, filters.environment_id]);
 
   if (loading) {
     return (
@@ -58,10 +46,7 @@ export default function UsageChart({ filters }: UsageChartProps) {
     );
   }
 
-  const label = `${filters.days}d`;
-  const currentData = data[label] || [];
-
-  const chartData = currentData.map((d) => {
+  const chartData = data.map((d) => {
     let dateLabel: string;
 
     if (filters.days <= 7) {
