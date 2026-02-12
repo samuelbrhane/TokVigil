@@ -269,12 +269,32 @@ def create_api_key(
     return api_key, full_key
 
 
-def get_api_keys(db: Session, workspace_id: int) -> List[ApiKey]:
-    return db.query(ApiKey).filter(
+def get_api_keys(
+    db: Session,
+    workspace_id: int,
+    page: int = 1,
+    page_size: int = 20
+) -> dict:
+    query = db.query(ApiKey).filter(
         ApiKey.workspace_id == workspace_id,
         ApiKey.is_deleted == False,
         ApiKey.is_active == True
-    ).all()
+    ).order_by(ApiKey.created_at.desc())
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    items = query.offset((page - 1) * page_size).limit(page_size).all()
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
 
 
 def verify_api_key(db: Session, key: str) -> Optional[ApiKey]:

@@ -6,7 +6,12 @@ import Card from "@/components/ui/Card";
 import WorkspaceSelector from "@/components/dashboard/WorkspaceSelector";
 import CreateApiKeyModal from "@/components/dashboard/CreateApiKeyModal";
 import RevokeApiKeyModal from "@/components/dashboard/RevokeApiKeyModal";
-import { getApiKeys, getEnvironments } from "@/lib/workspaces";
+import Pagination from "@/components/dashboard/Pagination";
+import {
+  getApiKeys,
+  getEnvironments,
+  PaginatedApiKeys,
+} from "@/lib/workspaces";
 import { ApiKey, Environment } from "@/types/workspace";
 
 const envColors: Record<string, "success" | "warning" | "brand"> = {
@@ -18,21 +23,22 @@ const envColors: Record<string, "success" | "warning" | "brand"> = {
 export default function ApiKeysPage() {
   const [workspaceId, setWorkspaceId] = useState<number | null>(null);
   const [initialized, setInitialized] = useState(false);
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [data, setData] = useState<PaginatedApiKeys | null>(null);
   const [environments, setEnvironments] = useState<Environment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [showCreate, setShowCreate] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [revokeTarget, setRevokeTarget] = useState<ApiKey | null>(null);
 
-  const fetchData = async (wsId: number) => {
+  const fetchData = async (wsId: number, p: number) => {
     setLoading(true);
     try {
-      const [keys, envs] = await Promise.all([
-        getApiKeys(wsId),
+      const [keysData, envs] = await Promise.all([
+        getApiKeys(wsId, p),
         getEnvironments(wsId),
       ]);
-      setApiKeys(keys);
+      setData(keysData);
       setEnvironments(envs);
     } catch {
       // handle error
@@ -42,23 +48,26 @@ export default function ApiKeysPage() {
   };
 
   useEffect(() => {
-    if (workspaceId) fetchData(workspaceId);
-  }, [workspaceId]);
+    if (workspaceId) fetchData(workspaceId, page);
+  }, [workspaceId, page]);
 
   const handleWorkspaceChange = (id: number) => {
     setWorkspaceId(id);
+    setPage(1);
     setActiveTab("all");
     setInitialized(true);
   };
 
   const handleRevoked = () => {
-    if (workspaceId) fetchData(workspaceId);
+    if (workspaceId) fetchData(workspaceId, page);
     setRevokeTarget(null);
   };
 
   const handleCreated = () => {
-    if (workspaceId) fetchData(workspaceId);
+    if (workspaceId) fetchData(workspaceId, page);
   };
+
+  const apiKeys = data?.items || [];
 
   const getEnvName = (envId: number) =>
     environments.find((e) => e.id === envId)?.name || "unknown";
@@ -229,6 +238,17 @@ export default function ApiKeysPage() {
                 </table>
               </div>
             </Card>
+          )}
+
+          {/* Pagination */}
+          {data && (
+            <Pagination
+              page={data.page}
+              totalPages={data.total_pages}
+              hasNext={data.has_next}
+              hasPrev={data.has_prev}
+              onPageChange={setPage}
+            />
           )}
         </>
       )}

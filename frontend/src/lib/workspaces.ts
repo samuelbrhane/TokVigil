@@ -62,8 +62,24 @@ export async function createEnvironment(
 }
 
 // API Keys
-export async function getApiKeys(workspaceId: number): Promise<ApiKey[]> {
-  return api<ApiKey[]>(`/workspaces/${workspaceId}/api-keys`);
+export interface PaginatedApiKeys {
+  items: ApiKey[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+  has_next: boolean;
+  has_prev: boolean;
+}
+
+export async function getApiKeys(
+  workspaceId: number,
+  page = 1,
+  pageSize = 20,
+): Promise<PaginatedApiKeys> {
+  return api<PaginatedApiKeys>(
+    `/workspaces/${workspaceId}/api-keys?page=${page}&page_size=${pageSize}`,
+  );
 }
 
 export async function createApiKey(

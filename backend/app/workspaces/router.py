@@ -105,17 +105,18 @@ def create_environment(
 
 
 # == API Key 
-@router.get("/{workspace_id}/api-keys", response_model=List[ApiKeyResponse])
+@router.get("/{workspace_id}/api-keys")
 def list_api_keys(
     workspace_id: int,
     current_user: User = Depends(get_current_user),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
-    """List API keys for a workspace."""
     workspace = services.get_workspace(db, workspace_id, current_user.id)
     if not workspace:
         raise WorkspaceNotFoundError()
-    return services.get_api_keys(db, workspace_id)
+    return services.get_api_keys(db, workspace_id, page, page_size)
 
 
 @router.post("/{workspace_id}/api-keys", response_model=ApiKeyCreatedResponse, status_code=status.HTTP_201_CREATED)
