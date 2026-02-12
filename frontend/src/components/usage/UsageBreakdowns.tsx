@@ -156,12 +156,14 @@ export default function UsageBreakdowns({ filters }: UsageBreakdownsProps) {
             filters.environment_id!,
             1,
             10,
+            filters.user_id,
           ),
           getUsageByFeature(
             filters.workspace_id!,
             filters.environment_id!,
             1,
             10,
+            filters.user_id,
           ),
         ]);
         setModels(modelData.items);
@@ -173,7 +175,7 @@ export default function UsageBreakdowns({ filters }: UsageBreakdownsProps) {
       }
     };
     load();
-  }, [filters.workspace_id, filters.environment_id]);
+  }, [filters.workspace_id, filters.environment_id, filters.user_id]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

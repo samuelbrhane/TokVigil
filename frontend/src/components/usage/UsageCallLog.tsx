@@ -49,13 +49,7 @@ export default function UsageCallLog({ filters }: UsageCallLogProps) {
 
   useEffect(() => {
     setPage(1);
-  }, [
-    filters.workspace_id,
-    filters.environment_id,
-    filters.user_id,
-    filters.model,
-    filters.feature,
-  ]);
+  }, [filters.workspace_id, filters.environment_id, filters.user_id]);
 
   useEffect(() => {
     if (!filters.workspace_id || !filters.environment_id) return;
@@ -70,8 +64,6 @@ export default function UsageCallLog({ filters }: UsageCallLogProps) {
           pageSize,
           {
             user_id: filters.user_id,
-            feature: filters.feature,
-            model: filters.model,
           },
         );
         setRecords(data.items);
@@ -84,14 +76,7 @@ export default function UsageCallLog({ filters }: UsageCallLogProps) {
       }
     };
     load();
-  }, [
-    filters.workspace_id,
-    filters.environment_id,
-    filters.user_id,
-    filters.model,
-    filters.feature,
-    page,
-  ]);
+  }, [filters.workspace_id, filters.environment_id, filters.user_id, page]);
 
   if (loading && records.length === 0) {
     return (

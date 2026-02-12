@@ -74,13 +74,16 @@ export async function getUsageSummary(
   environmentId: number,
   startDate?: string,
   endDate?: string,
+  userId?: string | null,
 ): Promise<UsageSummary> {
-  let url = `/dashboard/usage/${workspaceId}/${environmentId}/summary`;
   const params = new URLSearchParams();
   if (startDate) params.set("start_date", startDate);
   if (endDate) params.set("end_date", endDate);
-  if (params.toString()) url += `?${params}`;
-  return api<UsageSummary>(url);
+  if (userId) params.set("user_id", userId);
+  const qs = params.toString();
+  return api<UsageSummary>(
+    `/dashboard/usage/${workspaceId}/${environmentId}/summary${qs ? `?${qs}` : ""}`,
+  );
 }
 
 export async function getRecentUsage(
@@ -151,9 +154,15 @@ export async function getUsageByFeature(
   environmentId: number,
   page = 1,
   pageSize = 20,
+  userId?: string | null,
 ): Promise<PaginatedUsageByGroup> {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    page_size: pageSize.toString(),
+  });
+  if (userId) params.set("user_id", userId);
   return api<PaginatedUsageByGroup>(
-    `/dashboard/usage/${workspaceId}/${environmentId}/by-feature?page=${page}&page_size=${pageSize}`,
+    `/dashboard/usage/${workspaceId}/${environmentId}/by-feature?${params}`,
   );
 }
 
@@ -161,9 +170,12 @@ export async function getScopedDaily(
   workspaceId: number,
   environmentId: number,
   days = 7,
+  userId?: string | null,
 ): Promise<DailyUsage[]> {
+  const params = new URLSearchParams({ days: days.toString() });
+  if (userId) params.set("user_id", userId);
   return api<DailyUsage[]>(
-    `/dashboard/usage/${workspaceId}/${environmentId}/daily?days=${days}`,
+    `/dashboard/usage/${workspaceId}/${environmentId}/daily?${params}`,
   );
 }
 
@@ -172,8 +184,14 @@ export async function getUsageByModel(
   environmentId: number,
   page = 1,
   pageSize = 20,
+  userId?: string | null,
 ): Promise<PaginatedUsageByGroup> {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    page_size: pageSize.toString(),
+  });
+  if (userId) params.set("user_id", userId);
   return api<PaginatedUsageByGroup>(
-    `/dashboard/usage/${workspaceId}/${environmentId}/by-model?page=${page}&page_size=${pageSize}`,
+    `/dashboard/usage/${workspaceId}/${environmentId}/by-model?${params}`,
   );
 }

@@ -27,6 +27,7 @@ export default function UsageChart({ filters }: UsageChartProps) {
           filters.workspace_id!,
           filters.environment_id!,
           filters.days,
+          filters.user_id,
         );
         setData(result);
       } catch {
@@ -36,7 +37,12 @@ export default function UsageChart({ filters }: UsageChartProps) {
       }
     };
     load();
-  }, [filters.workspace_id, filters.environment_id, filters.days]);
+  }, [
+    filters.workspace_id,
+    filters.environment_id,
+    filters.days,
+    filters.user_id,
+  ]);
 
   if (loading) {
     return (

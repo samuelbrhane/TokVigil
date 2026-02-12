@@ -71,12 +71,19 @@ export default function UsageBanner({ filters }: UsageBannerProps) {
       setLoading(true);
       try {
         const [summaryData, featureData] = await Promise.all([
-          getUsageSummary(filters.workspace_id!, filters.environment_id!),
+          getUsageSummary(
+            filters.workspace_id!,
+            filters.environment_id!,
+            undefined,
+            undefined,
+            filters.user_id,
+          ),
           getUsageByFeature(
             filters.workspace_id!,
             filters.environment_id!,
             1,
             10,
+            filters.user_id,
           ),
         ]);
         setSummary(summaryData);
@@ -88,7 +95,7 @@ export default function UsageBanner({ filters }: UsageBannerProps) {
       }
     };
     load();
-  }, [filters.workspace_id, filters.environment_id]);
+  }, [filters.workspace_id, filters.environment_id, filters.user_id]);
 
   if (loading) {
     return (
