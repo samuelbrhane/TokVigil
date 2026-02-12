@@ -6,6 +6,7 @@ import UsageFilterBar, {
   DEFAULT_FILTERS,
 } from "@/components/usage/UsageFilterBar";
 import UsageBanner from "@/components/usage/UsageBanner";
+import UsageChart from "@/components/usage/UsageChart";
 
 export default function UsagePage() {
   const [filters, setFilters] = useState<UsageFilters>(DEFAULT_FILTERS);
@@ -30,7 +31,7 @@ export default function UsagePage() {
       {hasScope && (
         <div className="space-y-8">
           <UsageBanner filters={filters} />
-          {/* TODO: UsageChart */}
+          <UsageChart filters={filters} />
           {/* TODO: ByModel / ByFeature breakdowns */}
           {/* TODO: Recent calls table */}
         </div>
