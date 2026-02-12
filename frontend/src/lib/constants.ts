@@ -14,10 +14,9 @@ export const BRAND = {
 // ============================================================
 export const NAV_LINKS = [
   { label: "Features", href: "/features" },
-  { label: "Pricing", href: "/pricing" },
   { label: "Docs", href: "/docs" },
+  { label: "About", href: "/about" },
 ] as const;
-
 // ============================================================
 // FEATURES
 // ============================================================
@@ -334,7 +333,6 @@ export const FOOTER_COLUMNS = [
     title: "Product",
     links: [
       { label: "Features", href: "/features" },
-      { label: "Pricing", href: "/pricing" },
       { label: "Documentation", href: "/docs" },
       { label: "VS Code Extension", href: "/docs/vscode-extension" },
     ],
@@ -345,7 +343,6 @@ export const FOOTER_COLUMNS = [
       { label: "Python SDK", href: "/docs/sdk/python" },
       { label: "TypeScript SDK", href: "/docs/sdk/typescript" },
       { label: "API Reference", href: "/docs/api-reference" },
-      { label: "GitHub", href: "https://github.com/samuelbrhane/tokenfence" },
     ],
   },
   {
@@ -354,7 +351,6 @@ export const FOOTER_COLUMNS = [
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms of Service", href: "/terms" },
     ],
   },
 ] as const;
