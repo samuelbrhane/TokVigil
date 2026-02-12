@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui";
 import { getWorkspaces } from "@/lib/workspaces";
+import { PaginatedWorkspaces } from "@/types/workspace";
 import { Workspace } from "@/types/workspace";
+import Pagination from "@/components/dashboard/Pagination";
 import {
   CreateWorkspaceModal,
   DeleteWorkspaceModal,
@@ -13,15 +15,17 @@ import {
 
 export default function WorkspacesPage() {
   const router = useRouter();
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [data, setData] = useState<PaginatedWorkspaces | null>(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
   const [showCreate, setShowCreate] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Workspace | null>(null);
 
-  const fetchWorkspaces = async () => {
+  const fetchWorkspaces = async (p: number) => {
+    setLoading(true);
     try {
-      const data = await getWorkspaces();
-      setWorkspaces(data.items);
+      const result = await getWorkspaces(p);
+      setData(result);
     } catch {
       // handle error
     } finally {
@@ -30,19 +34,21 @@ export default function WorkspacesPage() {
   };
 
   useEffect(() => {
-    fetchWorkspaces();
-  }, []);
+    fetchWorkspaces(page);
+  }, [page]);
 
   const handleCreated = (workspace: Workspace) => {
-    setWorkspaces((prev) => [workspace, ...prev]);
+    fetchWorkspaces(page);
   };
 
   const handleDeleted = () => {
-    fetchWorkspaces();
+    fetchWorkspaces(page);
     setDeleteTarget(null);
   };
 
-  if (loading) {
+  const workspaces = data?.items || [];
+
+  if (loading && !data) {
     return (
       <div className="flex items-center justify-center py-16">
         <div className="flex flex-col items-center gap-3">
@@ -57,7 +63,7 @@ export default function WorkspacesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <p className="text-sm text-surface-500">
-          {workspaces.length} workspace(s)
+          {data?.total || 0} workspace(s)
         </p>
         <Button variant="primary" size="sm" onClick={() => setShowCreate(true)}>
           + Create Workspace
@@ -94,6 +100,17 @@ export default function WorkspacesPage() {
             />
           ))}
         </div>
+      )}
+
+      {/* Pagination */}
+      {data && (
+        <Pagination
+          page={data.page}
+          totalPages={data.total_pages}
+          hasNext={data.has_next}
+          hasPrev={data.has_prev}
+          onPageChange={setPage}
+        />
       )}
 
       <CreateWorkspaceModal
