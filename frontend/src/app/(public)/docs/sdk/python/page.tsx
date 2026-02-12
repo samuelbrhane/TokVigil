@@ -1,25 +1,36 @@
 "use client";
 
-import React from "react";
-import { CodeBlock } from "@/components/ui";
+import DocHeader from "@/components/docs/DocHeader";
+import DocTableOfContents from "@/components/docs/DocTableOfContents";
+import DocSection from "@/components/docs/DocSection";
+import DocNote from "@/components/docs/DocNote";
 
-// Code examples as separate constants to avoid escaping issues
-const CODE_INSTALLATION = `pip install tokenfence`;
+const TOC = [
+  { id: "installation", title: "Installation" },
+  { id: "initialization", title: "Initialization" },
+  { id: "evaluate", title: "Evaluate Requests" },
+  { id: "log-usage", title: "Log Usage" },
+  { id: "check-and-call", title: "Check and Call" },
+  { id: "usage-analytics", title: "Usage Analytics" },
+  { id: "error-handling", title: "Error Handling" },
+  { id: "reason-codes", title: "Reason Codes" },
+];
 
-const CODE_INITIALIZATION = `from tokenfence import TokenFence
+const CODE_INSTALL = `pip install tokenfence`;
+
+const CODE_INIT = `from tokenfence import TokenFence
 
 tf = TokenFence(
-    api_key="tf_live_...",
-    base_url="https://api.tokenfence.io",  # Optional, this is the default
-    timeout=30,  # Optional, seconds
-    retry_count=3,  # Optional
-    retry_delay=1,  # Optional, seconds
+    api_key="tf_live_...",       # Required: your API key
+    base_url="https://api.tokenfence.io",  # Optional, default
+    timeout=30,                  # Optional, seconds
+    retry_count=3,               # Optional
+    retry_delay=1,               # Optional, seconds
 )`;
 
 const CODE_EVALUATE = `result = tf.evaluate(
     user_id="user_123",       # Required: your app's user ID
     model="gpt-4o-mini",      # Required: AI model name
-    plan="free",              # Optional: user's plan
     feature="chat",           # Optional: feature being used
     input_tokens=100,         # Optional: estimated input tokens
 )
@@ -31,21 +42,20 @@ else:
     print(f"Blocked: {result.reason_code}")
     print(f"Message: {result.message}")
 
-# Access limit state
+# Access current usage state
 print(f"Requests today: {result.limit_state.requests_today}")
 print(f"Daily limit: {result.limit_state.requests_limit_daily}")`;
 
-const CODE_LOG_USAGE = `tf.log_usage(
+const CODE_LOG = `tf.log_usage(
     request_id="req_123",      # Required: unique request ID
     user_id="user_123",        # Required: your app's user ID
     model="gpt-4o-mini",       # Required: AI model name
     input_tokens=100,          # Required: actual input tokens
     output_tokens=50,          # Required: actual output tokens
     status="allowed",          # Optional: "allowed" or "blocked"
-    plan="free",               # Optional: user's plan
     feature="chat",            # Optional: feature used
     latency_ms=350,            # Optional: request latency
-    estimated_cost_usd=0.001,  # Optional: calculated automatically
+    estimated_cost_usd=0.001,  # Optional: auto-calculated if omitted
 )`;
 
 const CODE_CHECK_AND_CALL = `import openai
@@ -56,10 +66,10 @@ def call_openai():
         messages=[{"role": "user", "content": "Hello!"}]
     )
 
+# Evaluate + call + log in one step
 result, response = tf.check_and_call(
     user_id="user_123",
     model="gpt-4o-mini",
-    plan="free",
     feature="chat",
     ai_function=call_openai,
 )
@@ -69,24 +79,24 @@ if result.allowed:
 else:
     print(f"Blocked: {result.reason_code}")`;
 
-const CODE_USAGE_ANALYTICS = `# Get usage summary
+const CODE_ANALYTICS = `# Get usage summary for your workspace
 summary = tf.get_usage_summary()
 print(f"Total requests: {summary.total_requests}")
 print(f"Total tokens: {summary.total_tokens}")
 print(f"Total cost: \${summary.total_cost_usd:.2f}")
-print(f"Blocked requests: {summary.blocked_count}")
+print(f"Blocked: {summary.blocked_count}")
 
-# Get usage by user
+# Get usage grouped by user
 by_user = tf.get_usage_by_user(page=1, page_size=10)
 for user in by_user.items:
     print(f"{user.group}: {user.requests} requests, \${user.cost_usd:.2f}")
 
-# Get usage by feature
+# Get usage grouped by feature
 by_feature = tf.get_usage_by_feature(page=1, page_size=10)
 for feature in by_feature.items:
     print(f"{feature.group}: {feature.tokens} tokens")
 
-# Get recent usage records
+# Get recent usage records (with optional filters)
 recent = tf.get_recent_usage(page=1, page_size=20, user_id="user_123")
 for record in recent.items:
     print(f"{record.model}: {record.total_tokens} tokens")
@@ -96,7 +106,7 @@ blocked = tf.get_blocked_requests(page=1, page_size=20)
 for record in blocked.items:
     print(f"{record.user_id}: {record.reason_code}")`;
 
-const CODE_ERROR_HANDLING = `from tokenfence import (
+const CODE_ERRORS = `from tokenfence import (
     TokenFence,
     TokenFenceError,
     AuthenticationError,
@@ -115,7 +125,7 @@ except AuthenticationError as e:
     print(f"Auth error: {e.message}")
 except RateLimitError as e:
     # Platform rate limit exceeded (429)
-    print(f"Rate limited! Retry after {e.retry_after} seconds")
+    print(f"Rate limited! Retry after {e.retry_after}s")
 except ValidationError as e:
     # Invalid request parameters (422)
     print(f"Validation error: {e.message}")
@@ -123,24 +133,24 @@ except NotFoundError as e:
     # Resource not found (404)
     print(f"Not found: {e.message}")
 except APIError as e:
-    # Other API errors (5xx)
+    # Server errors (5xx)
     print(f"API error: {e.message}")
 except TokenFenceError as e:
-    # Base exception for all TokenFence errors
+    # Base exception — catches all above
     print(f"Error: {e.message}")`;
 
-const CODE_REASON_CODES = `# All possible reason codes
+const CODE_REASON_CODES = `# All possible reason codes returned when a request is blocked
 REASON_CODES = {
-    "ALLOWED": "Request is allowed",
-    "NO_POLICY": "No policy found, request allowed by default",
-    "DAILY_REQUEST_LIMIT_EXCEEDED": "Daily request limit exceeded",
-    "MONTHLY_REQUEST_LIMIT_EXCEEDED": "Monthly request limit exceeded",
-    "DAILY_TOKEN_LIMIT_EXCEEDED": "Daily token limit exceeded",
-    "MONTHLY_TOKEN_LIMIT_EXCEEDED": "Monthly token limit exceeded",
-    "DAILY_BUDGET_EXCEEDED": "Daily budget exceeded",
-    "MONTHLY_BUDGET_EXCEEDED": "Monthly budget exceeded",
-    "MAX_COST_EXCEEDED": "Request cost exceeds maximum allowed",
-    "MODEL_NOT_ALLOWED": "Model is not allowed by policy",
+    "ALLOWED":                       "Request is allowed",
+    "NO_POLICY":                     "No matching policy, allowed by default",
+    "DAILY_REQUEST_LIMIT_EXCEEDED":  "Daily request limit reached",
+    "MONTHLY_REQUEST_LIMIT_EXCEEDED":"Monthly request limit reached",
+    "DAILY_TOKEN_LIMIT_EXCEEDED":    "Daily token limit reached",
+    "MONTHLY_TOKEN_LIMIT_EXCEEDED":  "Monthly token limit reached",
+    "DAILY_BUDGET_EXCEEDED":         "Daily budget reached",
+    "MONTHLY_BUDGET_EXCEEDED":       "Monthly budget reached",
+    "MAX_COST_EXCEEDED":             "Single request cost too high",
+    "MODEL_NOT_ALLOWED":             "Model blocked by policy",
 }
 
 # Handle specific reason codes
@@ -148,125 +158,103 @@ result = tf.evaluate(user_id="user_123", model="gpt-4o")
 
 if not result.allowed:
     if result.reason_code == "MODEL_NOT_ALLOWED":
-        # Fallback to allowed model
+        # Fallback to an allowed model
         result = tf.evaluate(user_id="user_123", model="gpt-4o-mini")
     elif result.reason_code == "DAILY_REQUEST_LIMIT_EXCEEDED":
-        # Show upgrade prompt
-        print(f"Upgrade to Pro for more requests!")
+        print("You've reached your daily limit. Try again tomorrow.")
     elif result.reason_code == "DAILY_BUDGET_EXCEEDED":
-        # Show budget warning
         print(f"Daily budget of \${result.limit_state.cost_limit_daily_usd} reached")`;
-
-const SECTIONS = [
-  {
-    id: "installation",
-    title: "Installation",
-    content: "Install the TokenFence Python SDK using pip:",
-    code: CODE_INSTALLATION,
-    language: "bash",
-  },
-  {
-    id: "initialization",
-    title: "Initialization",
-    content: "Initialize the client with your API key:",
-    code: CODE_INITIALIZATION,
-    language: "python",
-  },
-  {
-    id: "evaluate",
-    title: "Evaluate Requests",
-    content: "Check if a request should be allowed before making an AI call:",
-    code: CODE_EVALUATE,
-    language: "python",
-  },
-  {
-    id: "log-usage",
-    title: "Log Usage",
-    content: "Log usage after making an AI call:",
-    code: CODE_LOG_USAGE,
-    language: "python",
-  },
-  {
-    id: "check-and-call",
-    title: "Check and Call (Recommended)",
-    content:
-      "The easiest way to integrate - evaluate, call AI, and log usage in one step:",
-    code: CODE_CHECK_AND_CALL,
-    language: "python",
-  },
-  {
-    id: "usage-analytics",
-    title: "Usage Analytics",
-    content: "Query usage data programmatically:",
-    code: CODE_USAGE_ANALYTICS,
-    language: "python",
-  },
-  {
-    id: "error-handling",
-    title: "Error Handling",
-    content: "Handle errors gracefully with built-in exception classes:",
-    code: CODE_ERROR_HANDLING,
-    language: "python",
-  },
-  {
-    id: "reason-codes",
-    title: "Reason Codes",
-    content: "When a request is blocked, the reason_code tells you why:",
-    code: CODE_REASON_CODES,
-    language: "python",
-  },
-];
 
 export default function PythonSDKPage() {
   return (
     <div>
-      {/* Header */}
-      <div className="mb-12">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-3xl">🐍</span>
-          <h1 className="text-4xl font-bold font-mono text-surface-100 tracking-tight">
-            Python SDK
-          </h1>
-        </div>
-        <p className="text-lg text-surface-400 max-w-2xl">
-          Complete guide to using the TokenFence Python SDK in your
-          applications.
-        </p>
-      </div>
+      <DocHeader
+        icon="🐍"
+        title="Python SDK"
+        description="Complete guide to using the TokenFence Python SDK in your applications."
+      />
 
-      {/* Table of Contents */}
-      <div className="mb-12 p-6 bg-surface-900/50 border border-surface-800 rounded-lg">
-        <h3 className="font-mono font-semibold text-surface-100 mb-4">
-          On this page
-        </h3>
-        <ul className="space-y-2 text-sm">
-          {SECTIONS.map((section) => (
-            <li key={section.id}>
-              <a
-                href={`#${section.id}`}
-                className="text-surface-400 hover:text-brand-400 transition-colors"
-              >
-                {section.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <DocTableOfContents items={TOC} />
 
-      {/* Sections */}
       <div className="space-y-16">
-        {SECTIONS.map((section) => (
-          <section key={section.id} id={section.id} className="scroll-mt-28">
-            <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-4">
-              {section.title}
-            </h2>
-            <p className="text-surface-400 mb-6">{section.content}</p>
-            <CodeBlock
-              code={section.code}
-              language={section.language as "python" | "bash"}
-            />
-          </section>
-        ))}
+        <DocSection
+          id="installation"
+          title="Installation"
+          description="Install the TokenFence Python SDK using pip:"
+          code={CODE_INSTALL}
+          language="bash"
+        >
+          <DocNote type="info">
+            Requires Python 3.8 or higher. The SDK has no external dependencies
+            beyond <code className="text-brand-400">requests</code>.
+          </DocNote>
+        </DocSection>
+
+        <DocSection
+          id="initialization"
+          title="Initialization"
+          description="Create a client instance with your API key. You can find your API key in the dashboard under Workspaces → API Keys."
+          code={CODE_INIT}
+        >
+          <DocNote type="tip">
+            Use environment variables for your API key in production:{" "}
+            <code className="text-brand-400">
+              TokenFence(api_key=os.environ[&quot;TOKENFENCE_API_KEY&quot;])
+            </code>
+          </DocNote>
+        </DocSection>
+
+        <DocSection
+          id="evaluate"
+          title="Evaluate Requests"
+          description="Before making an AI call, check if the request is allowed by your policies. This checks rate limits, budgets, and model restrictions."
+          code={CODE_EVALUATE}
+        />
+
+        <DocSection
+          id="log-usage"
+          title="Log Usage"
+          description="After making an AI call, log the actual usage. This updates your analytics and is used to enforce budget limits."
+          code={CODE_LOG}
+        >
+          <DocNote type="warning">
+            Always log usage after each AI call — even blocked ones. This keeps
+            your analytics accurate and ensures budget tracking works correctly.
+          </DocNote>
+        </DocSection>
+
+        <DocSection
+          id="check-and-call"
+          title="Check and Call"
+          description="The simplest way to integrate. Pass your AI function and TokenFence handles evaluate → call → log automatically."
+          code={CODE_CHECK_AND_CALL}
+        >
+          <DocNote type="tip">
+            This is the recommended approach for most use cases. It handles the
+            full flow including error handling and automatic usage logging.
+          </DocNote>
+        </DocSection>
+
+        <DocSection
+          id="usage-analytics"
+          title="Usage Analytics"
+          description="Query your usage data programmatically. All data is also available in the dashboard."
+          code={CODE_ANALYTICS}
+        />
+
+        <DocSection
+          id="error-handling"
+          title="Error Handling"
+          description="The SDK provides specific exception classes for different error types. Always wrap calls in try/except for production use."
+          code={CODE_ERRORS}
+        />
+
+        <DocSection
+          id="reason-codes"
+          title="Reason Codes"
+          description="When a request is blocked, the reason_code tells you exactly why. Use this to show appropriate messages to your users or implement fallback logic."
+          code={CODE_REASON_CODES}
+        />
       </div>
     </div>
   );
