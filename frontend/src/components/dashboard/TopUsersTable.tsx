@@ -31,6 +31,7 @@ export default function TopUsersTable({ users, loading }: TopUsersTableProps) {
         <p className="text-sm text-surface-500 font-mono">No usage data yet.</p>
       ) : (
         <>
+          {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-surface-700/40 mb-3">
             <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider w-8">
               #
@@ -38,8 +39,14 @@ export default function TopUsersTable({ users, loading }: TopUsersTableProps) {
             <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider flex-1">
               User
             </span>
-            <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider w-24 text-right">
-              Requests
+            <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider w-20 text-right">
+              Total
+            </span>
+            <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider w-20 text-right">
+              Allowed
+            </span>
+            <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider w-20 text-right">
+              Blocked
             </span>
             <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider w-24 text-right">
               Tokens
@@ -47,11 +54,9 @@ export default function TopUsersTable({ users, loading }: TopUsersTableProps) {
             <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider w-20 text-right">
               Cost
             </span>
-            <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider w-20 text-right">
-              Blocked
-            </span>
           </div>
           <div className="space-y-2">
+            {/* Rows */}
             {users.map((u, i) => (
               <div
                 key={u.user_id}
@@ -63,14 +68,11 @@ export default function TopUsersTable({ users, loading }: TopUsersTableProps) {
                 <span className="text-sm font-mono text-white flex-1">
                   {u.user_id}
                 </span>
-                <span className="text-xs font-mono text-surface-200 w-24 text-right">
+                <span className="text-xs font-mono text-surface-200 w-20 text-right">
                   {u.requests.toLocaleString()}
                 </span>
-                <span className="text-xs font-mono text-violet-400 w-24 text-right">
-                  {formatNumber(u.tokens)}
-                </span>
-                <span className="text-xs font-mono text-emerald-400 font-bold w-20 text-right">
-                  ${u.cost_usd.toFixed(2)}
+                <span className="text-xs font-mono text-emerald-400 w-20 text-right">
+                  {(u.requests - u.blocked).toLocaleString()}
                 </span>
                 <span
                   className={`text-xs font-mono font-bold w-20 text-right ${
@@ -82,6 +84,12 @@ export default function TopUsersTable({ users, loading }: TopUsersTableProps) {
                   }`}
                 >
                   {u.blocked}
+                </span>
+                <span className="text-xs font-mono text-violet-400 w-24 text-right">
+                  {formatNumber(u.tokens)}
+                </span>
+                <span className="text-xs font-mono text-emerald-400 font-bold w-20 text-right">
+                  ${u.cost_usd.toFixed(2)}
                 </span>
               </div>
             ))}
