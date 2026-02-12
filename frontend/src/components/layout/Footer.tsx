@@ -10,7 +10,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Brand column */}
           <div className="space-y-4">
-            <Logo size="md" />
+            <Link href="/" className="flex items-center gap-3">
+              <img
+                src="/logo.png"
+                alt="TokenFence"
+                className="h-8 w-8 rounded-lg"
+              />
+              <span className="text-lg font-bold font-mono text-surface-100">
+                Token<span className="text-brand-400">Fence</span>
+              </span>
+            </Link>
             <p className="text-sm text-surface-500 leading-relaxed max-w-xs">
               {BRAND.description}
             </p>
