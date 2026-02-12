@@ -26,7 +26,6 @@ class UserResponse(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
     is_active: bool
-    plan: str
     email_verified: bool
     created_at: datetime
     
@@ -65,17 +64,6 @@ class MessageResponse(BaseModel):
     message: str
 
 
-class UserPlanResponse(BaseModel):
-    plan: str
-    name: str
-    price_monthly: int
-    rate_limit_per_minute: int
-    workspaces_limit: int
-    api_keys_limit: int
-    evaluate_calls_per_month: int
-    team_members_limit: int
-    features: Dict[str, bool]
-    
 
 class ApiKeyInfoResponse(BaseModel):
     key_prefix: str
