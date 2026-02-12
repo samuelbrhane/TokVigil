@@ -5,13 +5,27 @@ import Card from "@/components/ui/Card";
 import { UsageRecord } from "@/lib/dashboard";
 
 function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diff = now.getTime() - date.getTime();
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return "just now";
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
+
+  // Use calendar days for better accuracy
+  const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const thenDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+  const days = Math.round((nowDate.getTime() - thenDate.getTime()) / 86400000);
+
+  if (days === 1) return "1d ago";
+  if (days < 30) return `${days}d ago`;
+  return `${Math.floor(days / 30)}mo ago`;
 }
 
 interface RecentActivityProps {
