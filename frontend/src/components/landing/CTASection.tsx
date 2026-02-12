@@ -32,18 +32,18 @@ export default function CTASection() {
               Ready to fence your AI?
             </h2>
             <p className="mt-4 text-surface-400 max-w-md mx-auto">
-              Start enforcing usage policies in under 5 minutes. No credit card
-              required.
+              Set up usage policies, budgets, and rate limits in under 5
+              minutes. Free and open for all developers.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/signup">
                 <Button variant="primary" size="lg">
-                  Start Free →
+                  Get Started Free →
                 </Button>
               </Link>
-              <Link href="/contact">
+              <Link href="/docs">
                 <Button variant="secondary" size="lg">
-                  Talk to Sales
+                  Read the Docs
                 </Button>
               </Link>
             </div>

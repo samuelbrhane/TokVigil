@@ -12,7 +12,7 @@ export default function HomePage() {
       <HeroSection />
       <FeaturesOverview />
       <HowItWorks />
-      <PricingPreview />
+      {/* <PricingPreview /> */}
       <CTASection />
     </>
   );
