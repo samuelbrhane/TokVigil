@@ -1,7 +1,7 @@
 [project]
-name = "tokenfence-backend"
+name = "usagesentinel-backend"
 version = "0.1.0"
-description = "Tokenfence - Backend API"
+description = "UsageSentinel - Backend API"
 readme = "README.md"
 requires-python = ">=3.10"
 

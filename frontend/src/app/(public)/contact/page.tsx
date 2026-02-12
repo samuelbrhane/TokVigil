@@ -155,10 +155,10 @@ export default function ContactPage() {
                       Email
                     </p>
                     <a
-                      href="mailto:support@tokenfence.io"
+                      href="mailto:support@usagesentinel.com"
                       className="text-sm font-mono text-brand-400 hover:text-brand-300 transition-colors"
                     >
-                      support@tokenfence.io
+                      support@usagesentinel.com
                     </a>
                   </div>
                 </div>

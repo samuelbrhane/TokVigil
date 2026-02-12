@@ -1,5 +1,5 @@
 # API URLs
-DEFAULT_BASE_URL = "https://api.tokenfence.io"
+DEFAULT_BASE_URL = "https://api.usagesentinel.com"
 API_VERSION = "v1"
 
 # Endpoints

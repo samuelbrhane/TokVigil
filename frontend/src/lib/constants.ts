@@ -6,7 +6,7 @@ export const BRAND = {
   tagline: "AI usage control for production teams",
   description:
     "Application-layer AI usage control. Enforce budgets, limits, and policies inside your code.",
-  url: "https://tokenfence.io",
+  url: "https://usagesentinel.com",
 };
 
 // ============================================================

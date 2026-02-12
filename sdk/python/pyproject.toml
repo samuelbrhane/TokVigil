@@ -9,7 +9,7 @@ description = "Python SDK for UsageSentinel - AI usage control platform"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "UsageSentinel", email = "support@tokenfence.io"}
+    {name = "UsageSentinel", email = "support@usagesentinel.com"}
 ]
 keywords = ["ai", "llm", "rate-limiting", "usage-control", "openai", "anthropic"]
 classifiers = [
@@ -39,5 +39,5 @@ dev = [
 
 
 [project.urls]
-Homepage = "https://tokenfence.io"
-Documentation = "https://tokenfence.io/docs/sdk/python"
+Homepage = "https://usagesentinel.com"
+Documentation = "https://usagesentinel.com/docs/sdk/python"

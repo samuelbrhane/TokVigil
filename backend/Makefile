@@ -5,7 +5,7 @@
 
 # Default target
 help:
-	@echo "Tokenfence - Backend"
+	@echo "UsageSentinel - Backend"
 	@echo ""
 	@echo "Usage: make [target]"
 	@echo ""

@@ -26,7 +26,7 @@ API runs at [http://localhost:8000](http://localhost:8000).
 ## Environment Variables
 
 ```
-DATABASE_URL=postgresql://user:pass@localhost:5432/tokenfence
+DATABASE_URL=postgresql://user:pass@localhost:5432/usagesentinel
 REDIS_URL=redis://localhost:6379
 SECRET_KEY=your-secret-key
 ```

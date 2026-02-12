@@ -1,6 +1,6 @@
 # UsageSentinel Node.js SDK
 
-Official TypeScript/JavaScript SDK for [UsageSentinel](https://tokenfence.io) - AI usage control platform.
+Official TypeScript/JavaScript SDK for [UsageSentinel](https://usagesentinel.com) - AI usage control platform.
 
 Manage rate limits, budgets, and policies for your AI-powered applications.
 
@@ -185,7 +185,7 @@ try {
 ```typescript
 const tf = new UsageSentinel({
   apiKey: "tf_live_xxx",
-  baseUrl: "https://api.tokenfence.io", // Custom API URL
+  baseUrl: "https://api.usagesentinel.com", // Custom API URL
   timeout: 30000, // Request timeout in milliseconds
   retryCount: 3, // Number of retries
   retryDelay: 1000, // Delay between retries in milliseconds

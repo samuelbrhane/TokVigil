@@ -21,13 +21,13 @@ const TOC = [
 ];
 
 const CODE_AUTH = `# All SDK endpoints require your API key in the X-API-Key header
-curl https://api.tokenfence.io/gateway/evaluate \\
+curl https://api.usagesentinel.com/gateway/evaluate \\
   -H "X-API-Key: tf_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{"user_id": "user_123", "model": "gpt-4o-mini"}'`;
 
 const CODE_EVALUATE = `# POST /gateway/evaluate
-curl -X POST https://api.tokenfence.io/gateway/evaluate \\
+curl -X POST https://api.usagesentinel.com/gateway/evaluate \\
   -H "X-API-Key: tf_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -54,7 +54,7 @@ curl -X POST https://api.tokenfence.io/gateway/evaluate \\
 }`;
 
 const CODE_LOG = `# POST /usage
-curl -X POST https://api.tokenfence.io/usage \\
+curl -X POST https://api.usagesentinel.com/usage \\
   -H "X-API-Key: tf_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -77,7 +77,7 @@ curl -X POST https://api.tokenfence.io/usage \\
 }`;
 
 const CODE_SUMMARY = `# GET /usage/summary
-curl https://api.tokenfence.io/usage/summary \\
+curl https://api.usagesentinel.com/usage/summary \\
   -H "X-API-Key: tf_live_..."
 
 # Optional query params: ?start_date=2025-01-01T00:00:00Z&end_date=2025-01-31T23:59:59Z
@@ -92,7 +92,7 @@ curl https://api.tokenfence.io/usage/summary \\
 }`;
 
 const CODE_RECENT = `# GET /usage/recent
-curl "https://api.tokenfence.io/usage/recent?page=1&page_size=20" \\
+curl "https://api.usagesentinel.com/usage/recent?page=1&page_size=20" \\
   -H "X-API-Key: tf_live_..."
 
 # Optional filters: ?user_id=user_123&feature=chat&model=gpt-4o-mini&status=allowed
@@ -125,13 +125,13 @@ curl "https://api.tokenfence.io/usage/recent?page=1&page_size=20" \\
 }`;
 
 const CODE_BLOCKED = `# GET /usage/blocked
-curl "https://api.tokenfence.io/usage/blocked?page=1&page_size=20" \\
+curl "https://api.usagesentinel.com/usage/blocked?page=1&page_size=20" \\
   -H "X-API-Key: tf_live_..."
 
 # Response: same structure as /usage/recent, filtered to blocked requests`;
 
 const CODE_BY_USER = `# GET /usage/by-user
-curl "https://api.tokenfence.io/usage/by-user?page=1&page_size=10" \\
+curl "https://api.usagesentinel.com/usage/by-user?page=1&page_size=10" \\
   -H "X-API-Key: tf_live_..."
 
 # Response (200 OK)
@@ -159,7 +159,7 @@ curl "https://api.tokenfence.io/usage/by-user?page=1&page_size=10" \\
 }`;
 
 const CODE_BY_FEATURE = `# GET /usage/by-feature
-curl "https://api.tokenfence.io/usage/by-feature?page=1&page_size=10" \\
+curl "https://api.usagesentinel.com/usage/by-feature?page=1&page_size=10" \\
   -H "X-API-Key: tf_live_..."
 
 # Response: same structure as /usage/by-user, grouped by feature name`;
@@ -263,7 +263,7 @@ export default function RestApiPage() {
           id="base-url"
           title="Base URL"
           description="All API endpoints use the following base URL:"
-          code="https://api.tokenfence.io"
+          code="https://api.usagesentinel.com"
           language="bash"
         >
           <DocNote type="info">

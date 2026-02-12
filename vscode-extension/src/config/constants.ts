@@ -1,4 +1,4 @@
-export const DEFAULT_BASE_URL = "https://api.tokenfence.io";
+export const DEFAULT_BASE_URL = "https://api.usagesentinel.com";
 export const API_VERSION = "v1";
 
 export const ENDPOINTS = {

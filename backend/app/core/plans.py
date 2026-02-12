@@ -1,4 +1,4 @@
-# Tokenfence platform plans for developers
+# UsageSentinel platform plans for developers
 TOKENFENCE_PLANS = {
     "free": {
         "name": "Free",

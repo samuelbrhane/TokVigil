@@ -21,7 +21,7 @@ class TestUsageSentinel:
     def test_evaluate_allowed(self):
         responses.add(
             responses.POST,
-            "https://api.tokenfence.io/api/v1/evaluate",
+            "https://api.usagesentinel.com/api/v1/evaluate",
             json={
                 "allowed": True,
                 "reason_code": "ALLOWED",
@@ -47,7 +47,7 @@ class TestUsageSentinel:
     def test_evaluate_blocked(self):
         responses.add(
             responses.POST,
-            "https://api.tokenfence.io/api/v1/evaluate",
+            "https://api.usagesentinel.com/api/v1/evaluate",
             json={
                 "allowed": False,
                 "reason_code": "DAILY_REQUEST_LIMIT_EXCEEDED",
@@ -72,7 +72,7 @@ class TestUsageSentinel:
     def test_evaluate_invalid_api_key(self):
         responses.add(
             responses.POST,
-            "https://api.tokenfence.io/api/v1/evaluate",
+            "https://api.usagesentinel.com/api/v1/evaluate",
             json={
                 "detail": {
                     "error_code": "INVALID_API_KEY",
@@ -93,7 +93,7 @@ class TestUsageSentinel:
     def test_rate_limit_error(self):
         responses.add(
             responses.POST,
-            "https://api.tokenfence.io/api/v1/evaluate",
+            "https://api.usagesentinel.com/api/v1/evaluate",
             json={
                 "detail": {
                     "error_code": "RATE_LIMIT_EXCEEDED",
@@ -115,7 +115,7 @@ class TestUsageSentinel:
     def test_log_usage(self):
         responses.add(
             responses.POST,
-            "https://api.tokenfence.io/api/v1/usage",
+            "https://api.usagesentinel.com/api/v1/usage",
             json={
                 "id": 1,
                 "request_id": "req_123",

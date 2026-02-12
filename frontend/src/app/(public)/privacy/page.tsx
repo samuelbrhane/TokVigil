@@ -53,7 +53,7 @@ const sections = [
       "Account data is retained as long as your account is active.",
       "Usage records are retained for 90 days by default.",
       "Audit logs follow the same retention schedule.",
-      "You can request deletion of your account and associated data at any time by contacting support@tokenfence.io.",
+      "You can request deletion of your account and associated data at any time by contacting support@usagesentinel.com.",
     ],
   },
   {
@@ -74,7 +74,7 @@ const sections = [
   {
     title: "9. Contact",
     content: [
-      "For privacy-related questions, contact us at support@tokenfence.io.",
+      "For privacy-related questions, contact us at support@usagesentinel.com.",
     ],
   },
 ];

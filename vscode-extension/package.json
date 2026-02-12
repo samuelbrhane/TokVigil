@@ -90,7 +90,7 @@
         },
         "tokenfence.baseUrl": {
           "type": "string",
-          "default": "https://api.tokenfence.io",
+          "default": "https://api.usagesentinel.com",
           "description": "UsageSentinel API base URL"
         },
         "tokenfence.showStatusBar": {

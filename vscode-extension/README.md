@@ -76,15 +76,15 @@ Access via Command Palette (`Ctrl+Shift+P`):
 
 Open Settings (`Ctrl+,`) and search for "UsageSentinel":
 
-| Setting                         | Description              | Default                     |
-| ------------------------------- | ------------------------ | --------------------------- |
-| `tokenfence.apiKey`             | Your API key             | —                           |
-| `tokenfence.baseUrl`            | API base URL             | `https://api.tokenfence.io` |
-| `tokenfence.environment`        | Current environment      | `development`               |
-| `tokenfence.showStatusBar`      | Show status bar item     | `true`                      |
-| `tokenfence.enableAutocomplete` | Enable autocomplete      | `true`                      |
-| `tokenfence.enableHover`        | Enable hover docs        | `true`                      |
-| `tokenfence.enableDiagnostics`  | Enable inline validation | `true`                      |
+| Setting                         | Description              | Default                         |
+| ------------------------------- | ------------------------ | ------------------------------- |
+| `tokenfence.apiKey`             | Your API key             | —                               |
+| `tokenfence.baseUrl`            | API base URL             | `https://api.usagesentinel.com` |
+| `tokenfence.environment`        | Current environment      | `development`                   |
+| `tokenfence.showStatusBar`      | Show status bar item     | `true`                          |
+| `tokenfence.enableAutocomplete` | Enable autocomplete      | `true`                          |
+| `tokenfence.enableHover`        | Enable hover docs        | `true`                          |
+| `tokenfence.enableDiagnostics`  | Enable inline validation | `true`                          |
 
 ## Getting Started
 
@@ -94,5 +94,5 @@ Open Settings (`Ctrl+,`) and search for "UsageSentinel":
 
 ## Links
 
-- [Documentation](https://tokenfence.io/docs)
-- [Dashboard](https://tokenfence.io/dashboard)
+- [Documentation](https://usagesentinel.com/docs)
+- [Dashboard](https://usagesentinel.com/dashboard)

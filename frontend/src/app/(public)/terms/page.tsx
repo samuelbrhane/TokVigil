@@ -64,7 +64,7 @@ const sections = [
   {
     title: "13. Contact",
     content:
-      "For questions about these terms, contact us at support@tokenfence.io.",
+      "For questions about these terms, contact us at support@usagesentinel.com.",
   },
 ];
 

@@ -221,7 +221,7 @@ export default function APIReferencePage() {
         <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-4">
           Base URL
         </h2>
-        <CodeBlock code="https://api.tokenfence.io" language="bash" />
+        <CodeBlock code="https://api.usagesentinel.com" language="bash" />
       </section>
 
       {/* Authentication */}
@@ -237,7 +237,7 @@ export default function APIReferencePage() {
           header:
         </p>
         <CodeBlock
-          code={`curl -X POST https://api.tokenfence.io/api/v1/evaluate \\
+          code={`curl -X POST https://api.usagesentinel.com/api/v1/evaluate \\
   -H "X-API-Key: tf_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{"user_id": "user_123", "model": "gpt-4o-mini"}'`}

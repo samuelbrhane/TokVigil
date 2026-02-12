@@ -26,13 +26,13 @@
     "anthropic",
     "tokenfence"
   ],
-  "author": "UsageSentinel <support@tokenfence.io>",
+  "author": "UsageSentinel <support@usagesentinel.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/samuelbrhane/tokenfence"
   },
-  "homepage": "https://tokenfence.io",
+  "homepage": "https://usagesentinel.com",
   "bugs": {
     "url": "https://github.com/samuelbrhane/tokenfence/issues"
   },

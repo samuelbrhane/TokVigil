@@ -1,6 +1,6 @@
 # UsageSentinel Python SDK
 
-Official Python SDK for [UsageSentinel](https://tokenfence.io) - AI usage control platform.
+Official Python SDK for [UsageSentinel](https://usagesentinel.com) - AI usage control platform.
 
 Manage rate limits, budgets, and policies for your AI-powered applications.
 
@@ -168,7 +168,7 @@ except UsageSentinelError as e:
 ```python
 tf = UsageSentinel(
     api_key="tf_live_xxx",
-    base_url="https://api.tokenfence.io",  # Custom API URL
+    base_url="https://api.usagesentinel.com",  # Custom API URL
     timeout=30,           # Request timeout in seconds
     retry_count=3,        # Number of retries
     retry_delay=1,        # Delay between retries

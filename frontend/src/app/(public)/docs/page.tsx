@@ -32,12 +32,12 @@ const CARDS = [
   },
 ];
 
-const QUICK_EXAMPLE = `from tokenfence import UsageSentinel
+const QUICK_EXAMPLE = `from usagesentinel import UsageSentinel
 
-tf = UsageSentinel(api_key="tf_live_...")
+us = UsageSentinel(api_key="us_live_...")
 
 # Check if request is allowed
-result = tf.evaluate(
+result = us.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     feature="chat"
@@ -45,7 +45,7 @@ result = tf.evaluate(
 
 if result.allowed:
     # Make your AI call, then log it
-    tf.log_usage(
+    us.log_usage(
         request_id="req_123",
         user_id="user_123",
         model="gpt-4o-mini",

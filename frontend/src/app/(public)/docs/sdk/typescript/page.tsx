@@ -24,7 +24,7 @@ const CODE_INIT = `import { UsageSentinel } from "tokenfence";
 
 const tf = new UsageSentinel({
   apiKey: "tf_live_...",           // Required: your API key
-  baseUrl: "https://api.tokenfence.io",  // Optional, default
+  baseUrl: "https://api.usagesentinel.com",  // Optional, default
   timeout: 30000,                  // Optional, milliseconds
   retryCount: 3,                   // Optional
   retryDelay: 1000,                // Optional, milliseconds

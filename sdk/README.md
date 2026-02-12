@@ -64,4 +64,4 @@ if (result.allowed) {
 
 ## Documentation
 
-Full SDK docs at [tokenfence.io/docs](https://tokenfence.io/docs).
+Full SDK docs at [usagesentinel.com/docs](https://usagesentinel.com/docs).

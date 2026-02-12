@@ -22,7 +22,7 @@ const CODE_INIT = `from tokenfence import UsageSentinel
 
 tf = UsageSentinel(
     api_key="tf_live_...",       # Required: your API key
-    base_url="https://api.tokenfence.io",  # Optional, default
+    base_url="https://api.usagesentinel.com",  # Optional, default
     timeout=30,                  # Optional, seconds
     retry_count=3,               # Optional
     retry_delay=1,               # Optional, seconds
