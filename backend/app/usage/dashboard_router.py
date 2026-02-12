@@ -147,3 +147,18 @@ def get_scoped_daily(
     if not workspace:
         raise WorkspaceNotFoundError()
     return services.get_scoped_daily_usage(db, workspace_id, environment_id, days)
+
+
+@router.get("/{workspace_id}/{environment_id}/by-model", response_model=PaginatedUsageByGroupResponse)
+def get_usage_by_model(
+    workspace_id: int,
+    environment_id: int,
+    current_user: User = Depends(get_current_user),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    workspace = get_workspace(db, workspace_id, current_user.id)
+    if not workspace:
+        raise WorkspaceNotFoundError()
+    return services.get_usage_by_model(db, workspace_id, environment_id, page, page_size)

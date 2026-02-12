@@ -166,3 +166,14 @@ export async function getScopedDaily(
     `/dashboard/usage/${workspaceId}/${environmentId}/daily?days=${days}`,
   );
 }
+
+export async function getUsageByModel(
+  workspaceId: number,
+  environmentId: number,
+  page = 1,
+  pageSize = 20,
+): Promise<PaginatedUsageByGroup> {
+  return api<PaginatedUsageByGroup>(
+    `/dashboard/usage/${workspaceId}/${environmentId}/by-model?page=${page}&page_size=${pageSize}`,
+  );
+}

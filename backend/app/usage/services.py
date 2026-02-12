@@ -569,3 +569,41 @@ def get_scoped_daily_usage(
         return weekly
     
     return daily
+
+
+def get_usage_by_model(
+    db: Session,
+    workspace_id: int,
+    environment_id: int,
+    page: int = 1,
+    page_size: int = 20
+) -> dict:
+    query = db.query(
+        UsageRecord.model,
+        func.count(UsageRecord.id).label("requests"),
+        func.sum(UsageRecord.total_tokens).label("tokens"),
+        func.sum(UsageRecord.estimated_cost_usd).label("cost_usd")
+    ).filter(
+        UsageRecord.workspace_id == workspace_id,
+        UsageRecord.environment_id == environment_id
+    ).group_by(UsageRecord.model).order_by(func.count(UsageRecord.id).desc())
+    
+    total = query.count()
+    total_pages = (total + page_size - 1) // page_size
+    
+    results = query.offset((page - 1) * page_size).limit(page_size).all()
+    
+    items = [
+        UsageByGroup(group=r.model or "unknown", requests=r.requests, tokens=r.tokens or 0, cost_usd=r.cost_usd or 0)
+        for r in results
+    ]
+    
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "has_next": page < total_pages,
+        "has_prev": page > 1
+    }
