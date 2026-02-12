@@ -1,73 +1,6 @@
 "use client";
 
-import { useAuth } from "@/lib/auth-context";
 import { UsageSummary } from "@/lib/dashboard";
-
-function UsageArc({
-  percent,
-  label,
-  value,
-}: {
-  percent: number;
-  label: string;
-  value: string;
-}) {
-  const radius = 36;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percent / 100) * circumference;
-  const color =
-    percent > 90
-      ? "#ef4444"
-      : percent > 75
-        ? "#f43f5e"
-        : percent > 60
-          ? "#fbbf24"
-          : percent > 40
-            ? "#a3e635"
-            : percent > 20
-              ? "#22d3ee"
-              : "#818cf8";
-
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <div className="relative w-24 h-24">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 80 80">
-          <circle
-            cx="40"
-            cy="40"
-            r={radius}
-            fill="none"
-            stroke="#3f3f46"
-            strokeWidth="5"
-          />
-          <circle
-            cx="40"
-            cy="40"
-            r={radius}
-            fill="none"
-            stroke={color}
-            strokeWidth="5"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            className="transition-all duration-1000 ease-out"
-          />
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-sm font-mono font-bold text-surface-100">
-            {percent}%
-          </span>
-        </div>
-      </div>
-      <span className="text-lg font-bold font-mono text-surface-100">
-        {value}
-      </span>
-      <span className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
-        {label}
-      </span>
-    </div>
-  );
-}
 
 function PulseIndicator({
   status,
@@ -88,6 +21,30 @@ function PulseIndicator({
         className={`relative inline-flex rounded-full h-2 w-2 ${colors[status]}`}
       />
     </span>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  sub,
+  subColor = "text-surface-400",
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  subColor?: string;
+}) {
+  return (
+    <div>
+      <p className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
+        {label}
+      </p>
+      <p className="text-2xl font-bold font-mono text-surface-100 mt-1">
+        {value}
+      </p>
+      {sub && <p className={`text-xs font-mono mt-0.5 ${subColor}`}>{sub}</p>}
+    </div>
   );
 }
 
@@ -113,24 +70,17 @@ function formatNumber(n: number): string {
 interface DashboardBannerProps {
   summary: UsageSummary | null;
   loading: boolean;
-  planLimits: {
-    evaluate_calls_limit: number | null;
-    rate_limit_per_minute: number | null;
-  };
   apiKeyCount: number;
-  planName: string;
 }
 
 export default function DashboardBanner({
   summary,
   loading,
-  planLimits,
   apiKeyCount,
-  planName,
 }: DashboardBannerProps) {
   if (loading) {
     return (
-      <div className="rounded-2xl border border-surface-700/40 bg-surface-900/60 h-64 animate-pulse" />
+      <div className="rounded-2xl border border-surface-700/40 bg-surface-900/60 h-48 animate-pulse" />
     );
   }
 
@@ -143,12 +93,6 @@ export default function DashboardBanner({
     totalRequests > 0
       ? ((blockedCount / totalRequests) * 100).toFixed(1)
       : "0.0";
-
-  const evalLimit = planLimits.evaluate_calls_limit;
-  const evalPercent =
-    evalLimit && evalLimit > 0
-      ? Math.min(Math.round((totalRequests / evalLimit) * 100), 100)
-      : 0;
 
   const systemStatus: "healthy" | "warning" | "critical" =
     Number(blockRate) > 10
@@ -187,84 +131,50 @@ export default function DashboardBanner({
         </span>
       </div>
 
-      {/* Main content */}
+      {/* Main stats */}
       <div className="relative px-6 py-8">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-          {/* Arcs */}
-          <div className="flex items-center gap-6">
-            <UsageArc
-              percent={evalPercent}
-              label="Evaluate Calls"
-              value={formatNumber(totalRequests)}
-            />
-            <UsageArc
-              percent={
-                totalTokens > 0
-                  ? Math.min(Math.round((totalTokens / 10_000_000) * 100), 100)
-                  : 0
-              }
-              label="Tokens Used"
-              value={formatNumber(totalTokens)}
-            />
-            <UsageArc
-              percent={
-                totalCost > 0
-                  ? Math.min(Math.round((totalCost / 200) * 100), 100)
-                  : 0
-              }
-              label="Budget Used"
-              value={`$${totalCost.toFixed(2)}`}
-            />
-          </div>
-
-          {/* Divider */}
-          <div className="hidden lg:block w-px h-24 bg-surface-700/60" />
-
-          {/* Live stats */}
-          <div className="flex-1 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
-                  Total Requests
-                </p>
-                <p className="text-2xl font-bold font-mono text-surface-100 mt-1">
-                  {totalRequests.toLocaleString()}
-                </p>
-                <p className="text-xs font-mono text-emerald-400 mt-0.5">
-                  {allowedCount.toLocaleString()} allowed
-                </p>
-              </div>
-              <div>
-                <p className="text-[11px] font-mono text-surface-400 uppercase tracking-wider">
-                  Blocked
-                </p>
-                <p className="text-2xl font-bold font-mono text-surface-100 mt-1">
-                  {blockedCount.toLocaleString()}
-                </p>
-                <p className="text-xs font-mono text-red-400 mt-0.5">
-                  {blockRate}% block rate
-                </p>
-              </div>
-            </div>
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+          <StatCard
+            label="Total Requests"
+            value={formatNumber(totalRequests)}
+            sub={`across all workspaces`}
+          />
+          <StatCard
+            label="Allowed"
+            value={formatNumber(allowedCount)}
+            sub={`${totalRequests > 0 ? ((allowedCount / totalRequests) * 100).toFixed(1) : "0.0"}% pass rate`}
+            subColor="text-emerald-400"
+          />
+          <StatCard
+            label="Blocked"
+            value={formatNumber(blockedCount)}
+            sub={`${blockRate}% block rate`}
+            subColor="text-red-400"
+          />
+          <StatCard
+            label="Tokens Used"
+            value={formatNumber(totalTokens)}
+            sub="total consumption"
+          />
+          <StatCard
+            label="Total Cost"
+            value={`$${totalCost.toFixed(2)}`}
+            sub="estimated spend"
+          />
         </div>
       </div>
 
       {/* Bottom ticker */}
       <div className="relative flex items-center px-2 py-2 border-t border-surface-700/40 bg-surface-950/50 overflow-x-auto">
-        <TickerItem label="Plan" value={planName} />
-        <TickerItem
-          label="Rate"
-          value={
-            planLimits.rate_limit_per_minute
-              ? `${planLimits.rate_limit_per_minute.toLocaleString()}/min`
-              : "Unlimited"
-          }
-        />
         <TickerItem label="API Keys" value={`${apiKeyCount} active`} />
+        <TickerItem label="Block Rate" value={`${blockRate}%`} />
         <TickerItem
-          label="Eval Limit"
-          value={evalLimit ? `${formatNumber(evalLimit)}/mo` : "Unlimited"}
+          label="Avg Cost/Req"
+          value={
+            totalRequests > 0
+              ? `$${(totalCost / totalRequests).toFixed(4)}`
+              : "$0.00"
+          }
         />
       </div>
     </div>
