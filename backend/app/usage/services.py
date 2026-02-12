@@ -132,7 +132,7 @@ def get_usage_by_user(
     ).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id
-    ).group_by(UsageRecord.user_id).order_by(func.count(UsageRecord.id).desc())  # Add this!
+    ).group_by(UsageRecord.user_id).order_by(func.count(UsageRecord.id).desc())
     
     total = query.count()
     total_pages = (total + page_size - 1) // page_size
@@ -160,7 +160,8 @@ def get_usage_by_feature(
     workspace_id: int,
     environment_id: int,
     page: int = 1,
-    page_size: int = 20
+    page_size: int = 20,
+    user_id: Optional[str] = None
 ) -> dict:
     query = db.query(
         UsageRecord.feature,
@@ -170,7 +171,12 @@ def get_usage_by_feature(
     ).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id
-    ).group_by(UsageRecord.feature).order_by(func.count(UsageRecord.id).desc())  # Add this!
+    )
+    
+    if user_id:
+        query = query.filter(UsageRecord.user_id == user_id)
+    
+    query = query.group_by(UsageRecord.feature).order_by(func.count(UsageRecord.id).desc())
     
     total = query.count()
     total_pages = (total + page_size - 1) // page_size
@@ -191,12 +197,15 @@ def get_usage_by_feature(
         "has_next": page < total_pages,
         "has_prev": page > 1
     }
+
+
 def get_usage_summary(
     db: Session,
     workspace_id: int,
     environment_id: int,
     start_date: Optional[datetime] = None,
-    end_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None,
+    user_id: Optional[str] = None
 ) -> UsageSummary:
     query = db.query(
         func.count(UsageRecord.id).label("total_requests"),
@@ -209,6 +218,8 @@ def get_usage_summary(
         UsageRecord.environment_id == environment_id
     )
 
+    if user_id:
+        query = query.filter(UsageRecord.user_id == user_id)
     if start_date:
         query = query.filter(UsageRecord.created_at >= start_date)
     if end_date:
@@ -513,12 +524,13 @@ def get_scoped_daily_usage(
     db: Session,
     workspace_id: int,
     environment_id: int,
-    days: int = 7
+    days: int = 7,
+    user_id: Optional[str] = None
 ) -> list:
     start_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
     start_date = start_date - timedelta(days=days - 1)
     
-    results = db.query(
+    query = db.query(
         func.date(UsageRecord.created_at).label("day"),
         func.count(UsageRecord.id).label("requests"),
         func.coalesce(func.sum(UsageRecord.total_tokens), 0).label("tokens"),
@@ -527,7 +539,12 @@ def get_scoped_daily_usage(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id,
         UsageRecord.created_at >= start_date
-    ).group_by(
+    )
+    
+    if user_id:
+        query = query.filter(UsageRecord.user_id == user_id)
+    
+    results = query.group_by(
         func.date(UsageRecord.created_at)
     ).order_by(
         func.date(UsageRecord.created_at)
@@ -576,7 +593,8 @@ def get_usage_by_model(
     workspace_id: int,
     environment_id: int,
     page: int = 1,
-    page_size: int = 20
+    page_size: int = 20,
+    user_id: Optional[str] = None
 ) -> dict:
     query = db.query(
         UsageRecord.model,
@@ -586,7 +604,12 @@ def get_usage_by_model(
     ).filter(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id
-    ).group_by(UsageRecord.model).order_by(func.count(UsageRecord.id).desc())
+    )
+    
+    if user_id:
+        query = query.filter(UsageRecord.user_id == user_id)
+    
+    query = query.group_by(UsageRecord.model).order_by(func.count(UsageRecord.id).desc())
     
     total = query.count()
     total_pages = (total + page_size - 1) // page_size
