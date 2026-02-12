@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useInView } from "@/lib/hooks";
 import { Button, GridBackground, FenceMotif } from "@/components/ui";
+import { useAuth } from "@/lib/auth-context";
 
 export default function CTASection() {
   const [ref, visible] = useInView(0.1);
+  const { user } = useAuth();
 
   return (
     <section
@@ -36,9 +38,9 @@ export default function CTASection() {
               minutes. Free and open for all developers.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/signup">
+              <Link href={user ? "/dashboard" : "/signup"}>
                 <Button variant="primary" size="lg">
-                  Get Started Free →
+                  {user ? "Go to Dashboard →" : "Get Started →"}
                 </Button>
               </Link>
               <Link href="/docs">
