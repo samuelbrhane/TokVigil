@@ -11,6 +11,8 @@ from app.auth.models import User
 from app.auth.schemas import UserRegister, UserUpdate
 from app.audit.services import create_audit_log
 from app.core.exceptions import EmailNotVerifiedError
+from app.auth.models import ContactMessage
+
 
 def hash_password(password: str) -> str:
     salt = secrets.token_hex(16)
@@ -312,3 +314,17 @@ def delete_user(db: Session, user_id: int) -> bool:
     )
     
     return True
+
+
+
+def create_contact_message(db: Session, data: dict) -> ContactMessage:
+    message = ContactMessage(
+        name=data["name"],
+        email=data["email"],
+        subject=data["subject"],
+        message=data["message"],
+    )
+    db.add(message)
+    db.commit()
+    db.refresh(message)
+    return message

@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text
 from sqlalchemy.orm import relationship
 
 from app.db.session import Base
@@ -20,3 +21,15 @@ class User(Base, TimestampMixin, SoftDeleteMixin):
     password_reset_expires = Column(DateTime, nullable=True)
     
     workspaces = relationship("Workspace", back_populates="owner")
+    
+    
+class ContactMessage(Base):
+    __tablename__ = "contact_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    subject = Column(String, nullable=False)
+    message = Column(Text, nullable=False)
+    is_read = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)

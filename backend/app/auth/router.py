@@ -184,3 +184,12 @@ def resend_verification_public(data: ForgotPassword, db: Session = Depends(get_d
         print(f"{'='*50}\n")
 
     return MessageResponse(message="If the email exists, a verification link has been sent")
+
+
+
+@router.post("/contact", response_model=ContactMessageResponse)
+def submit_contact(
+    data: ContactMessageRequest,
+    db: Session = Depends(get_db)
+):
+    return services.create_contact_message(db, data.model_dump())

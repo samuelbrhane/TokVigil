@@ -99,3 +99,17 @@ export async function api<T>(
   if (res.status === 204) return null as T;
   return res.json();
 }
+
+export async function submitContact(data: {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}): Promise<void> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/contact`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to send message");
+}
