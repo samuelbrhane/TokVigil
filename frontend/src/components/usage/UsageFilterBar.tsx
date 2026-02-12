@@ -8,8 +8,6 @@ export interface UsageFilters {
   workspace_id: number | null;
   environment_id: number | null;
   user_id: string | null;
-  feature: string | null;
-  model: string | null;
   days: number;
 }
 
@@ -22,8 +20,6 @@ export const DEFAULT_FILTERS: UsageFilters = {
   workspace_id: null,
   environment_id: null,
   user_id: null,
-  feature: null,
-  model: null,
   days: 7,
 };
 
@@ -64,36 +60,6 @@ function SelectFilter({
   );
 }
 
-function TextFilter({
-  label,
-  value,
-  onChange,
-  placeholder,
-  disabled = false,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-  disabled?: boolean;
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-[10px] font-mono text-surface-400 uppercase tracking-wider">
-        {label}
-      </label>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        disabled={disabled}
-        className="px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-700/40 text-xs font-mono text-surface-200 hover:border-surface-600/50 transition-colors placeholder:text-surface-500 disabled:opacity-40 disabled:cursor-not-allowed min-w-[140px]"
-      />
-    </div>
-  );
-}
-
 export default function UsageFilterBar({
   filters,
   onChange,
@@ -101,6 +67,7 @@ export default function UsageFilterBar({
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [environments, setEnvironments] = useState<Environment[]>([]);
   const [loadingEnvs, setLoadingEnvs] = useState(false);
+  const [userInput, setUserInput] = useState(filters.user_id || "");
 
   useEffect(() => {
     const load = async () => {
@@ -143,7 +110,16 @@ export default function UsageFilterBar({
     load();
   }, [filters.workspace_id]);
 
+  useEffect(() => {
+    if (!filters.user_id) setUserInput("");
+  }, [filters.user_id]);
+
   const hasScope = filters.workspace_id && filters.environment_id;
+
+  const handleUserSubmit = () => {
+    const trimmed = userInput.trim();
+    onChange({ ...filters, user_id: trimmed || null });
+  };
 
   return (
     <div className="flex flex-wrap items-end gap-3">
@@ -159,6 +135,7 @@ export default function UsageFilterBar({
             ...filters,
             workspace_id: val ? parseInt(val) : null,
             environment_id: null,
+            user_id: null,
           })
         }
         placeholder="Select workspace"
@@ -192,45 +169,41 @@ export default function UsageFilterBar({
         disabled={!hasScope}
       />
 
-      <TextFilter
-        label="User"
-        value={filters.user_id || ""}
-        onChange={(val) => onChange({ ...filters, user_id: val || null })}
-        placeholder="Filter by user..."
-        disabled={!hasScope}
-      />
-
-      <TextFilter
-        label="Model"
-        value={filters.model || ""}
-        onChange={(val) => onChange({ ...filters, model: val || null })}
-        placeholder="Filter by model..."
-        disabled={!hasScope}
-      />
-
-      <TextFilter
-        label="Feature"
-        value={filters.feature || ""}
-        onChange={(val) => onChange({ ...filters, feature: val || null })}
-        placeholder="Filter by feature..."
-        disabled={!hasScope}
-      />
-
-      {(filters.user_id || filters.model || filters.feature) && (
-        <button
-          onClick={() =>
-            onChange({
-              ...filters,
-              user_id: null,
-              feature: null,
-              model: null,
-            })
-          }
-          className="px-3 py-1.5 rounded-lg text-xs font-mono text-surface-400 hover:text-white transition-colors"
-        >
-          Clear filters
-        </button>
-      )}
+      <div className="flex flex-col gap-1">
+        <label className="text-[10px] font-mono text-surface-400 uppercase tracking-wider">
+          User
+        </label>
+        <div className="flex items-center gap-1">
+          <input
+            type="text"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleUserSubmit();
+            }}
+            placeholder="Press Enter to filter..."
+            disabled={!hasScope}
+            className="px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-700/40 text-xs font-mono text-surface-200 hover:border-surface-600/50 transition-colors placeholder:text-surface-500 disabled:opacity-40 disabled:cursor-not-allowed min-w-[160px]"
+          />
+          {filters.user_id && (
+            <button
+              onClick={() => {
+                setUserInput("");
+                onChange({ ...filters, user_id: null });
+              }}
+              className="px-2 py-1.5 rounded-lg text-xs font-mono text-surface-400 hover:text-white transition-colors"
+              title="Clear user filter"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        {filters.user_id && (
+          <span className="text-[10px] font-mono text-brand-400">
+            Filtering: {filters.user_id}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
