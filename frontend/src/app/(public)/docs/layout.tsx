@@ -7,10 +7,7 @@ import { usePathname } from "next/navigation";
 const DOCS_NAV = [
   {
     title: "Getting Started",
-    links: [
-      { label: "Introduction", href: "/docs" },
-      { label: "Quick Start", href: "/docs#quick-start" },
-    ],
+    links: [{ label: "Introduction", href: "/docs" }],
   },
   {
     title: "SDKs",
@@ -18,6 +15,10 @@ const DOCS_NAV = [
       { label: "Python SDK", href: "/docs/sdk/python" },
       { label: "TypeScript SDK", href: "/docs/sdk/typescript" },
     ],
+  },
+  {
+    title: "Integration",
+    links: [{ label: "REST API", href: "/docs/rest-api" }],
   },
   {
     title: "Tools",
@@ -28,7 +29,6 @@ const DOCS_NAV = [
     links: [{ label: "API Reference", href: "/docs/api-reference" }],
   },
 ];
-
 export default function DocsLayout({
   children,
 }: {
