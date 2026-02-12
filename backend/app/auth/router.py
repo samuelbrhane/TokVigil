@@ -129,17 +129,6 @@ def delete_account(
     services.delete_user(db, current_user.id)
     return None
 
-
-@router.get("/me/plan", response_model=UserPlanResponse)
-def get_current_plan(current_user: User = Depends(get_current_user)):
-    """Get current user's plan details."""
-    from app.core.plans import get_plan
-    plan_details = get_plan(current_user.plan)
-    return UserPlanResponse(
-        plan=current_user.plan,
-        **plan_details
-    )
-    
     
 @router.get("/api-key-info", response_model=ApiKeyInfoResponse)
 def get_api_key_info(

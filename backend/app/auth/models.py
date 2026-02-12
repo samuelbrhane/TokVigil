@@ -14,7 +14,6 @@ class User(Base, TimestampMixin, SoftDeleteMixin):
     first_name = Column(String(100), nullable=True)
     last_name = Column(String(100), nullable=True)
     is_active = Column(Boolean, default=True)
-    plan = Column(String(50), default="free")
     email_verified = Column(Boolean, default=False)
     email_verification_token = Column(String(255), nullable=True)
     password_reset_token = Column(String(255), nullable=True)
