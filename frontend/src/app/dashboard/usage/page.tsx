@@ -1,12 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import UsageFilterBar, {
-  UsageFilters,
+import {
+  UsageFilterBar,
+  UsageBanner,
+  UsageChart,
+  UsageBreakdowns,
+} from "@/components/usage";
+
+import UsageCallLog from "@/components/usage/UsageCallLog";
+import {
   DEFAULT_FILTERS,
+  UsageFilters,
 } from "@/components/usage/UsageFilterBar";
-import UsageBanner from "@/components/usage/UsageBanner";
-import UsageChart from "@/components/usage/UsageChart";
 
 export default function UsagePage() {
   const [filters, setFilters] = useState<UsageFilters>(DEFAULT_FILTERS);
@@ -32,8 +38,8 @@ export default function UsagePage() {
         <div className="space-y-8">
           <UsageBanner filters={filters} />
           <UsageChart filters={filters} />
-          {/* TODO: ByModel / ByFeature breakdowns */}
-          {/* TODO: Recent calls table */}
+          <UsageBreakdowns filters={filters} />
+          <UsageCallLog filters={filters} />
         </div>
       )}
     </div>
