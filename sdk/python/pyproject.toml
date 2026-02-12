@@ -40,9 +40,4 @@ dev = [
 
 [project.urls]
 Homepage = "https://tokenfence.io"
-Documentation = "https://docs.tokenfence.io"
-Repository = "https://github.com/samuelbrhane/tokenfence"
-Issues = "https://github.com/samuelbrhane/tokenfence/issues"
-
-[tool.setuptools.packages.find]
-include = ["tokenfence*"]
+Documentation = "https://tokenfence.io/docs/sdk/python"
