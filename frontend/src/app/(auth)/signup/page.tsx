@@ -152,7 +152,7 @@ export default function SignupPage() {
                 href="/privacy"
                 className="text-brand-500/70 hover:text-brand-400"
               >
-                Privacy Policy
+                Privacy Policy.
               </a>
             </span>
           </label>
