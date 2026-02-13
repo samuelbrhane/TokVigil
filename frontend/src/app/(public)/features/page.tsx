@@ -359,7 +359,7 @@ except TokVigilError as e:
   TokVigilError,
 } from "tokvigil";
 
-const us =new TokVigil({ apiKey: "tv_live_..." });
+const us = new TokVigil({ apiKey: "tv_live_..." });
 
 try {
   const result = await tv.evaluate({

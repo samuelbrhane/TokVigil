@@ -113,7 +113,7 @@ tv = TokVigil(api_key="tv_live_...")`,
 
 import { TokVigil } from "tokvigil";
 
-const us =new TokVigil({ apiKey: "tv_live_..." });`,
+const us = new TokVigil({ apiKey: "tv_live_..." });`,
   },
   {
     num: "02",

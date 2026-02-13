@@ -22,7 +22,7 @@ yarn add tokvigil`;
 
 const CODE_INIT = `import { TokVigil } from "tokvigil";
 
-const us =new TokVigil({
+const us = new TokVigil({
   apiKey: "tv_live_...",           // Required: your API key
   baseUrl: "https://api.tokvigil.com",  // Optional, default
   timeout: 30000,                  // Optional, milliseconds
@@ -130,7 +130,7 @@ const CODE_ERRORS = `import {
   APIError,
 } from "tokvigil";
 
-const us =new TokVigil({ apiKey: "tv_live_..." });
+const us = new TokVigil({ apiKey: "tv_live_..." });
 
 try {
   const result = await tv.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
