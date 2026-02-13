@@ -20,6 +20,96 @@ const envColors: Record<string, "success" | "warning" | "brand"> = {
   staging: "brand",
 };
 
+function AnimateIn({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div
+      className={`transition-all duration-400 ease-out ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function MobileKeyCard({
+  apiKey,
+  envName,
+  envColor,
+  delay,
+  onRevoke,
+}: {
+  apiKey: ApiKey;
+  envName: string;
+  envColor: "success" | "warning" | "brand";
+  delay: number;
+  onRevoke: () => void;
+}) {
+  return (
+    <AnimateIn delay={delay}>
+      <div className="border-b border-surface-800/20 last:border-0 px-4 py-3 hover:bg-surface-900/40 transition-colors">
+        {/* Top: name + environment */}
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-mono text-surface-200 font-medium truncate flex-1">
+            {apiKey.name}
+          </span>
+          <Badge variant={envColor}>{envName}</Badge>
+        </div>
+
+        {/* Key preview */}
+        <div className="mb-2">
+          <code className="text-xs font-mono text-surface-400 bg-surface-900/60 px-2 py-1 rounded">
+            {apiKey.key_prefix}...
+          </code>
+        </div>
+
+        {/* Details + action */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <span className="text-[10px] font-mono text-surface-500 block">
+                Created
+              </span>
+              <span className="text-[11px] font-mono text-surface-400">
+                {new Date(apiKey.created_at).toLocaleDateString()}
+              </span>
+            </div>
+            <div>
+              <span className="text-[10px] font-mono text-surface-500 block">
+                Last Used
+              </span>
+              <span className="text-[11px] font-mono text-surface-400">
+                {apiKey.last_used_at
+                  ? new Date(apiKey.last_used_at).toLocaleDateString()
+                  : "Never"}
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={onRevoke}
+            className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors"
+          >
+            Revoke
+          </button>
+        </div>
+      </div>
+    </AnimateIn>
+  );
+}
+
 export default function ApiKeysPage() {
   const [workspaceId, setWorkspaceId] = useState<number | null>(null);
   const [initialized, setInitialized] = useState(false);
@@ -82,7 +172,7 @@ export default function ApiKeysPage() {
   return (
     <div className="space-y-6">
       {/* Workspace selector */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="text-xs text-surface-500 font-mono">Workspace:</span>
           <WorkspaceSelector
@@ -125,32 +215,35 @@ export default function ApiKeysPage() {
       ) : (
         <>
           {/* Tabs + Create */}
-          <div className="flex items-center justify-between">
-            <div className="flex gap-1">
-              {envTabs.map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-mono capitalize transition-colors ${
-                    activeTab === tab
-                      ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
-                      : "text-surface-500 hover:text-surface-300"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
+          <AnimateIn delay={0}>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div className="flex flex-wrap gap-1">
+                {envTabs.map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono capitalize transition-colors ${
+                      activeTab === tab
+                        ? "bg-brand-500/10 text-brand-400 border border-brand-500/20"
+                        : "text-surface-500 hover:text-surface-300"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setShowCreate(true)}
+                className="w-full sm:w-auto"
+              >
+                + Create API Key
+              </Button>
             </div>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setShowCreate(true)}
-            >
-              + Create API Key
-            </Button>
-          </div>
+          </AnimateIn>
 
-          {/* Keys table */}
+          {/* Keys */}
           {filteredKeys.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-4xl mb-4">⚿</div>
@@ -169,76 +262,95 @@ export default function ApiKeysPage() {
               </Button>
             </div>
           ) : (
-            <Card className="animate-fade-in">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-surface-800/30">
-                      {[
-                        "Name",
-                        "Key",
-                        "Environment",
-                        "Created",
-                        "Last Used",
-                        "Actions",
-                      ].map((h) => (
-                        <th
-                          key={h}
-                          className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-500 uppercase tracking-wider"
-                        >
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredKeys.map((key) => (
-                      <tr
-                        key={key.id}
-                        className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors"
-                      >
-                        <td className="px-4 py-3 text-sm font-mono text-surface-200">
-                          {key.name}
-                        </td>
-                        <td className="px-4 py-3">
-                          <code className="text-xs font-mono text-surface-400 bg-surface-900/60 px-2 py-1 rounded">
-                            {key.key_prefix}...
-                          </code>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge
-                            variant={
-                              envColors[getEnvName(key.environment_id)] ||
-                              "brand"
-                            }
+            <AnimateIn delay={100}>
+              <Card>
+                {/* Desktop table */}
+                <div className="hidden md:block">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-surface-800/30">
+                        {[
+                          "Name",
+                          "Key",
+                          "Environment",
+                          "Created",
+                          "Last Used",
+                          "Actions",
+                        ].map((h) => (
+                          <th
+                            key={h}
+                            className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-500 uppercase tracking-wider"
                           >
-                            {getEnvName(key.environment_id)}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3 text-xs font-mono text-surface-500">
-                          {new Date(key.created_at).toLocaleDateString()}
-                        </td>
-                        <td className="px-4 py-3 text-xs font-mono text-surface-500">
-                          {key.last_used_at
-                            ? new Date(key.last_used_at).toLocaleDateString()
-                            : "Never"}
-                        </td>
-                        <td className="px-4 py-3">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setRevokeTarget(key)}
-                            className="text-surface-500 hover:text-red-400"
-                          >
-                            Revoke
-                          </Button>
-                        </td>
+                            {h}
+                          </th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
+                    </thead>
+                    <tbody>
+                      {filteredKeys.map((key) => (
+                        <tr
+                          key={key.id}
+                          className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors"
+                        >
+                          <td className="px-4 py-3 text-sm font-mono text-surface-200">
+                            {key.name}
+                          </td>
+                          <td className="px-4 py-3">
+                            <code className="text-xs font-mono text-surface-400 bg-surface-900/60 px-2 py-1 rounded">
+                              {key.key_prefix}...
+                            </code>
+                          </td>
+                          <td className="px-4 py-3">
+                            <Badge
+                              variant={
+                                envColors[getEnvName(key.environment_id)] ||
+                                "brand"
+                              }
+                            >
+                              {getEnvName(key.environment_id)}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-3 text-xs font-mono text-surface-500">
+                            {new Date(key.created_at).toLocaleDateString()}
+                          </td>
+                          <td className="px-4 py-3 text-xs font-mono text-surface-500">
+                            {key.last_used_at
+                              ? new Date(key.last_used_at).toLocaleDateString()
+                              : "Never"}
+                          </td>
+                          <td className="px-4 py-3">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setRevokeTarget(key)}
+                              className="text-surface-500 hover:text-red-400"
+                            >
+                              Revoke
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile cards */}
+                <div className="md:hidden">
+                  {filteredKeys.map((key, i) => (
+                    <MobileKeyCard
+                      key={key.id}
+                      apiKey={key}
+                      envName={getEnvName(key.environment_id)}
+                      envColor={
+                        envColors[getEnvName(key.environment_id)] || "brand"
+                      }
+                      delay={50 + i * 60}
+                      onRevoke={() => setRevokeTarget(key)}
+                    />
+                  ))}
+                </div>
+              </Card>
+            </AnimateIn>
           )}
 
           {/* Pagination */}
