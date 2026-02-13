@@ -7,11 +7,22 @@ name = "tokvigil"
 version = "0.1.0"
 description = "Python SDK for TokVigil - AI usage control platform"
 readme = "README.md"
-license = {text = "MIT"}
+requires-python = ">=3.8"
+license = { text = "MIT" }
+
 authors = [
-    {name = "TokVigil", email = "support@tokvigil.com"}
+    { name = "TokVigil", email = "support@tokvigil.com" }
 ]
-keywords = ["ai", "llm", "rate-limiting", "usage-control", "openai", "anthropic"]
+
+keywords = [
+    "ai",
+    "llm",
+    "rate-limiting",
+    "usage-control",
+    "openai",
+    "anthropic"
+]
+
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -25,9 +36,9 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-requires-python = ">=3.8"
+
 dependencies = [
-    "requests>=2.28.0",
+    "requests>=2.28.0"
 ]
 
 [project.optional-dependencies]
@@ -37,7 +48,11 @@ dev = [
     "responses>=0.23.0",
 ]
 
-
 [project.urls]
 Homepage = "https://tokvigil.com"
 Documentation = "https://tokvigil.com/docs/sdk/python"
+Repository = "https://github.com/samuelbrhane/tokenfence"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tokvigil*"]
