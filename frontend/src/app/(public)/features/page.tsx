@@ -310,21 +310,21 @@ dev_summary = tv_dev.get_usage_summary()`,
 import { TokVigil } from "tokvigil";
 
 // Production - real usage tracking
-const tfProd = new TokVigil({ apiKey: "tv_live_xxxxxxxxxxxx" });
+const tvProd = new TokVigil({ apiKey: "tv_live_xxxxxxxxxxxx" });
 
 // Development - isolated testing
-const tfDev = new TokVigil({ apiKey: "tv_test_xxxxxxxxxxxx" });
+const tvDev = new TokVigil({ apiKey: "tv_test_xxxxxxxxxxxx" });
 
 // Same code works in both environments
-const result = await tfProd.evaluate({
+const result = await tvProd.evaluate({
   userId: "user_123",
   model: "gpt-4o-mini",
   plan: "free",
 });
 
 // Usage data is completely isolated
-const prodSummary = await tfProd.getUsageSummary();
-const devSummary = await tfDev.getUsageSummary();`,
+const prodSummary = await tvProd.getUsageSummary();
+const devSummary = await tvDev.getUsageSummary();`,
   },
 
   "Error Handling": {
