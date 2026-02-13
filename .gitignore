@@ -77,3 +77,5 @@ temp/
 # Test files with API keys
 test_local_copy.py
 test_local_copy.ts
+
+commands.txt

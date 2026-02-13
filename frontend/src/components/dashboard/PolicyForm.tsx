@@ -67,7 +67,7 @@ export default function PolicyForm({
   };
 
   const updateNumber = (field: keyof PolicyFormData, value: string) => {
-    updateField(field, value === "" ? null : Number(value));
+    updateField(field, value === "" ? null : value);
   };
 
   const toggleModel = (model: string) => {
@@ -81,7 +81,29 @@ export default function PolicyForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(form);
+    const parsed: PolicyFormData = {
+      ...form,
+      requests_per_day: form.requests_per_day
+        ? Number(form.requests_per_day)
+        : null,
+      requests_per_month: form.requests_per_month
+        ? Number(form.requests_per_month)
+        : null,
+      tokens_per_day: form.tokens_per_day ? Number(form.tokens_per_day) : null,
+      tokens_per_month: form.tokens_per_month
+        ? Number(form.tokens_per_month)
+        : null,
+      budget_per_day_usd: form.budget_per_day_usd
+        ? Number(form.budget_per_day_usd)
+        : null,
+      budget_per_month_usd: form.budget_per_month_usd
+        ? Number(form.budget_per_month_usd)
+        : null,
+      max_cost_per_request_usd: form.max_cost_per_request_usd
+        ? Number(form.max_cost_per_request_usd)
+        : null,
+    };
+    await onSubmit(parsed);
   };
 
   return (
@@ -204,25 +226,30 @@ export default function PolicyForm({
             <InputField
               label="Per Day"
               type="number"
+              step="0.001"
               placeholder="e.g., 1.00"
               value={form.budget_per_day_usd?.toString() || ""}
               onChange={(e) =>
                 updateNumber("budget_per_day_usd", e.target.value)
               }
             />
+
             <InputField
               label="Per Month"
               type="number"
+              step="0.001"
               placeholder="e.g., 10.00"
               value={form.budget_per_month_usd?.toString() || ""}
               onChange={(e) =>
                 updateNumber("budget_per_month_usd", e.target.value)
               }
             />
+
             <InputField
               label="Per Request (max)"
               type="number"
-              placeholder="e.g., 0.05"
+              step="0.001"
+              placeholder="e.g., 0.001"
               value={form.max_cost_per_request_usd?.toString() || ""}
               onChange={(e) =>
                 updateNumber("max_cost_per_request_usd", e.target.value)
