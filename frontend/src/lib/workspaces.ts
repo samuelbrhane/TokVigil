@@ -10,7 +10,7 @@ import {
 // Workspaces
 export async function getWorkspaces(
   page = 1,
-  pageSize = 20,
+  pageSize = 9,
 ): Promise<PaginatedWorkspaces> {
   return api<PaginatedWorkspaces>(
     `/workspaces?page=${page}&page_size=${pageSize}`,
