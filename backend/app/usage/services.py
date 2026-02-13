@@ -252,7 +252,6 @@ def get_user_usage_today(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id,
         UsageRecord.user_id == user_id,
-        UsageRecord.status == "allowed",
         UsageRecord.created_at >= today_start
     ).one()
 
@@ -279,7 +278,6 @@ def get_user_usage_month(
         UsageRecord.workspace_id == workspace_id,
         UsageRecord.environment_id == environment_id,
         UsageRecord.user_id == user_id,
-        UsageRecord.status == "allowed",
         UsageRecord.created_at >= month_start
     ).one()
 
