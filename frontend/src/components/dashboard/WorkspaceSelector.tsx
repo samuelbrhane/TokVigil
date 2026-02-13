@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getWorkspaces } from "@/lib/workspaces";
 import { Workspace } from "@/types/workspace";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 interface WorkspaceSelectorProps {
   value: number | null;
@@ -20,7 +21,7 @@ export default function WorkspaceSelector({
 
   const fetchWorkspaces = () => {
     setLoading(true);
-    getWorkspaces()
+    getWorkspaces(1, 100)
       .then((data) => {
         setWorkspaces(data.items);
         if (data.items.length > 0) {
@@ -52,16 +53,16 @@ export default function WorkspaceSelector({
   }
 
   return (
-    <select
-      value={value || ""}
-      onChange={(e) => onChange(Number(e.target.value))}
-      className="bg-surface-900/80 border border-surface-700/60 rounded-lg px-3 py-2 text-sm text-surface-200 font-mono focus:outline-none focus:border-brand-500/50"
-    >
-      {workspaces.map((ws) => (
-        <option key={ws.id} value={ws.id}>
-          {ws.name}
-        </option>
-      ))}
-    </select>
+    <CustomSelect
+      value={value?.toString() || ""}
+      options={workspaces.map((ws) => ({
+        label: ws.name,
+        value: ws.id.toString(),
+      }))}
+      onChange={(val) => onChange(Number(val))}
+      placeholder="Select workspace"
+      className="w-48"
+      maxHeight={240}
+    />
   );
 }

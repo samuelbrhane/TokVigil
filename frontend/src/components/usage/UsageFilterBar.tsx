@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Workspace, Environment } from "@/types/workspace";
 import { getWorkspaces, getEnvironments } from "@/lib/workspaces";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 export interface UsageFilters {
   workspace_id: number | null;
@@ -23,39 +24,19 @@ export const DEFAULT_FILTERS: UsageFilters = {
   days: 7,
 };
 
-function SelectFilter({
+function FilterField({
   label,
-  value,
-  options,
-  onChange,
-  disabled = false,
-  placeholder = "All",
+  children,
 }: {
   label: string;
-  value: string;
-  options: { label: string; value: string }[];
-  onChange: (value: string) => void;
-  disabled?: boolean;
-  placeholder?: string;
+  children: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-1">
       <label className="text-[10px] font-mono text-surface-400 uppercase tracking-wider">
         {label}
       </label>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        className="px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-700/40 text-xs font-mono text-surface-200 hover:border-surface-600/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed appearance-none cursor-pointer min-w-[140px]"
-      >
-        <option value="">{placeholder}</option>
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+      {children}
     </div>
   );
 }
@@ -123,51 +104,62 @@ export default function UsageFilterBar({
 
   return (
     <div className="flex flex-wrap items-end gap-3">
-      <SelectFilter
-        label="Workspace"
-        value={filters.workspace_id?.toString() || ""}
-        options={workspaces.map((w) => ({
-          label: w.name,
-          value: w.id.toString(),
-        }))}
-        onChange={(val) =>
-          onChange({
-            ...filters,
-            workspace_id: val ? parseInt(val) : null,
-            environment_id: null,
-            user_id: null,
-          })
-        }
-        placeholder="Select workspace"
-      />
+      <FilterField label="Workspace">
+        <CustomSelect
+          value={filters.workspace_id?.toString() || ""}
+          options={workspaces.map((w) => ({
+            label: w.name,
+            value: w.id.toString(),
+          }))}
+          onChange={(val) =>
+            onChange({
+              ...filters,
+              workspace_id: val ? parseInt(val) : null,
+              environment_id: null,
+              user_id: null,
+            })
+          }
+          placeholder="Select workspace"
+          className="min-w-[140px]"
+          maxHeight={240}
+        />
+      </FilterField>
 
-      <SelectFilter
-        label="Environment"
-        value={filters.environment_id?.toString() || ""}
-        options={environments.map((e) => ({
-          label: e.name,
-          value: e.id.toString(),
-        }))}
-        onChange={(val) =>
-          onChange({ ...filters, environment_id: val ? parseInt(val) : null })
-        }
-        disabled={!filters.workspace_id || loadingEnvs}
-        placeholder={loadingEnvs ? "Loading..." : "Select environment"}
-      />
+      <FilterField label="Environment">
+        <CustomSelect
+          value={filters.environment_id?.toString() || ""}
+          options={environments.map((e) => ({
+            label: e.name,
+            value: e.id.toString(),
+          }))}
+          onChange={(val) =>
+            onChange({
+              ...filters,
+              environment_id: val ? parseInt(val) : null,
+            })
+          }
+          disabled={!filters.workspace_id || loadingEnvs}
+          placeholder={loadingEnvs ? "Loading..." : "Select environment"}
+          className="min-w-[140px]"
+          maxHeight={240}
+        />
+      </FilterField>
 
       <div className="hidden md:block w-px h-8 bg-surface-700/40" />
 
-      <SelectFilter
-        label="Period"
-        value={filters.days.toString()}
-        options={[
-          { label: "7 days", value: "7" },
-          { label: "30 days", value: "30" },
-          { label: "90 days", value: "90" },
-        ]}
-        onChange={(val) => onChange({ ...filters, days: parseInt(val) || 7 })}
-        disabled={!hasScope}
-      />
+      <FilterField label="Period">
+        <CustomSelect
+          value={filters.days.toString()}
+          options={[
+            { label: "7 days", value: "7" },
+            { label: "30 days", value: "30" },
+            { label: "90 days", value: "90" },
+          ]}
+          onChange={(val) => onChange({ ...filters, days: parseInt(val) || 7 })}
+          disabled={!hasScope}
+          className="min-w-[140px]"
+        />
+      </FilterField>
 
       <div className="flex flex-col gap-1">
         <label className="text-[10px] font-mono text-surface-400 uppercase tracking-wider">
