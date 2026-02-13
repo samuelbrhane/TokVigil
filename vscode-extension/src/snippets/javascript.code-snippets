@@ -1,11 +1,11 @@
 {
   "TokVigil Import": {
-    "prefix": "usimport",
+    "prefix": "tvimport",
     "body": ["const { TokVigil } = require(\"tokvigil\");", "", "$0"],
     "description": "Import TokVigil SDK",
   },
   "TokVigil Initialize": {
-    "prefix": "usinit",
+    "prefix": "tvinit",
     "body": [
       "const { TokVigil } = require(\"tokvigil\");",
       "",
@@ -18,7 +18,7 @@
     "description": "Initialize TokVigil client",
   },
   "TokVigil Evaluate": {
-    "prefix": "useval",
+    "prefix": "tveval",
     "body": [
       "const result = await tv.evaluate({",
       "  userId: \"${1:user_id}\",",
@@ -36,7 +36,7 @@
     "description": "Evaluate if request is allowed",
   },
   "TokVigil Log Usage": {
-    "prefix": "uslog",
+    "prefix": "tvlog",
     "body": [
       "await tv.logUsage({",
       "  requestId: \"${1:request_id}\",",
@@ -53,7 +53,7 @@
     "description": "Log AI usage after completion",
   },
   "TokVigil Full Flow": {
-    "prefix": "usflow",
+    "prefix": "tvflow",
     "body": [
       "const { TokVigil } = require(\"tokvigil\");",
       "const crypto = require(\"crypto\");",
@@ -97,7 +97,7 @@
     "description": "Complete TokVigil flow with evaluate and log",
   },
   "TokVigil Usage Summary": {
-    "prefix": "ussummary",
+    "prefix": "tvsummary",
     "body": [
       "const summary = await tv.getUsageSummary();",
       "console.log(`Total requests: ${summary.totalRequests}`);",
@@ -108,7 +108,7 @@
     "description": "Get usage summary",
   },
   "TokVigil Error Handling": {
-    "prefix": "userror",
+    "prefix": "tverror",
     "body": [
       "const { TokVigil, RateLimitError, AuthenticationError, TokVigilError } = require(\"tokvigil\");",
       "",

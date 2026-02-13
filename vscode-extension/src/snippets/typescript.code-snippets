@@ -1,11 +1,11 @@
 {
   "TokVigil Import": {
-    "prefix": "usimport",
+    "prefix": "tvimport",
     "body": ["import { TokVigil } from \"tokvigil\";", "", "$0"],
     "description": "Import TokVigil SDK",
   },
   "TokVigil Initialize": {
-    "prefix": "usinit",
+    "prefix": "tvinit",
     "body": [
       "import { TokVigil } from \"tokvigil\";",
       "",
@@ -18,7 +18,7 @@
     "description": "Initialize TokVigil client",
   },
   "TokVigil Evaluate": {
-    "prefix": "useval",
+    "prefix": "tveval",
     "body": [
       "const result = await tv.evaluate({",
       "  userId: \"${1:user_id}\",",
@@ -36,7 +36,7 @@
     "description": "Evaluate if request is allowed",
   },
   "TokVigil Log Usage": {
-    "prefix": "uslog",
+    "prefix": "tvlog",
     "body": [
       "await tv.logUsage({",
       "  requestId: \"${1:request_id}\",",
@@ -53,7 +53,7 @@
     "description": "Log AI usage after completion",
   },
   "TokVigil Full Flow": {
-    "prefix": "usflow",
+    "prefix": "tvflow",
     "body": [
       "import { TokVigil } from \"tokvigil\";",
       "",
@@ -97,7 +97,7 @@
     "description": "Complete TokVigil flow with evaluate and log",
   },
   "TokVigil Usage Summary": {
-    "prefix": "ussummary",
+    "prefix": "tvsummary",
     "body": [
       "const summary = await tv.getUsageSummary();",
       "console.log(`Total requests: \\${summary.totalRequests}`);",
@@ -108,7 +108,7 @@
     "description": "Get usage summary",
   },
   "TokVigil Usage By User": {
-    "prefix": "usbyuser",
+    "prefix": "tvbyuser",
     "body": [
       "const byUser = await tv.getUsageByUser();",
       "for (const user of byUser.items) {",
@@ -119,7 +119,7 @@
     "description": "Get usage grouped by user",
   },
   "TokVigil Check and Call": {
-    "prefix": "uscheck",
+    "prefix": "tvcheck",
     "body": [
       "const { result, response } = await tv.checkAndCall(",
       "  {",
@@ -151,7 +151,7 @@
     "description": "Check, call AI, and log automatically",
   },
   "TokVigil Error Handling": {
-    "prefix": "userror",
+    "prefix": "tverror",
     "body": [
       "import { TokVigil, RateLimitError, AuthenticationError, TokVigilError } from \"tokvigil\";",
       "",
@@ -176,7 +176,7 @@
     "description": "TokVigil with error handling",
   },
   "TokVigil Blocked Requests": {
-    "prefix": "usblocked",
+    "prefix": "tvblocked",
     "body": [
       "const blocked = await tv.getBlockedRequests();",
       "console.log(`Total blocked: \\${blocked.total}`);",

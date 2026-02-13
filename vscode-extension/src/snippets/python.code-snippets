@@ -1,11 +1,11 @@
 {
   "TokVigil Import": {
-    "prefix": "usimport",
+    "prefix": "tvimport",
     "body": ["from tokvigil import TokVigil", "", "$0"],
     "description": "Import TokVigil SDK",
   },
   "TokVigil Initialize": {
-    "prefix": "usinit",
+    "prefix": "tvinit",
     "body": [
       "from tokvigil import TokVigil",
       "",
@@ -18,7 +18,7 @@
     "description": "Initialize TokVigil client",
   },
   "TokVigil Evaluate": {
-    "prefix": "useval",
+    "prefix": "tveval",
     "body": [
       "result = tv.evaluate(",
       "    user_id=\"${1:user_id}\",",
@@ -35,7 +35,7 @@
     "description": "Evaluate if request is allowed",
   },
   "TokVigil Log Usage": {
-    "prefix": "uslog",
+    "prefix": "tvlog",
     "body": [
       "tv.log_usage(",
       "    request_id=\"${1:request_id}\",",
@@ -52,7 +52,7 @@
     "description": "Log AI usage after completion",
   },
   "TokVigil Full Flow": {
-    "prefix": "usflow",
+    "prefix": "tvflow",
     "body": [
       "from tokvigil import TokVigil",
       "import uuid",
@@ -92,7 +92,7 @@
     "description": "Complete TokVigil flow with evaluate and log",
   },
   "TokVigil Usage Summary": {
-    "prefix": "ussummary",
+    "prefix": "tvsummary",
     "body": [
       "summary = tv.get_usage_summary()",
       "print(f\"Total requests: {summary.total_requests}\")",
@@ -103,7 +103,7 @@
     "description": "Get usage summary",
   },
   "TokVigil Usage By User": {
-    "prefix": "usbyuser",
+    "prefix": "tvbyuser",
     "body": [
       "by_user = tv.get_usage_by_user()",
       "for user in by_user.items:",
@@ -113,7 +113,7 @@
     "description": "Get usage grouped by user",
   },
   "TokVigil Check and Call": {
-    "prefix": "uscheck",
+    "prefix": "tvcheck",
     "body": [
       "def call_ai():",
       "    # Your AI call here",
@@ -139,7 +139,7 @@
     "description": "Check, call AI, and log automatically",
   },
   "TokVigil Error Handling": {
-    "prefix": "userror",
+    "prefix": "tverror",
     "body": [
       "from tokvigil import TokVigil, RateLimitError, AuthenticationError, TokVigilError",
       "",
@@ -161,7 +161,7 @@
     "description": "TokVigil with error handling",
   },
   "TokVigil Blocked Requests": {
-    "prefix": "usblocked",
+    "prefix": "tvblocked",
     "body": [
       "blocked = tv.get_blocked_requests()",
       "print(f\"Total blocked: {blocked.total}\")",

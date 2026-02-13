@@ -18,18 +18,18 @@ const TOC = [
 ];
 
 const SNIPPET_ROWS: [string, string][] = [
-  ["usimport", "Import TokVigil SDK"],
-  ["usinit", "Initialize client"],
-  ["useval", "Evaluate request"],
-  ["uslog", "Log usage"],
-  ["usflow", "Complete flow"],
-  ["uscheck", "Check and call"],
-  ["userror", "Error handling"],
-  ["ussummary", "Get usage summary"],
-  ["usbyuser", "Get usage by user"],
-  ["usbyfeature", "Get usage by feature"],
-  ["usblocked", "Get blocked requests"],
-  ["usrecent", "Get recent usage"],
+  ["tvimport", "Import TokVigil SDK"],
+  ["tvinit", "Initialize client"],
+  ["tveval", "Evaluate request"],
+  ["tvlog", "Log usage"],
+  ["tvflow", "Complete flow"],
+  ["tvcheck", "Check and call"],
+  ["tverror", "Error handling"],
+  ["tvsummary", "Get usage summary"],
+  ["tvbyuser", "Get usage by user"],
+  ["tvbyfeature", "Get usage by feature"],
+  ["tvblocked", "Get blocked requests"],
+  ["tvrecent", "Get recent usage"],
 ];
 
 const COMMAND_ROWS: [string, string][] = [
