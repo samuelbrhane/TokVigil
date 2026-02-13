@@ -35,6 +35,106 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(days / 30)}mo ago`;
 }
 
+function AnimateRow({
+  children,
+  delay,
+}: {
+  children: React.ReactNode;
+  delay: number;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div
+      className={`transition-all duration-400 ease-out ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function MobileRecordCard({
+  record,
+  delay,
+}: {
+  record: UsageRecord;
+  delay: number;
+}) {
+  return (
+    <AnimateRow delay={delay}>
+      <div className="border-b border-surface-800/20 last:border-0 px-4 py-3 hover:bg-surface-900/40 transition-colors">
+        {/* Top row: user + status + time */}
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className="text-sm font-mono text-white truncate">
+              {record.user_id}
+            </span>
+            <Badge variant={record.status === "allowed" ? "success" : "danger"}>
+              {record.status}
+            </Badge>
+          </div>
+          <span className="text-[11px] font-mono text-surface-500 shrink-0 ml-2">
+            {timeAgo(record.created_at)}
+          </span>
+        </div>
+
+        {/* Details grid */}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+          <div className="flex justify-between">
+            <span className="text-[10px] font-mono text-surface-500">
+              Request
+            </span>
+            <span className="text-[11px] font-mono text-surface-300">
+              {record.request_id.slice(0, 8)}…
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-[10px] font-mono text-surface-500">
+              Model
+            </span>
+            <span className="text-[11px] font-mono text-surface-300 truncate ml-2">
+              {record.model}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-[10px] font-mono text-surface-500">
+              Tokens
+            </span>
+            <span className="text-[11px] font-mono text-violet-400">
+              {formatNumber(record.total_tokens)}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-[10px] font-mono text-surface-500">Cost</span>
+            <span className="text-[11px] font-mono text-emerald-400">
+              {record.estimated_cost_usd > 0
+                ? `$${record.estimated_cost_usd.toFixed(4)}`
+                : "—"}
+            </span>
+          </div>
+          {record.feature && (
+            <div className="flex justify-between col-span-2">
+              <span className="text-[10px] font-mono text-surface-500">
+                Feature
+              </span>
+              <span className="text-[11px] font-mono text-surface-300">
+                {record.feature}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </AnimateRow>
+  );
+}
+
 interface UsageCallLogProps {
   filters: UsageFilters;
 }
@@ -80,142 +180,151 @@ export default function UsageCallLog({ filters }: UsageCallLogProps) {
 
   if (loading && records.length === 0) {
     return (
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         <div className="h-64 animate-pulse rounded-lg bg-surface-800/20" />
       </Card>
     );
   }
 
+  const PaginationControls = () =>
+    totalPages > 1 ? (
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="px-2 py-1 rounded text-xs font-mono text-surface-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          ← Prev
+        </button>
+        <span className="text-xs font-mono text-surface-400">
+          {page} / {totalPages}
+        </span>
+        <button
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+          className="px-2 py-1 rounded text-xs font-mono text-surface-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          Next →
+        </button>
+      </div>
+    ) : null;
+
   return (
     <Card className="overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-surface-700/40">
-        <div className="flex items-center gap-3">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-surface-700/40">
+        <div className="flex items-center gap-2 sm:gap-3">
           <h3 className="text-sm font-mono font-bold text-white">Call Log</h3>
           <span className="text-[11px] font-mono text-surface-500">
             {total.toLocaleString()} total
           </span>
         </div>
-        {totalPages > 1 && (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="px-2 py-1 rounded text-xs font-mono text-surface-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              ← Prev
-            </button>
-            <span className="text-xs font-mono text-surface-400">
-              {page} / {totalPages}
-            </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="px-2 py-1 rounded text-xs font-mono text-surface-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              Next →
-            </button>
-          </div>
-        )}
+        <div className="hidden sm:block">
+          <PaginationControls />
+        </div>
       </div>
 
       {records.length === 0 ? (
-        <div className="px-6 py-12 text-center">
+        <div className="px-4 sm:px-6 py-12 text-center">
           <p className="text-sm text-surface-500 font-mono">
             No calls recorded yet. Start using the SDK to see requests here.
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-surface-700/40">
-                {[
-                  "Request ID",
-                  "User",
-                  "Feature",
-                  "Model",
-                  "Tokens",
-                  "Cost",
-                  "Status",
-                  "Time",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-400 uppercase tracking-wider"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {records.map((record) => (
-                <tr
-                  key={record.id}
-                  className="border-b border-surface-800/20 hover:bg-surface-900/40 transition-colors"
-                >
-                  <td className="px-4 py-3 text-xs font-mono text-surface-300">
-                    {record.request_id.slice(0, 8)}…
-                  </td>
-                  <td className="px-4 py-3 text-xs font-mono text-white">
-                    {record.user_id}
-                  </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-300">
-                    {record.feature || "—"}
-                  </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-300">
-                    {record.model}
-                  </td>
-                  <td className="px-4 py-3 text-xs font-mono text-violet-400">
-                    {formatNumber(record.total_tokens)}
-                  </td>
-                  <td className="px-4 py-3 text-xs font-mono text-emerald-400">
-                    {record.estimated_cost_usd > 0
-                      ? `$${record.estimated_cost_usd.toFixed(4)}`
-                      : "—"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Badge
-                      variant={
-                        record.status === "allowed" ? "success" : "danger"
-                      }
+        <>
+          {/* Desktop table */}
+          <div className="hidden md:block">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-surface-700/40">
+                  {[
+                    "Request ID",
+                    "User",
+                    "Feature",
+                    "Model",
+                    "Tokens",
+                    "Cost",
+                    "Status",
+                    "Time",
+                  ].map((h) => (
+                    <th
+                      key={h}
+                      className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-400 uppercase tracking-wider"
                     >
-                      {record.status}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3 text-xs font-mono text-surface-400">
-                    {timeAgo(record.created_at)}
-                  </td>
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {records.map((record, i) => (
+                  <tr
+                    key={record.id}
+                    className="border-b border-surface-800/20 hover:bg-surface-900/40 transition-colors animate-fade-in"
+                    style={{ animationDelay: `${i * 50}ms` }}
+                  >
+                    <td className="px-4 py-3 text-xs font-mono text-surface-300">
+                      {record.request_id.slice(0, 8)}…
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono text-white">
+                      {record.user_id}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono text-surface-300">
+                      {record.feature || "—"}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono text-surface-300">
+                      {record.model}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono text-violet-400">
+                      {formatNumber(record.total_tokens)}
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono text-emerald-400">
+                      {record.estimated_cost_usd > 0
+                        ? `$${record.estimated_cost_usd.toFixed(4)}`
+                        : "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge
+                        variant={
+                          record.status === "allowed" ? "success" : "danger"
+                        }
+                      >
+                        {record.status}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                      {timeAgo(record.created_at)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="md:hidden">
+            {records.map((record, i) => (
+              <MobileRecordCard
+                key={record.id}
+                record={record}
+                delay={50 + i * 60}
+              />
+            ))}
+          </div>
+        </>
       )}
 
-      {/* Bottom pagination for longer lists */}
+      {/* Bottom pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-6 py-3 border-t border-surface-700/40">
-          <span className="text-[11px] font-mono text-surface-500">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-t border-surface-700/40">
+          <span className="text-[11px] font-mono text-surface-500 hidden sm:block">
             Showing {(page - 1) * pageSize + 1}–
             {Math.min(page * pageSize, total)} of {total.toLocaleString()}
           </span>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="px-2 py-1 rounded text-xs font-mono text-surface-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              ← Prev
-            </button>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="px-2 py-1 rounded text-xs font-mono text-surface-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              Next →
-            </button>
-          </div>
+          <span className="text-[11px] font-mono text-surface-500 sm:hidden">
+            {page} of {totalPages}
+          </span>
+          <PaginationControls />
         </div>
       )}
     </Card>
