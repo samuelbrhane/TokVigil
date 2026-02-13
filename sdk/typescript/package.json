@@ -2,11 +2,30 @@
   "name": "tokvigil",
   "version": "0.1.0",
   "description": "TypeScript SDK for TokVigil - AI usage control platform",
+  "license": "MIT",
+  "author": "TokVigil <support@tokvigil.com>",
+  "homepage": "https://tokvigil.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samuelbrhane/tokvigil"
+  },
+  "bugs": {
+    "url": "https://github.com/samuelbrhane/tokvigil/issues"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
@@ -26,16 +45,6 @@
     "anthropic",
     "tokvigil"
   ],
-  "author": "TokVigil <support@tokvigil.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/samuelbrhane/tokvigil"
-  },
-  "homepage": "https://tokvigil.com",
-  "bugs": {
-    "url": "https://github.com/samuelbrhane/tokvigil/issues"
-  },
   "devDependencies": {
     "@types/node": "^20.10.0",
     "tsup": "^8.0.0",
