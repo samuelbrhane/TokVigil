@@ -58,26 +58,38 @@ export default function RequestsChart({
         weekday: "short",
       });
     } else if (period === "30d") {
-      label = new Date(d.date + "T00:00:00").toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      });
+      // Show every 5th label to avoid overlap
+      if (i % 5 === 0) {
+        label = new Date(d.date + "T00:00:00").toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
+      } else {
+        label = "";
+      }
     } else {
-      // 90d weekly — show date range like "Feb 1–7"
-      const start = new Date(d.date + "T00:00:00");
-      const end = new Date(start);
-      end.setDate(end.getDate() + 6);
+      // 90d weekly — show every 4nd label
+      if (i % 4 === 0) {
+        const start = new Date(d.date + "T00:00:00");
+        const end = new Date(start);
+        end.setDate(end.getDate() + 6);
 
-      const startStr = start.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-      });
-      const endStr =
-        start.getMonth() === end.getMonth()
-          ? end.getDate().toString()
-          : end.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        const startStr = start.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
+        const endStr =
+          start.getMonth() === end.getMonth()
+            ? end.getDate().toString()
+            : end.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              });
 
-      label = `${startStr}–${endStr}`;
+        label = `${startStr}–${endStr}`;
+      } else {
+        label = "";
+      }
     }
 
     return { label, value: d.requests };
