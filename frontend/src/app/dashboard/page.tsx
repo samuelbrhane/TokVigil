@@ -21,6 +21,33 @@ import {
   RequestsChart,
 } from "@/components/dashboard";
 
+function AnimateIn({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div
+      className={`transition-all duration-500 ease-out ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      } ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function DashboardOverview() {
   const { user } = useAuth();
   const [summary, setSummary] = useState<UsageSummary | null>(null);
@@ -70,21 +97,29 @@ export default function DashboardOverview() {
   };
 
   return (
-    <div className="space-y-8">
-      <DashboardBanner summary={summary} loading={loading} />
+    <div className="space-y-6 sm:space-y-8">
+      <AnimateIn delay={0}>
+        <DashboardBanner summary={summary} loading={loading} />
+      </AnimateIn>
 
-      <RequestsChart
-        data={chartData}
-        loading={loading}
-        onPeriodChange={handlePeriodChange}
-      />
+      <AnimateIn delay={100}>
+        <RequestsChart
+          data={chartData}
+          loading={loading}
+          onPeriodChange={handlePeriodChange}
+        />
+      </AnimateIn>
 
-      <TopUsersTable users={topUsers} loading={loading} />
+      <AnimateIn delay={200}>
+        <TopUsersTable users={topUsers} loading={loading} />
+      </AnimateIn>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <QuickActions />
-        <RecentActivity records={recent} loading={loading} />
-      </div>
+      <AnimateIn delay={300}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <QuickActions />
+          <RecentActivity records={recent} loading={loading} />
+        </div>
+      </AnimateIn>
     </div>
   );
 }
