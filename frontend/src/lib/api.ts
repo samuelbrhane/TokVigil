@@ -3,12 +3,15 @@ const API_URL =
 
 class ApiError extends Error {
   status: number;
-  data: any;
-  constructor(status: number, data: any) {
+  data: Record<string, unknown>;
+  constructor(status: number, data: Record<string, unknown>) {
+    const detail = data?.detail;
     const message =
-      typeof data?.detail === "string"
-        ? data.detail
-        : data?.detail?.message || "Something went wrong";
+      typeof detail === "string"
+        ? detail
+        : ((detail && typeof detail === "object" && "message" in detail
+            ? (detail as Record<string, unknown>).message
+            : "Something went wrong") as string);
     super(message);
     this.status = status;
     this.data = data;

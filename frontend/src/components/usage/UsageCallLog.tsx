@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
 import { Badge } from "@/components/ui";
-import { UsageRecord, PaginatedUsage, getRecentUsage } from "@/lib/dashboard";
+import { UsageRecord, getRecentUsage } from "@/lib/dashboard";
 import { UsageFilters } from "@/components/usage/UsageFilterBar";
 
 function formatNumber(n: number): string {
