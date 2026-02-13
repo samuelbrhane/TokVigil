@@ -9,7 +9,7 @@
     "body": [
       "const { TokVigil } = require(\"tokvigil\");",
       "",
-      "const us = new TokVigil({",
+      "const tv = new TokVigil({",
       "  apiKey: \"${1:your_api_key}\",",
       "});",
       "",
@@ -58,7 +58,7 @@
       "const { TokVigil } = require(\"tokvigil\");",
       "const crypto = require(\"crypto\");",
       "",
-      "const us = new TokVigil({ apiKey: \"${1:your_api_key}\" });",
+      "const tv = new TokVigil({ apiKey: \"${1:your_api_key}\" });",
       "",
       "async function handleAiRequest() {",
       "  // Check if request is allowed",
@@ -112,7 +112,7 @@
     "body": [
       "const { TokVigil, RateLimitError, AuthenticationError, TokVigilError } = require(\"tokvigil\");",
       "",
-      "const us = new TokVigil({ apiKey: \"${1:your_api_key}\" });",
+      "const tv = new TokVigil({ apiKey: \"${1:your_api_key}\" });",
       "",
       "try {",
       "  const result = await tv.evaluate({",

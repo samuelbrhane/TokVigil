@@ -9,7 +9,7 @@
     "body": [
       "import { TokVigil } from \"tokvigil\";",
       "",
-      "const us = new TokVigil({",
+      "const tv = new TokVigil({",
       "  apiKey: \"${1:your_api_key}\",",
       "});",
       "",
@@ -57,7 +57,7 @@
     "body": [
       "import { TokVigil } from \"tokvigil\";",
       "",
-      "const us = new TokVigil({ apiKey: \"${1:your_api_key}\" });",
+      "const tv = new TokVigil({ apiKey: \"${1:your_api_key}\" });",
       "",
       "async function handleAiRequest() {",
       "  // Check if request is allowed",
@@ -155,7 +155,7 @@
     "body": [
       "import { TokVigil, RateLimitError, AuthenticationError, TokVigilError } from \"tokvigil\";",
       "",
-      "const us = new TokVigil({ apiKey: \"${1:your_api_key}\" });",
+      "const tv = new TokVigil({ apiKey: \"${1:your_api_key}\" });",
       "",
       "try {",
       "  const result = await tv.evaluate({",

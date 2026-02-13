@@ -23,7 +23,7 @@ const snippets: SnippetOption[] = [
     description: "Create TokVigil client instance",
     snippet: `import { TokVigil } from "tokvigil";
 
-const us = new TokVigil({
+const tv = new TokVigil({
   apiKey: "\${1:your_api_key}",
 });
 
@@ -96,7 +96,7 @@ else:
     description: "Complete evaluate, call AI, and log flow",
     snippet: `import { TokVigil } from "tokvigil";
 
-const us = new TokVigil({ apiKey: "\${1:your_api_key}" });
+const tv = new TokVigil({ apiKey: "\${1:your_api_key}" });
 
 async function handleAiRequest(userId: string, prompt: string) {
   const result = await tv.evaluate({
@@ -169,7 +169,7 @@ def handle_ai_request(user_id: str, prompt: str):
     description: "TokVigil with try/catch error handling",
     snippet: `import { TokVigil, RateLimitError, AuthenticationError, TokVigilError } from "tokvigil";
 
-const us = new TokVigil({ apiKey: "\${1:your_api_key}" });
+const tv = new TokVigil({ apiKey: "\${1:your_api_key}" });
 
 try {
   const result = await tv.evaluate({

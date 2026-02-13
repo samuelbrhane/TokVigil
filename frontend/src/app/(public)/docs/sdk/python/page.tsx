@@ -199,7 +199,7 @@ export default function PythonSDKPage() {
           <DocNote type="tip">
             Use environment variables for your API key in production:{" "}
             <code className="text-brand-400">
-              TokVigil(api_key=os.environ[&quot;USAGESENTINEL_API_KEY&quot;])
+              TokVigil(api_key=os.environ[&quot;TOKVIGIL_API_KEY &quot;])
             </code>
           </DocNote>
         </DocSection>
