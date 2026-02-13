@@ -1,25 +1,25 @@
-# UsageSentinel Python SDK
+# TokVigil Python SDK
 
-Official Python SDK for [UsageSentinel](https://usagesentinel.com) - AI usage control platform.
+Official Python SDK for [TokVigil](https://tokvigil.com) - AI usage control platform.
 
 Manage rate limits, budgets, and policies for your AI-powered applications.
 
 ## Installation
 
 ```bash
-pip install usagesentinel
+pip install tokvigil
 ```
 
 ## Quick Start
 
 ```python
-from usagesentinel import UsageSentinel
+from tokvigil import TokVigil
 
 # Initialize client
-us = UsageSentinel(api_key="us_live_xxx")
+tv = TokVigil(api_key="tv_live_xxx")
 
 # Check if request is allowed
-result = us.evaluate(
+result = tv.evaluate(
     user_id="user_123",
     plan="free",
     feature="chat",
@@ -35,7 +35,7 @@ if result.allowed:
     )
 
     # Log the usage
-    us.log_usage(
+    tv.log_usage(
         request_id="req_123",
         user_id="user_123",
         model="gpt-4o-mini",
@@ -63,7 +63,7 @@ else:
 ### Evaluate Request
 
 ```python
-result = us.evaluate(
+result = tv.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     plan="free",           # optional
@@ -83,7 +83,7 @@ print(result.limit_state.requests_limit_daily)  # 50
 ### Log Usage
 
 ```python
-us.log_usage(
+tv.log_usage(
     request_id="req_123",
     user_id="user_123",
     model="gpt-4o-mini",
@@ -107,7 +107,7 @@ def call_openai():
         messages=[{"role": "user", "content": "Hello"}]
     )
 
-result, response = us.check_and_call(
+result, response = tv.check_and_call(
     user_id="user_123",
     model="gpt-4o-mini",
     ai_function=call_openai,
@@ -125,23 +125,23 @@ else:
 
 ```python
 # Summary
-summary = us.get_usage_summary()
+summary = tv.get_usage_summary()
 print(summary.total_requests)
 print(summary.total_tokens)
 print(summary.total_cost_usd)
 
 # Recent usage
-recent = us.get_recent_usage(page=1, page_size=20)
+recent = tv.get_recent_usage(page=1, page_size=20)
 for record in recent.items:
     print(f"{record.user_id}: {record.total_tokens} tokens")
 
 # Usage by user
-by_user = us.get_usage_by_user()
+by_user = tv.get_usage_by_user()
 for group in by_user.items:
     print(f"{group.group}: {group.requests} requests, ${group.cost_usd}")
 
 # Usage by feature
-by_feature = us.get_usage_by_feature()
+by_feature = tv.get_usage_by_feature()
 for group in by_feature.items:
     print(f"{group.group}: {group.requests} requests")
 ```
@@ -149,26 +149,26 @@ for group in by_feature.items:
 ## Error Handling
 
 ```python
-from usagesentinel import UsageSentinel, RateLimitError, AuthenticationError
+from tokvigil import TokVigil, RateLimitError, AuthenticationError
 
-us = UsageSentinel(api_key="us_live_xxx")
+tv = TokVigil(api_key="tv_live_xxx")
 
 try:
-    result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
+    result = tv.evaluate(user_id="user_123", model="gpt-4o-mini")
 except AuthenticationError as e:
     print(f"Invalid API key: {e.message}")
 except RateLimitError as e:
     print(f"Rate limited. Retry after {e.retry_after} seconds")
-except UsageSentinelError as e:
+except TokVigilError as e:
     print(f"Error: {e.message}")
 ```
 
 ## Configuration
 
 ```python
-us = UsageSentinel(
-    api_key="us_live_xxx",
-    base_url="https://api.usagesentinel.com",  # Custom API URL
+tv = TokVigil(
+    api_key="tv_live_xxx",
+    base_url="https://api.tokvigil.com",  # Custom API URL
     timeout=30,           # Request timeout in seconds
     retry_count=3,        # Number of retries
     retry_delay=1,        # Delay between retries

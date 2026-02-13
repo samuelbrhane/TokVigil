@@ -4,7 +4,7 @@ from typing import Optional, List, Dict, Any
 
 import requests as http_requests
 
-from usagesentinel.constants import (
+from tokvigil.constants import (
     DEFAULT_BASE_URL,
     ENDPOINTS,
     DEFAULT_TIMEOUT,
@@ -12,8 +12,8 @@ from usagesentinel.constants import (
     DEFAULT_RETRY_DELAY,
     USER_AGENT,
 )
-from usagesentinel.exceptions import (
-    UsageSentinelError,
+from tokvigil.exceptions import (
+    TokVigilError,
     AuthenticationError,
     RateLimitError,
     ValidationError,
@@ -22,7 +22,7 @@ from usagesentinel.exceptions import (
     ConnectionError,
     TimeoutError,
 )
-from usagesentinel.models import (
+from tokvigil.models import (
     EvaluateResult,
     UsageLogResult,
     UsageRecord,
@@ -32,15 +32,15 @@ from usagesentinel.models import (
 )
 
 
-class UsageSentinel:
+class TokVigil:
     """
-    UsageSentinel SDK client.
+    TokVigil SDK client.
     
     Usage:
-        us = UsageSentinel(api_key="us_live_xxx")
+        tv = TokVigil(api_key="tv_live_xxx")
         
         # Check if request is allowed
-        result = us.evaluate(
+        result = tv.evaluate(
             user_id="user_123",
             plan="free",
             feature="chat",
@@ -53,7 +53,7 @@ class UsageSentinel:
             response = openai.chat.completions.create(...)
             
             # Log the usage
-            us.log_usage(
+            tv.log_usage(
                 request_id=result.request_id,
                 user_id="user_123",
                 model="gpt-4o-mini",
@@ -114,11 +114,11 @@ class UsageSentinel:
             except http_requests.exceptions.Timeout:
                 last_exception = TimeoutError(f"Request timed out after {self.timeout}s")
             except http_requests.exceptions.ConnectionError:
-                last_exception = ConnectionError("Failed to connect to UsageSentinel API")
+                last_exception = ConnectionError("Failed to connect to TokVigil API")
             except RateLimitError as e:
                 # Don't retry rate limits, raise immediately
                 raise e
-            except UsageSentinelError as e:
+            except TokVigilError as e:
                 # Don't retry client errors (4xx), raise immediately
                 raise e
             except Exception as e:
@@ -134,8 +134,8 @@ class UsageSentinel:
         """Handle API response and raise appropriate exceptions."""
         
         # Success
-        if response.status_code in (200, 201, 204):
-            if response.status_code == 204:
+        if response.stattv_code in (200, 201, 204):
+            if response.stattv_code == 204:
                 return {}
             return response.json()
         
@@ -156,23 +156,23 @@ class UsageSentinel:
             details = None
         
         # Raise appropriate exception
-        if response.status_code == 401:
+        if response.stattv_code == 401:
             raise AuthenticationError(message, error_code=error_code, details=details)
         
-        if response.status_code == 403:
+        if response.stattv_code == 403:
             raise AuthenticationError(message, error_code=error_code, details=details)
         
-        if response.status_code == 404:
+        if response.stattv_code == 404:
             raise NotFoundError(message, error_code=error_code, details=details)
         
-        if response.status_code == 422:
+        if response.stattv_code == 422:
             raise ValidationError(message, error_code=error_code, details=details)
         
-        if response.status_code == 429:
+        if response.stattv_code == 429:
             retry_after = details.get("retry_after") if details else None
             raise RateLimitError(message, retry_after=retry_after, error_code=error_code, details=details)
         
-        raise APIError(message, status_code=response.status_code, error_code=error_code, details=details)
+        raise APIError(message, stattv_code=response.stattv_code, error_code=error_code, details=details)
     
     # ==================== Evaluate ====================
     
@@ -202,7 +202,7 @@ class UsageSentinel:
             EvaluateResult with allowed status and limit information
         
         Example:
-            result = us.evaluate(
+            result = tv.evaluate(
                 user_id="user_123",
                 plan="free",
                 feature="chat",
@@ -274,7 +274,7 @@ class UsageSentinel:
             UsageLogResult confirming the log
         
         Example:
-            us.log_usage(
+            tv.log_usage(
                 request_id="req_123",
                 user_id="user_123",
                 model="gpt-4o-mini",
@@ -347,7 +347,7 @@ class UsageSentinel:
                     messages=[{"role": "user", "content": "Hello"}]
                 )
             
-            result, response = us.check_and_call(
+            result, response = tv.check_and_call(
                 user_id="user_123",
                 model="gpt-4o-mini",
                 ai_function=call_openai,

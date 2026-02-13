@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
-  UsageSentinel,
+  TokVigil,
   AuthenticationError,
   RateLimitError,
   ValidationError,
@@ -8,46 +8,44 @@ import {
 } from "../src";
 
 // Test configuration
-const TEST_API_KEY = "us_test_xxx";
+const TEST_API_KEY = "tv_test_xxx";
 const TEST_BASE_URL = "http://localhost:8001";
 
-describe("UsageSentinel", () => {
+describe("TokVigil", () => {
   // ==================== Initialization ====================
   describe("initialization", () => {
     it("should require API key", () => {
-      expect(() => new UsageSentinel({ apiKey: "" })).toThrow(
-        AuthenticationError,
-      );
+      expect(() => new TokVigil({ apiKey: "" })).toThrow(AuthenticationError);
     });
 
     it("should initialize with API key", () => {
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      expect(tf).toBeInstanceOf(UsageSentinel);
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      expect(tv).toBeInstanceOf(TokVigil);
     });
 
     it("should use custom base URL", () => {
-      const us = new UsageSentinel({
+      const tv = new TokVigil({
         apiKey: TEST_API_KEY,
         baseUrl: TEST_BASE_URL,
       });
-      expect(tf).toBeInstanceOf(UsageSentinel);
+      expect(tv).toBeInstanceOf(TokVigil);
     });
 
     it("should use custom timeout", () => {
-      const us = new UsageSentinel({
+      const tv = new TokVigil({
         apiKey: TEST_API_KEY,
         timeout: 60000,
       });
-      expect(tf).toBeInstanceOf(UsageSentinel);
+      expect(tv).toBeInstanceOf(TokVigil);
     });
 
     it("should use custom retry settings", () => {
-      const us = new UsageSentinel({
+      const tv = new TokVigil({
         apiKey: TEST_API_KEY,
         retryCount: 5,
         retryDelay: 2000,
       });
-      expect(tf).toBeInstanceOf(UsageSentinel);
+      expect(tv).toBeInstanceOf(TokVigil);
     });
   });
 
@@ -79,8 +77,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.evaluate({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
         plan: "free",
@@ -114,8 +112,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.evaluate({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
       });
@@ -141,8 +139,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.evaluate({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
       });
@@ -167,8 +165,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.evaluate({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
       });
@@ -193,8 +191,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.evaluate({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
       });
@@ -215,8 +213,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.evaluate({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.evaluate({
         userId: "user_123",
         model: "gpt-4o",
       });
@@ -240,8 +238,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.evaluate({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.evaluate({
         userId: "user_123",
         model: "gpt-4o-mini",
       });
@@ -271,8 +269,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.logUsage({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.logUsage({
         requestId: "req_123",
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -302,8 +300,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.logUsage({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.logUsage({
         requestId: "req_456",
         userId: "user_123",
         model: "gpt-4o-mini",
@@ -338,8 +336,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.getUsageSummary();
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.getUsageSummary();
 
       expect(result.totalRequests).toBe(100);
       expect(result.totalTokens).toBe(15000);
@@ -362,8 +360,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.getUsageSummary({
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.getUsageSummary({
         startDate: "2025-01-01",
         endDate: "2025-01-31",
       });
@@ -407,8 +405,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.getRecentUsage({ page: 1, pageSize: 20 });
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.getRecentUsage({ page: 1, pageSize: 20 });
 
       expect(result.items.length).toBe(1);
       expect(result.total).toBe(1);
@@ -432,8 +430,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.getRecentUsage({ userId: "user_456" });
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.getRecentUsage({ userId: "user_456" });
 
       expect(result.items.length).toBe(0);
     });
@@ -464,8 +462,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.getUsageByUser();
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.getUsageByUser();
 
       expect(result.items.length).toBe(2);
       expect(result.items[0].group).toBe("user_123");
@@ -498,8 +496,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.getUsageByFeature();
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.getUsageByFeature();
 
       expect(result.items.length).toBe(2);
       expect(result.items[0].group).toBe("chat");
@@ -543,8 +541,8 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
-      const result = await us.getBlockedRequests();
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
+      const result = await tv.getBlockedRequests();
 
       expect(result.items.length).toBe(1);
       expect(result.items[0].status).toBe("blocked");
@@ -571,10 +569,10 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
 
       await expect(
-        us.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
+        tv.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
       ).rejects.toThrow(AuthenticationError);
     });
 
@@ -591,10 +589,10 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
 
       await expect(
-        us.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
+        tv.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
       ).rejects.toThrow(AuthenticationError);
     });
 
@@ -612,10 +610,10 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
 
       try {
-        await us.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
+        await tv.evaluate({ userId: "user_123", model: "gpt-4o-mini" });
         expect.fail("Should have thrown RateLimitError");
       } catch (error) {
         expect(error).toBeInstanceOf(RateLimitError);
@@ -636,10 +634,10 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
 
       await expect(
-        us.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
+        tv.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
       ).rejects.toThrow(ValidationError);
     });
 
@@ -656,10 +654,10 @@ describe("UsageSentinel", () => {
           }),
       });
 
-      const us = new UsageSentinel({ apiKey: TEST_API_KEY });
+      const tv = new TokVigil({ apiKey: TEST_API_KEY });
 
       await expect(
-        us.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
+        tv.evaluate({ userId: "user_123", model: "gpt-4o-mini" }),
       ).rejects.toThrow(NotFoundError);
     });
   });

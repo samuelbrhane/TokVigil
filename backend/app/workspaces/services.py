@@ -216,7 +216,7 @@ def get_environments(db: Session, workspace_id: int) -> List[Environment]:
 
 # == API Key
 def generate_api_key(environment_name: str) -> tuple[str, str, str]:
-    prefix = "us_live_" if environment_name == "production" else "us_test_"
+    prefix = "tv_live_" if environment_name == "production" else "tv_test_"
     random_part = secrets.token_hex(24)
     full_key = f"{prefix}{random_part}"
     

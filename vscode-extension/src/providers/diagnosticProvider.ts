@@ -22,17 +22,12 @@ export class DiagnosticProvider {
     const text = document.getText();
     const diagnostics: vscode.Diagnostic[] = [];
 
-    // Check for UsageSentinel import/usage
-    const hasUsageSentinelImport = this.hasUsageSentinelImport(
-      text,
-      languageId,
-    );
-    const hasUsageSentinelUsage = this.hasUsageSentinelUsage(text);
+    // Check for TokVigil import/usage
+    const hasTokVigilImport = this.hasTokVigilImport(text, languageId);
+    const hasTokVigilUsage = this.hasTokVigilUsage(text);
 
-    if (hasUsageSentinelUsage && !hasUsageSentinelImport) {
-      const usageMatch = text.match(
-        /(UsageSentinel|tf\.evaluate|tf\.logUsage)/,
-      );
+    if (hasTokVigilUsage && !hasTokVigilImport) {
+      const usageMatch = text.match(/(TokVigil|tf\.evaluate|tf\.logUsage)/);
       if (usageMatch && usageMatch.index !== undefined) {
         const position = document.positionAt(usageMatch.index);
         const range = new vscode.Range(
@@ -43,7 +38,7 @@ export class DiagnosticProvider {
         diagnostics.push(
           new vscode.Diagnostic(
             range,
-            "UsageSentinel is used but not imported. Add: from usagesentinel import UsageSentinel",
+            "TokVigil is used but not imported. Add: from tokvigil import TokVigil",
             vscode.DiagnosticSeverity.Warning,
           ),
         );
@@ -70,7 +65,7 @@ export class DiagnosticProvider {
         diagnostics.push(
           new vscode.Diagnostic(
             range,
-            "API key is empty or placeholder. Set your actual UsageSentinel API key.",
+            "API key is empty or placeholder. Set your actual TokVigil API key.",
             vscode.DiagnosticSeverity.Error,
           ),
         );
@@ -124,19 +119,17 @@ export class DiagnosticProvider {
     this.diagnosticCollection.set(document.uri, diagnostics);
   }
 
-  private hasUsageSentinelImport(text: string, languageId: string): boolean {
+  private hasTokVigilImport(text: string, languageId: string): boolean {
     if (languageId === "python") {
-      return /from\s+usagesentinel\s+import|import\s+usagesentinel/.test(text);
+      return /from\s+tokvigil\s+import|import\s+tokvigil/.test(text);
     } else {
-      return /import\s+.*UsageSentinel.*from\s+["']usagesentinel["']|require\s*\(\s*["']usagesentinel["']\s*\)/.test(
+      return /import\s+.*TokVigil.*from\s+["']tokvigil["']|require\s*\(\s*["']tokvigil["']\s*\)/.test(
         text,
       );
     }
   }
 
-  private hasUsageSentinelUsage(text: string): boolean {
-    return /UsageSentinel|tf\.evaluate|tf\.logUsage|tf\.getUsageSummary/.test(
-      text,
-    );
+  private hasTokVigilUsage(text: string): boolean {
+    return /TokVigil|tf\.evaluate|tf\.logUsage|tf\.getUsageSummary/.test(text);
   }
 }

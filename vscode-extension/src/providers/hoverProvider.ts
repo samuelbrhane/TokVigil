@@ -33,8 +33,8 @@ export class HoverProvider implements vscode.HoverProvider {
       return this.buildReasonCodeHover(reasonCode[0], reasonCode[1]);
     }
 
-    // Check for UsageSentinel class
-    if (word === "UsageSentinel") {
+    // Check for TokVigil class
+    if (word === "TokVigil") {
       return this.buildClassHover();
     }
 
@@ -88,18 +88,18 @@ export class HoverProvider implements vscode.HoverProvider {
   private buildClassHover(): vscode.Hover {
     const markdown = new vscode.MarkdownString();
 
-    markdown.appendMarkdown("### UsageSentinel\n\n");
+    markdown.appendMarkdown("### TokVigil\n\n");
     markdown.appendMarkdown(
       "AI usage control client for managing rate limits, budgets, and policies.\n\n",
     );
     markdown.appendMarkdown("**Quick Start:**\n\n");
 
     markdown.appendCodeblock(
-      `from usagesentinel import UsageSentinel
+      `from tokvigil import TokVigil
 
-us = UsageSentinel(api_key="us_live_xxx")
+tv = TokVigil(api_key="tv_live_xxx")
 
-result = us.evaluate(
+result = tv.evaluate(
     user_id="user_123",
     model="gpt-4o-mini"
 )

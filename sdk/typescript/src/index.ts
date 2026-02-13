@@ -1,6 +1,6 @@
-export { UsageSentinel } from "./client";
+export { TokVigil } from "./client";
 export type {
-  UsageSentinelConfig,
+  TokVigilConfig,
   EvaluateParams,
   EvaluateResult,
   LogUsageParams,
@@ -15,7 +15,7 @@ export type {
   UsageSummaryParams,
 } from "./types";
 export {
-  UsageSentinelError,
+  TokVigilError,
   AuthenticationError,
   RateLimitError,
   ValidationError,

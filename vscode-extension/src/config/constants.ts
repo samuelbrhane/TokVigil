@@ -1,4 +1,4 @@
-export const DEFAULT_BASE_URL = "https://api.usagesentinel.com";
+export const DEFAULT_BASE_URL = "https://api.tokvigil.com";
 export const API_VERSION = "v1";
 
 export const ENDPOINTS = {
@@ -12,8 +12,8 @@ export const ENDPOINTS = {
   apiKeyInfo: "/api/v1/auth/api-key-info",
 };
 
-export const EXTENSION_ID = "usagesentinel.usagesentinel";
-export const EXTENSION_NAME = "UsageSentinel";
+export const EXTENSION_ID = "tokvigil.tokvigil";
+export const EXTENSION_NAME = "TokVigil";
 
 export const SUPPORTED_LANGUAGES = ["python", "typescript", "javascript"];
 

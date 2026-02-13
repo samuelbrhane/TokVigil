@@ -14,24 +14,24 @@ import { SidebarProvider } from "./panels/SidebarProvider";
 import { registerCommands } from "./commands";
 
 // API
-import { UsageSentinelApiClient } from "./api/client";
+import { TokVigilApiClient } from "./api/client";
 
 let statusBarItem: vscode.StatusBarItem;
 let diagnosticCollection: vscode.DiagnosticCollection;
-let apiClient: UsageSentinelApiClient;
+let apiClient: TokVigilApiClient;
 
 export function activate(context: vscode.ExtensionContext) {
   console.log(`${EXTENSION_NAME} is now active!`);
 
   // Initialize API client
   const config = getConfig();
-  apiClient = new UsageSentinelApiClient(config);
+  apiClient = new TokVigilApiClient(config);
 
   // Register sidebar
   const sidebarProvider = new SidebarProvider(context.extensionUri, apiClient);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
-      "usagesentinel-sidebar",
+      "tokvigil-sidebar",
       sidebarProvider,
     ),
   );
@@ -60,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Diagnostic provider (inline validation)
   diagnosticCollection =
-    vscode.languages.createDiagnosticCollection("usagesentinel");
+    vscode.languages.createDiagnosticCollection("tokvigil");
   context.subscriptions.push(diagnosticCollection);
 
   const diagnosticProvider = new DiagnosticProvider(diagnosticCollection);
@@ -84,9 +84,9 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.StatusBarAlignment.Right,
       100,
     );
-    statusBarItem.command = "usagesentinel.openDashboard";
-    statusBarItem.text = "$(pulse) UsageSentinel";
-    statusBarItem.tooltip = "Click to open UsageSentinel dashboard";
+    statusBarItem.command = "tokvigil.openDashboard";
+    statusBarItem.text = "$(pulse) TokVigil";
+    statusBarItem.tooltip = "Click to open TokVigil dashboard";
     statusBarItem.show();
     context.subscriptions.push(statusBarItem);
 
@@ -97,7 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Listen for configuration changes
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration("usagesentinel")) {
+      if (e.affectsConfiguration("tokvigil")) {
         const newConfig = getConfig();
         apiClient.updateConfig(newConfig);
         updateStatusBar();
@@ -111,7 +111,7 @@ async function updateStatusBar() {
 
   const config = getConfig();
   if (!config.apiKey) {
-    statusBarItem.text = "$(key) UsageSentinel: Set API Key";
+    statusBarItem.text = "$(key) TokVigil: Set API Key";
     statusBarItem.tooltip = "Click to set your API key";
     return;
   }
@@ -119,10 +119,10 @@ async function updateStatusBar() {
   try {
     const summary = await apiClient.getUsageSummary();
     statusBarItem.text = `$(pulse) ${summary.totalRequests} requests`;
-    statusBarItem.tooltip = `UsageSentinel Usage:\n${summary.totalRequests} requests\n${summary.totalTokens} tokens\n$${summary.totalCostUsd.toFixed(2)} cost`;
+    statusBarItem.tooltip = `TokVigil Usage:\n${summary.totalRequests} requests\n${summary.totalTokens} tokens\n$${summary.totalCostUsd.toFixed(2)} cost`;
   } catch (error) {
-    statusBarItem.text = "$(pulse) UsageSentinel";
-    statusBarItem.tooltip = "UsageSentinel - Click to open dashboard";
+    statusBarItem.text = "$(pulse) TokVigil";
+    statusBarItem.tooltip = "TokVigil - Click to open dashboard";
   }
 }
 

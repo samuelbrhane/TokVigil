@@ -16,19 +16,19 @@ const TOC = [
   { id: "reason-codes", title: "Reason Codes" },
 ];
 
-const CODE_INSTALL = `pip install usagesentinel`;
+const CODE_INSTALL = `pip install tokvigil`;
 
-const CODE_INIT = `from usagesentinel import UsageSentinel
+const CODE_INIT = `from tokvigil import TokVigil
 
-us = UsageSentinel(
-    api_key="us_live_...",       # Required: your API key
-    base_url="https://api.usagesentinel.com",  # Optional, default
+tv = TokVigil(
+    api_key="tv_live_...",       # Required: your API key
+    base_url="https://api.tokvigil.com",  # Optional, default
     timeout=30,                  # Optional, seconds
     retry_count=3,               # Optional
     retry_delay=1,               # Optional, seconds
 )`;
 
-const CODE_EVALUATE = `result = us.evaluate(
+const CODE_EVALUATE = `result = tv.evaluate(
     user_id="user_123",       # Required: your app's user ID
     model="gpt-4o-mini",      # Required: AI model name
     feature="chat",           # Optional: feature being used
@@ -46,7 +46,7 @@ else:
 print(f"Requests today: {result.limit_state.requests_today}")
 print(f"Daily limit: {result.limit_state.requests_limit_daily}")`;
 
-const CODE_LOG = `us.log_usage(
+const CODE_LOG = `tv.log_usage(
     request_id="req_123",      # Required: unique request ID
     user_id="user_123",        # Required: your app's user ID
     model="gpt-4o-mini",       # Required: AI model name
@@ -67,7 +67,7 @@ def call_openai():
     )
 
 # Evaluate + call + log in one step
-result, response = us.check_and_call(
+result, response = tv.check_and_call(
     user_id="user_123",
     model="gpt-4o-mini",
     feature="chat",
@@ -80,35 +80,35 @@ else:
     print(f"Blocked: {result.reason_code}")`;
 
 const CODE_ANALYTICS = `# Get usage summary for your workspace
-summary = us.get_usage_summary()
+summary = tv.get_usage_summary()
 print(f"Total requests: {summary.total_requests}")
 print(f"Total tokens: {summary.total_tokens}")
 print(f"Total cost: \${summary.total_cost_usd:.2f}")
 print(f"Blocked: {summary.blocked_count}")
 
 # Get usage grouped by user
-by_user = us.get_usage_by_user(page=1, page_size=10)
+by_user = tv.get_usage_by_user(page=1, page_size=10)
 for user in by_user.items:
     print(f"{user.group}: {user.requests} requests, \${user.cost_usd:.2f}")
 
 # Get usage grouped by feature
-by_feature = us.get_usage_by_feature(page=1, page_size=10)
+by_feature = tv.get_usage_by_feature(page=1, page_size=10)
 for feature in by_feature.items:
     print(f"{feature.group}: {feature.tokens} tokens")
 
 # Get recent usage records (with optional filters)
-recent = us.get_recent_usage(page=1, page_size=20, user_id="user_123")
+recent = tv.get_recent_usage(page=1, page_size=20, user_id="user_123")
 for record in recent.items:
     print(f"{record.model}: {record.total_tokens} tokens")
 
 # Get blocked requests
-blocked = us.get_blocked_requests(page=1, page_size=20)
+blocked = tv.get_blocked_requests(page=1, page_size=20)
 for record in blocked.items:
     print(f"{record.user_id}: {record.reason_code}")`;
 
-const CODE_ERRORS = `from usagesentinel import (
-    UsageSentinel,
-    UsageSentinelError,
+const CODE_ERRORS = `from tokvigil import (
+    TokVigil,
+    TokVigilError,
     AuthenticationError,
     RateLimitError,
     ValidationError,
@@ -116,10 +116,10 @@ const CODE_ERRORS = `from usagesentinel import (
     APIError,
 )
 
-us = UsageSentinel(api_key="us_live_...")
+tv = TokVigil(api_key="tv_live_...")
 
 try:
-    result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
+    result = tv.evaluate(user_id="user_123", model="gpt-4o-mini")
 except AuthenticationError as e:
     # Invalid or missing API key (401, 403)
     print(f"Auth error: {e.message}")
@@ -135,7 +135,7 @@ except NotFoundError as e:
 except APIError as e:
     # Server errors (5xx)
     print(f"API error: {e.message}")
-except UsageSentinelError as e:
+except TokVigilError as e:
     # Base exception — catches all above
     print(f"Error: {e.message}")`;
 
@@ -154,12 +154,12 @@ REASON_CODES = {
 }
 
 # Handle specific reason codes
-result = us.evaluate(user_id="user_123", model="gpt-4o")
+result = tv.evaluate(user_id="user_123", model="gpt-4o")
 
 if not result.allowed:
     if result.reason_code == "MODEL_NOT_ALLOWED":
         # Fallback to an allowed model
-        result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
+        result = tv.evaluate(user_id="user_123", model="gpt-4o-mini")
     elif result.reason_code == "DAILY_REQUEST_LIMIT_EXCEEDED":
         print("You've reached your daily limit. Try again tomorrow.")
     elif result.reason_code == "DAILY_BUDGET_EXCEEDED":
@@ -171,7 +171,7 @@ export default function PythonSDKPage() {
       <DocHeader
         icon="🐍"
         title="Python SDK"
-        description="Complete guide to using the UsageSentinel Python SDK in your applications."
+        description="Complete guide to using the TokVigil Python SDK in your applications."
       />
 
       <DocTableOfContents items={TOC} />
@@ -180,7 +180,7 @@ export default function PythonSDKPage() {
         <DocSection
           id="installation"
           title="Installation"
-          description="Install the UsageSentinel Python SDK using pip:"
+          description="Install the TokVigil Python SDK using pip:"
           code={CODE_INSTALL}
           language="bash"
         >
@@ -199,7 +199,7 @@ export default function PythonSDKPage() {
           <DocNote type="tip">
             Use environment variables for your API key in production:{" "}
             <code className="text-brand-400">
-              UsageSentinel(api_key=os.environ[&quot;USAGESENTINEL_API_KEY&quot;])
+              TokVigil(api_key=os.environ[&quot;USAGESENTINEL_API_KEY&quot;])
             </code>
           </DocNote>
         </DocSection>
@@ -226,7 +226,7 @@ export default function PythonSDKPage() {
         <DocSection
           id="check-and-call"
           title="Check and Call"
-          description="The simplest way to integrate. Pass your AI function and UsageSentinel handles evaluate → call → log automatically."
+          description="The simplest way to integrate. Pass your AI function and TokVigil handles evaluate → call → log automatically."
           code={CODE_CHECK_AND_CALL}
         >
           <DocNote type="tip">

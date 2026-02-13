@@ -1,13 +1,13 @@
 {
-  "name": "usagesentinel",
-  "displayName": "UsageSentinel",
+  "name": "tokvigil",
+  "displayName": "TokVigil",
   "description": "AI usage control - manage rate limits, budgets, and policies for your AI-powered applications",
   "version": "0.1.0",
-  "publisher": "usagesentinel",
-  "icon": "resources/icons/usagesentinel.png",
+  "publisher": "tokvigil",
+  "icon": "resources/icons/tokvigil.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/samuelbrhane/usagesentinel"
+    "url": "https://github.com/samuelbrhane/tokvigil"
   },
   "engines": {
     "vscode": "^1.85.0"
@@ -24,91 +24,91 @@
     "anthropic",
     "rate-limiting",
     "usage-control",
-    "usagesentinel"
+    "tokvigil"
   ],
   "activationEvents": [
     "onLanguage:python",
     "onLanguage:typescript",
     "onLanguage:javascript",
-    "onView:usagesentinel-sidebar"
+    "onView:tokvigil-sidebar"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "usagesentinel.testEvaluate",
-        "title": "UsageSentinel: Test Evaluate",
+        "command": "tokvigil.testEvaluate",
+        "title": "TokVigil: Test Evaluate",
         "icon": "$(play)"
       },
       {
-        "command": "usagesentinel.openDashboard",
-        "title": "UsageSentinel: Open Dashboard",
+        "command": "tokvigil.openDashboard",
+        "title": "TokVigil: Open Dashboard",
         "icon": "$(dashboard)"
       },
       {
-        "command": "usagesentinel.setApiKey",
-        "title": "UsageSentinel: Set API Key",
+        "command": "tokvigil.setApiKey",
+        "title": "TokVigil: Set API Key",
         "icon": "$(key)"
       },
       {
-        "command": "usagesentinel.refreshUsage",
-        "title": "UsageSentinel: Refresh Usage",
+        "command": "tokvigil.refreshUsage",
+        "title": "TokVigil: Refresh Usage",
         "icon": "$(refresh)"
       },
       {
-        "command": "usagesentinel.insertSnippet",
-        "title": "UsageSentinel: Insert Code Snippet",
+        "command": "tokvigil.insertSnippet",
+        "title": "TokVigil: Insert Code Snippet",
         "icon": "$(code)"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "usagesentinel-container",
-          "title": "UsageSentinel",
+          "id": "tokvigil-container",
+          "title": "TokVigil",
           "icon": "resources/icons/sidebar.svg"
         }
       ]
     },
     "views": {
-      "usagesentinel-container": [
+      "tokvigil-container": [
         {
           "type": "webview",
-          "id": "usagesentinel-sidebar",
-          "name": "UsageSentinel",
+          "id": "tokvigil-sidebar",
+          "name": "TokVigil",
           "icon": "resources/icons/sidebar.svg"
         }
       ]
     },
     "configuration": {
-      "title": "UsageSentinel",
+      "title": "TokVigil",
       "properties": {
-        "usagesentinel.apiKey": {
+        "tokvigil.apiKey": {
           "type": "string",
           "default": "",
-          "description": "Your UsageSentinel API key"
+          "description": "Your TokVigil API key"
         },
-        "usagesentinel.baseUrl": {
+        "tokvigil.baseUrl": {
           "type": "string",
-          "default": "https://api.usagesentinel.com",
-          "description": "UsageSentinel API base URL"
+          "default": "https://api.tokvigil.com",
+          "description": "TokVigil API base URL"
         },
-        "usagesentinel.showStatusBar": {
+        "tokvigil.showStatusBar": {
           "type": "boolean",
           "default": true,
           "description": "Show usage in status bar"
         },
-        "usagesentinel.enableAutocomplete": {
+        "tokvigil.enableAutocomplete": {
           "type": "boolean",
           "default": true,
           "description": "Enable autocomplete suggestions"
         },
-        "usagesentinel.enableHover": {
+        "tokvigil.enableHover": {
           "type": "boolean",
           "default": true,
           "description": "Enable hover documentation"
         },
-        "usagesentinel.enableDiagnostics": {
+        "tokvigil.enableDiagnostics": {
           "type": "boolean",
           "default": true,
           "description": "Enable inline validation"
@@ -132,22 +132,22 @@
     "menus": {
       "editor/context": [
         {
-          "command": "usagesentinel.testEvaluate",
-          "group": "usagesentinel",
+          "command": "tokvigil.testEvaluate",
+          "group": "tokvigil",
           "when": "editorTextFocus"
         }
       ],
       "view/title": [
         {
-          "command": "usagesentinel.refreshUsage",
-          "when": "view == usagesentinel-sidebar",
+          "command": "tokvigil.refreshUsage",
+          "when": "view == tokvigil-sidebar",
           "group": "navigation"
         }
       ]
     },
     "keybindings": [
       {
-        "command": "usagesentinel.testEvaluate",
+        "command": "tokvigil.testEvaluate",
         "key": "ctrl+shift+t",
         "mac": "cmd+shift+t",
         "when": "editorTextFocus"

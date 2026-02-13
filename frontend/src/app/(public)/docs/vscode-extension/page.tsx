@@ -18,7 +18,7 @@ const TOC = [
 ];
 
 const SNIPPET_ROWS: [string, string][] = [
-  ["usimport", "Import UsageSentinel SDK"],
+  ["usimport", "Import TokVigil SDK"],
   ["usinit", "Initialize client"],
   ["useval", "Evaluate request"],
   ["uslog", "Log usage"],
@@ -33,16 +33,16 @@ const SNIPPET_ROWS: [string, string][] = [
 ];
 
 const COMMAND_ROWS: [string, string][] = [
-  ["UsageSentinel: Set API Key", "Configure your API key"],
-  ["UsageSentinel: Test Evaluate", "Test evaluate with custom parameters"],
-  ["UsageSentinel: Open Dashboard", "Open web dashboard"],
-  ["UsageSentinel: Insert Snippet", "Insert code snippet"],
-  ["UsageSentinel: Refresh Usage", "Refresh usage stats in sidebar"],
+  ["TokVigil: Set API Key", "Configure your API key"],
+  ["TokVigil: Test Evaluate", "Test evaluate with custom parameters"],
+  ["TokVigil: Open Dashboard", "Open web dashboard"],
+  ["TokVigil: Insert Snippet", "Insert code snippet"],
+  ["TokVigil: Refresh Usage", "Refresh usage stats in sidebar"],
 ];
 
 const CODE_SETTINGS = `{
-  "usagesentinel.apiKey": "us_live_...",
-  "usagesentinel.baseUrl": "https://api.usagesentinel.com"
+  "tokvigil.apiKey": "tv_live_...",
+  "tokvigil.baseUrl": "https://api.tokvigil.com"
 }`;
 
 export default function VSCodeExtensionPage() {
@@ -67,7 +67,7 @@ export default function VSCodeExtensionPage() {
             steps={[
               "Open VS Code",
               'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+X</code> to open Extensions',
-              'Search for <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">UsageSentinel</code>',
+              'Search for <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil</code>',
               "Click Install",
             ]}
           />
@@ -84,8 +84,8 @@ export default function VSCodeExtensionPage() {
           <DocSteps
             steps={[
               'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code> to open Command Palette',
-              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">UsageSentinel: Set API Key</code>',
-              'Enter your API key (starts with <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">us_live_</code>)',
+              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil: Set API Key</code>',
+              'Enter your API key (starts with <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">tv_live_</code>)',
             ]}
           />
           <p className="text-surface-400 mb-4">
@@ -119,14 +119,14 @@ export default function VSCodeExtensionPage() {
           <DocFeature
             icon="📚"
             title="Hover Documentation"
-            description="Hover over any UsageSentinel method to see documentation, parameters, and examples."
+            description="Hover over any TokVigil method to see documentation, parameters, and examples."
           />
           <DocFeature
             icon="⚠️"
             title="Inline Validation"
             description="Get real-time warnings for common issues:"
             items={[
-              "Missing UsageSentinel import",
+              "Missing TokVigil import",
               "Empty or placeholder API keys",
               "Missing required parameters",
             ]}
@@ -164,7 +164,7 @@ export default function VSCodeExtensionPage() {
           <DocSteps
             steps={[
               'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code>',
-              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">UsageSentinel: Test Evaluate</code>',
+              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil: Test Evaluate</code>',
               "Enter user ID, select model, and set feature",
               "See the result: allowed or blocked with reason code",
             ]}

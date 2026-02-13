@@ -1,4 +1,4 @@
-# UsageSentinel - AI Usage Control Platform
+# TokVigil - AI Usage Control Platform
 
 Application-layer control plane for AI usage enforcement — limits, budgets, and policies per user/feature/plan.
 

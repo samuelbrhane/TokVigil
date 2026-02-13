@@ -13,11 +13,11 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-3">
               <img
                 src="/logo.png"
-                alt="UsageSentinel"
+                alt="TokVigil"
                 className="h-8 w-8 rounded-lg"
               />
               <span className="text-lg font-bold font-mono text-surface-100">
-                Usage<span className="text-brand-400">Sentinel</span>
+                Tok<span className="text-brand-400">Vigil</span>
               </span>
             </Link>
             <p className="text-sm text-surface-500 leading-relaxed max-w-xs">
@@ -51,7 +51,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-surface-800/30 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs font-mono text-surface-600">
-            © {new Date().getFullYear()} UsageSentinel. All rights reserved.
+            © {new Date().getFullYear()} TokVigil. All rights reserved.
           </p>
           {/* <div className="flex items-center gap-6">
             {["Twitter", "GitHub", "Discord"].map((s) => (

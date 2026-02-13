@@ -2,11 +2,11 @@
 // BRAND CONSTANTS
 // ============================================================
 export const BRAND = {
-  name: "UsageSentinel",
+  name: "TokVigil",
   tagline: "AI usage control for production teams",
   description:
     "Application-layer AI usage control. Enforce budgets, limits, and policies inside your code.",
-  url: "https://usagesentinel.com",
+  url: "https://tokvigil.com",
 };
 
 // ============================================================
@@ -87,8 +87,8 @@ export const FEATURES = [
     description:
       "Python & TypeScript SDKs wrap your LLM calls. Three lines of code to full governance.",
     details: [
-      "Python SDK: pip install usagesentinel",
-      "TypeScript SDK: npm install usagesentinel",
+      "Python SDK: pip install tokvigil",
+      "TypeScript SDK: npm install tokvigil",
       "OpenAI adapter built-in, more coming soon",
       "BYOK (Bring Your Own Key) with consistent tracking",
     ],
@@ -103,17 +103,17 @@ export const STEPS = [
     num: "01",
     title: "Install & initialize",
     description:
-      "Add the SDK and connect to your UsageSentinel workspace with one API key.",
-    python: `pip install usagesentinel
+      "Add the SDK and connect to your TokVigil workspace with one API key.",
+    python: `pip install tokvigil
 
-from usagesentinel import UsageSentinel
+from tokvigil import TokVigil
 
-us = UsageSentinel(api_key="us_live_...")`,
-    typescript: `npm install usagesentinel
+tv = TokVigil(api_key="tv_live_...")`,
+    typescript: `npm install tokvigil
 
-import { UsageSentinel } from "usagesentinel";
+import { TokVigil } from "tokvigil";
 
-const us =new UsageSentinel({ apiKey: "us_live_..." });`,
+const us =new TokVigil({ apiKey: "tv_live_..." });`,
   },
   {
     num: "02",
@@ -121,7 +121,7 @@ const us =new UsageSentinel({ apiKey: "us_live_..." });`,
     description:
       "Check policies before each AI call, then log usage automatically. One function handles the full flow.",
     python: `# Check → Call AI → Log usage (all in one)
-result, response = us.check_and_call(
+result, response = tv.check_and_call(
     user_id="user_123",
     model="gpt-4o-mini",
     plan="free",
@@ -137,7 +137,7 @@ if result.allowed:
 else:
     print(f"Blocked: {result.reason_code}")`,
     typescript: `// Check → Call AI → Log usage (all in one)
-const { result, response } = await us.checkAndCall(
+const { result, response } = await tv.checkAndCall(
   {
     userId: "user_123",
     model: "gpt-4o-mini",
@@ -162,21 +162,21 @@ if (result.allowed && response) {
     description:
       "Track usage, catch blocked requests, and handle errors from code, VS Code, or the dashboard.",
     python: `# Usage summary
-summary = us.get_usage_summary()
+summary = tv.get_usage_summary()
 print(f"Requests: {summary.total_requests}")
 print(f"Cost: \${summary.total_cost_usd}")
 
 # Check blocked requests
-blocked = us.get_blocked_requests()
+blocked = tv.get_blocked_requests()
 for record in blocked.items:
     print(f"{record.user_id}: {record.reason_code}")`,
     typescript: `// Usage summary
-const summary = await us.getUsageSummary();
+const summary = await tv.getUsageSummary();
 console.log(\`Requests: \${summary.totalRequests}\`);
 console.log(\`Cost: $\${summary.totalCostUsd}\`);
 
 // Check blocked requests  
-const blocked = await us.getBlockedRequests();
+const blocked = await tv.getBlockedRequests();
 for (const record of blocked.items) {
   console.log(\`\${record.userId}: \${record.reasonCode}\`);
 }`,
@@ -293,7 +293,7 @@ export const PRICING_FAQ = [
   {
     question: "What counts as an evaluate call?",
     answer:
-      "One evaluate call = one POST to /api/v1/evaluate. When your SDK calls us.evaluate() or us.checkAndCall(), that counts as 1 evaluate call. Usage logging (POST /api/v1/usage) does not count toward your limit.",
+      "One evaluate call = one POST to /api/v1/evaluate. When your SDK calls tv.evaluate() or tv.checkAndCall(), that counts as 1 evaluate call. Usage logging (POST /api/v1/usage) does not count toward your limit.",
   },
   {
     question: "Can I switch plans anytime?",
@@ -308,7 +308,7 @@ export const PRICING_FAQ = [
   {
     question: "Do you store my LLM prompts or responses?",
     answer:
-      "No. UsageSentinel only sees token counts, costs, and metadata. Your prompts and responses go directly between your app and the LLM provider.",
+      "No. TokVigil only sees token counts, costs, and metadata. Your prompts and responses go directly between your app and the LLM provider.",
   },
   {
     question: "What does the rate limit apply to?",

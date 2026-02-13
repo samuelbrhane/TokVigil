@@ -1,7 +1,7 @@
 {
-  "name": "usagesentinel",
+  "name": "tokvigil",
   "version": "0.1.0",
-  "description": "TypeScript SDK for UsageSentinel - AI usage control platform",
+  "description": "TypeScript SDK for TokVigil - AI usage control platform",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -24,17 +24,17 @@
     "usage-control",
     "openai",
     "anthropic",
-    "usagesentinel"
+    "tokvigil"
   ],
-  "author": "UsageSentinel <support@usagesentinel.com>",
+  "author": "TokVigil <support@tokvigil.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/samuelbrhane/usagesentinel"
+    "url": "https://github.com/samuelbrhane/tokvigil"
   },
-  "homepage": "https://usagesentinel.com",
+  "homepage": "https://tokvigil.com",
   "bugs": {
-    "url": "https://github.com/samuelbrhane/usagesentinel/issues"
+    "url": "https://github.com/samuelbrhane/tokvigil/issues"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

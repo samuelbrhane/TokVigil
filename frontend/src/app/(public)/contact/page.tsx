@@ -155,10 +155,10 @@ export default function ContactPage() {
                       Email
                     </p>
                     <a
-                      href="mailto:support@usagesentinel.com"
+                      href="mailto:support@tokvigil.com"
                       className="text-sm font-mono text-brand-400 hover:text-brand-300 transition-colors"
                     >
-                      support@usagesentinel.com
+                      support@tokvigil.com
                     </a>
                   </div>
                 </div>
@@ -169,9 +169,9 @@ export default function ContactPage() {
                   Open source & free
                 </h4>
                 <p className="text-sm text-surface-500 leading-relaxed">
-                  UsageSentinel is free for all developers. If you need help
-                  getting started, have a feature request, or found a bug,
-                  don&apos;t hesitate to reach out.
+                  TokVigil is free for all developers. If you need help getting
+                  started, have a feature request, or found a bug, don&apos;t
+                  hesitate to reach out.
                 </p>
               </div>
             </div>

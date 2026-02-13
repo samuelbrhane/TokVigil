@@ -1,6 +1,6 @@
-# UsageSentinel Frontend
+# TokVigil Frontend
 
-Next.js dashboard and landing page for the UsageSentinel platform.
+Next.js dashboard and landing page for the TokVigil platform.
 
 ## Tech
 

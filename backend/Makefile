@@ -5,7 +5,7 @@
 
 # Default target
 help:
-	@echo "UsageSentinel - Backend"
+	@echo "TokVigil - Backend"
 	@echo ""
 	@echo "Usage: make [target]"
 	@echo ""

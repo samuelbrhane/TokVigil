@@ -21,14 +21,14 @@ const TOC = [
 ];
 
 const CODE_AUTH = `# All SDK endpoints require your API key in the X-API-Key header
-curl https://api.usagesentinel.com/gateway/evaluate \\
-  -H "X-API-Key: us_live_..." \\
+curl https://api.tokvigil.com/gateway/evaluate \\
+  -H "X-API-Key: tv_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{"user_id": "user_123", "model": "gpt-4o-mini"}'`;
 
 const CODE_EVALUATE = `# POST /gateway/evaluate
-curl -X POST https://api.usagesentinel.com/gateway/evaluate \\
-  -H "X-API-Key: us_live_..." \\
+curl -X POST https://api.tokvigil.com/gateway/evaluate \\
+  -H "X-API-Key: tv_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{
     "user_id": "user_123",
@@ -54,8 +54,8 @@ curl -X POST https://api.usagesentinel.com/gateway/evaluate \\
 }`;
 
 const CODE_LOG = `# POST /usage
-curl -X POST https://api.usagesentinel.com/usage \\
-  -H "X-API-Key: us_live_..." \\
+curl -X POST https://api.tokvigil.com/usage \\
+  -H "X-API-Key: tv_live_..." \\
   -H "Content-Type: application/json" \\
   -d '{
     "request_id": "req_abc123",
@@ -77,8 +77,8 @@ curl -X POST https://api.usagesentinel.com/usage \\
 }`;
 
 const CODE_SUMMARY = `# GET /usage/summary
-curl https://api.usagesentinel.com/usage/summary \\
-  -H "X-API-Key: us_live_..."
+curl https://api.tokvigil.com/usage/summary \\
+  -H "X-API-Key: tv_live_..."
 
 # Optional query params: ?start_date=2025-01-01T00:00:00Z&end_date=2025-01-31T23:59:59Z
 
@@ -92,8 +92,8 @@ curl https://api.usagesentinel.com/usage/summary \\
 }`;
 
 const CODE_RECENT = `# GET /usage/recent
-curl "https://api.usagesentinel.com/usage/recent?page=1&page_size=20" \\
-  -H "X-API-Key: us_live_..."
+curl "https://api.tokvigil.com/usage/recent?page=1&page_size=20" \\
+  -H "X-API-Key: tv_live_..."
 
 # Optional filters: ?user_id=user_123&feature=chat&model=gpt-4o-mini&status=allowed
 
@@ -125,14 +125,14 @@ curl "https://api.usagesentinel.com/usage/recent?page=1&page_size=20" \\
 }`;
 
 const CODE_BLOCKED = `# GET /usage/blocked
-curl "https://api.usagesentinel.com/usage/blocked?page=1&page_size=20" \\
-  -H "X-API-Key: us_live_..."
+curl "https://api.tokvigil.com/usage/blocked?page=1&page_size=20" \\
+  -H "X-API-Key: tv_live_..."
 
 # Response: same structure as /usage/recent, filtered to blocked requests`;
 
 const CODE_BY_USER = `# GET /usage/by-user
-curl "https://api.usagesentinel.com/usage/by-user?page=1&page_size=10" \\
-  -H "X-API-Key: us_live_..."
+curl "https://api.tokvigil.com/usage/by-user?page=1&page_size=10" \\
+  -H "X-API-Key: tv_live_..."
 
 # Response (200 OK)
 {
@@ -159,8 +159,8 @@ curl "https://api.usagesentinel.com/usage/by-user?page=1&page_size=10" \\
 }`;
 
 const CODE_BY_FEATURE = `# GET /usage/by-feature
-curl "https://api.usagesentinel.com/usage/by-feature?page=1&page_size=10" \\
-  -H "X-API-Key: us_live_..."
+curl "https://api.tokvigil.com/usage/by-feature?page=1&page_size=10" \\
+  -H "X-API-Key: tv_live_..."
 
 # Response: same structure as /usage/by-user, grouped by feature name`;
 
@@ -239,7 +239,7 @@ export default function RestApiPage() {
       <DocHeader
         icon="🌐"
         title="REST API"
-        description="Use UsageSentinel from any language by calling the REST API directly. All endpoints use JSON and authenticate via API key header."
+        description="Use TokVigil from any language by calling the REST API directly. All endpoints use JSON and authenticate via API key header."
       />
 
       <DocTableOfContents items={TOC} />
@@ -263,7 +263,7 @@ export default function RestApiPage() {
           id="base-url"
           title="Base URL"
           description="All API endpoints use the following base URL:"
-          code="https://api.usagesentinel.com"
+          code="https://api.tokvigil.com"
           language="bash"
         >
           <DocNote type="info">

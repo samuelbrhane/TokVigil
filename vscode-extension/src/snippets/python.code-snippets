@@ -1,26 +1,26 @@
 {
-  "UsageSentinel Import": {
+  "TokVigil Import": {
     "prefix": "usimport",
-    "body": ["from usagesentinel import UsageSentinel", "", "$0"],
-    "description": "Import UsageSentinel SDK",
+    "body": ["from tokvigil import TokVigil", "", "$0"],
+    "description": "Import TokVigil SDK",
   },
-  "UsageSentinel Initialize": {
+  "TokVigil Initialize": {
     "prefix": "usinit",
     "body": [
-      "from usagesentinel import UsageSentinel",
+      "from tokvigil import TokVigil",
       "",
-      "us = UsageSentinel(",
+      "tv = TokVigil(",
       "    api_key=\"${1:your_api_key}\"",
       ")",
       "",
       "$0",
     ],
-    "description": "Initialize UsageSentinel client",
+    "description": "Initialize TokVigil client",
   },
-  "UsageSentinel Evaluate": {
+  "TokVigil Evaluate": {
     "prefix": "useval",
     "body": [
-      "result = us.evaluate(",
+      "result = tv.evaluate(",
       "    user_id=\"${1:user_id}\",",
       "    model=\"${2:gpt-4o-mini}\",",
       "    plan=\"${3:free}\",",
@@ -34,10 +34,10 @@
     ],
     "description": "Evaluate if request is allowed",
   },
-  "UsageSentinel Log Usage": {
+  "TokVigil Log Usage": {
     "prefix": "uslog",
     "body": [
-      "us.log_usage(",
+      "tv.log_usage(",
       "    request_id=\"${1:request_id}\",",
       "    user_id=\"${2:user_id}\",",
       "    model=\"${3:gpt-4o-mini}\",",
@@ -51,16 +51,16 @@
     ],
     "description": "Log AI usage after completion",
   },
-  "UsageSentinel Full Flow": {
+  "TokVigil Full Flow": {
     "prefix": "usflow",
     "body": [
-      "from usagesentinel import UsageSentinel",
+      "from tokvigil import TokVigil",
       "import uuid",
       "",
-      "us = UsageSentinel(api_key=\"${1:your_api_key}\")",
+      "tv = TokVigil(api_key=\"${1:your_api_key}\")",
       "",
       "# Check if request is allowed",
-      "result = us.evaluate(",
+      "result = tv.evaluate(",
       "    user_id=\"${2:user_id}\",",
       "    model=\"${3:gpt-4o-mini}\",",
       "    plan=\"${4:free}\",",
@@ -76,7 +76,7 @@
       "    $0",
       "    ",
       "    # Log the usage",
-      "    us.log_usage(",
+      "    tv.log_usage(",
       "        request_id=request_id,",
       "        user_id=\"${2:user_id}\",",
       "        model=\"${3:gpt-4o-mini}\",",
@@ -89,12 +89,12 @@
       "else:",
       "    print(f\"Blocked: {result.reason_code} - {result.message}\")",
     ],
-    "description": "Complete UsageSentinel flow with evaluate and log",
+    "description": "Complete TokVigil flow with evaluate and log",
   },
-  "UsageSentinel Usage Summary": {
+  "TokVigil Usage Summary": {
     "prefix": "ussummary",
     "body": [
-      "summary = us.get_usage_summary()",
+      "summary = tv.get_usage_summary()",
       "print(f\"Total requests: {summary.total_requests}\")",
       "print(f\"Total tokens: {summary.total_tokens}\")",
       "print(f\"Total cost: \\${summary.total_cost_usd}\")",
@@ -102,17 +102,17 @@
     ],
     "description": "Get usage summary",
   },
-  "UsageSentinel Usage By User": {
+  "TokVigil Usage By User": {
     "prefix": "usbyuser",
     "body": [
-      "by_user = us.get_usage_by_user()",
+      "by_user = tv.get_usage_by_user()",
       "for user in by_user.items:",
       "    print(f\"{user.group}: {user.requests} requests, {user.tokens} tokens\")",
       "$0",
     ],
     "description": "Get usage grouped by user",
   },
-  "UsageSentinel Check and Call": {
+  "TokVigil Check and Call": {
     "prefix": "uscheck",
     "body": [
       "def call_ai():",
@@ -122,7 +122,7 @@
       "        messages=[{\"role\": \"user\", \"content\": \"${2:Hello}\"}]",
       "    )",
       "",
-      "result, response = us.check_and_call(",
+      "result, response = tv.check_and_call(",
       "    user_id=\"${3:user_id}\",",
       "    model=\"${1:gpt-4o-mini}\",",
       "    ai_function=call_ai,",
@@ -138,15 +138,15 @@
     ],
     "description": "Check, call AI, and log automatically",
   },
-  "UsageSentinel Error Handling": {
+  "TokVigil Error Handling": {
     "prefix": "userror",
     "body": [
-      "from usagesentinel import UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError",
+      "from tokvigil import TokVigil, RateLimitError, AuthenticationError, TokVigilError",
       "",
-      "us = UsageSentinel(api_key=\"${1:your_api_key}\")",
+      "tv = TokVigil(api_key=\"${1:your_api_key}\")",
       "",
       "try:",
-      "    result = us.evaluate(",
+      "    result = tv.evaluate(",
       "        user_id=\"${2:user_id}\",",
       "        model=\"${3:gpt-4o-mini}\"",
       "    )",
@@ -155,15 +155,15 @@
       "    print(f\"Invalid API key: {e.message}\")",
       "except RateLimitError as e:",
       "    print(f\"Rate limited. Retry after {e.retry_after} seconds\")",
-      "except UsageSentinelError as e:",
+      "except TokVigilError as e:",
       "    print(f\"Error: {e.message}\")",
     ],
-    "description": "UsageSentinel with error handling",
+    "description": "TokVigil with error handling",
   },
-  "UsageSentinel Blocked Requests": {
+  "TokVigil Blocked Requests": {
     "prefix": "usblocked",
     "body": [
-      "blocked = us.get_blocked_requests()",
+      "blocked = tv.get_blocked_requests()",
       "print(f\"Total blocked: {blocked.total}\")",
       "for record in blocked.items:",
       "    print(f\"{record.user_id}: {record.reason_code}\")",

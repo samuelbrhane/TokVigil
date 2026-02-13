@@ -1,5 +1,5 @@
-from usagesentinel.client import UsageSentinel
-from usagesentinel.models import (
+from tokvigil.client import TokVigil
+from tokvigil.models import (
     EvaluateResult,
     UsageLogResult,
     UsageRecord,
@@ -8,8 +8,8 @@ from usagesentinel.models import (
     LimitState,
     PaginatedResponse,
 )
-from usagesentinel.exceptions import (
-    UsageSentinelError,
+from tokvigil.exceptions import (
+    TokVigilError,
     AuthenticationError,
     RateLimitError,
     ValidationError,
@@ -18,11 +18,11 @@ from usagesentinel.exceptions import (
     ConnectionError,
     TimeoutError,
 )
-from usagesentinel.constants import SDK_VERSION
+from tokvigil.constants import SDK_VERSION
 
 __version__ = SDK_VERSION
 __all__ = [
-    "UsageSentinel",
+    "TokVigil",
     "EvaluateResult",
     "UsageLogResult",
     "UsageRecord",
@@ -30,7 +30,7 @@ __all__ = [
     "UsageByGroup",
     "LimitState",
     "PaginatedResponse",
-    "UsageSentinelError",
+    "TokVigilError",
     "AuthenticationError",
     "RateLimitError",
     "ValidationError",

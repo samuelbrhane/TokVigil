@@ -1,16 +1,16 @@
 import * as vscode from "vscode";
-import { UsageSentinelApiClient } from "../api/client";
+import { TokVigilApiClient } from "../api/client";
 import { getConfig } from "../config/settings";
 import { UsageSummary, UsageByGroup } from "../types";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = "usagesentinel-sidebar";
+  public static readonly viewType = "tokvigil-sidebar";
 
   private _view?: vscode.WebviewView;
   private _extensionUri: vscode.Uri;
-  private _apiClient: UsageSentinelApiClient;
+  private _apiClient: TokVigilApiClient;
 
-  constructor(extensionUri: vscode.Uri, apiClient: UsageSentinelApiClient) {
+  constructor(extensionUri: vscode.Uri, apiClient: TokVigilApiClient) {
     this._extensionUri = extensionUri;
     this._apiClient = apiClient;
   }
@@ -36,22 +36,22 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           await this.refresh();
           break;
         case "openDashboard":
-          vscode.commands.executeCommand("usagesentinel.openDashboard");
+          vscode.commands.executeCommand("tokvigil.openDashboard");
           break;
         case "openDocs":
-          vscode.commands.executeCommand("usagesentinel.openDocs");
+          vscode.commands.executeCommand("tokvigil.openDocs");
           break;
         case "setApiKey":
-          vscode.commands.executeCommand("usagesentinel.setApiKey");
+          vscode.commands.executeCommand("tokvigil.setApiKey");
           break;
         case "switchEnvironment":
-          vscode.commands.executeCommand("usagesentinel.switchEnvironment");
+          vscode.commands.executeCommand("tokvigil.switchEnvironment");
           break;
         case "testEvaluate":
-          vscode.commands.executeCommand("usagesentinel.testEvaluate");
+          vscode.commands.executeCommand("tokvigil.testEvaluate");
           break;
         case "insertSnippet":
-          vscode.commands.executeCommand("usagesentinel.insertSnippet");
+          vscode.commands.executeCommand("tokvigil.insertSnippet");
           break;
       }
     });
@@ -126,7 +126,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>UsageSentinel</title>
+        <title>TokVigil</title>
         <style>
           * {
             margin: 0;
@@ -350,7 +350,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       <body>
         <div class="header">
           <h1>
-            <span>⚡</span> UsageSentinel
+            <span>⚡</span> TokVigil
           </h1>
           <div class="header-actions">
             <button class="icon-btn" onclick="refresh()" title="Refresh">

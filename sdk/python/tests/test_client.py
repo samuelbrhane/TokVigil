@@ -1,27 +1,27 @@
 import pytest
 import responses
-from usagesentinel import UsageSentinel, EvaluateResult, AuthenticationError, RateLimitError
+from tokvigil import TokVigil, EvaluateResult, AuthenticationError, RateLimitError
 
 
-class TestUsageSentinel:
+class TestTokVigil:
     
     def test_init_requires_api_key(self):
         with pytest.raises(AuthenticationError):
-            UsageSentinel(api_key="")
+            TokVigil(api_key="")
     
     def test_init_with_api_key(self):
-        us = UsageSentinel(api_key="us_test_xxx")
-        assert us.api_key == "us_test_xxx"
+        tv = TokVigil(api_key="tv_test_xxx")
+        assert tv.api_key == "tv_test_xxx"
     
     def test_init_custom_base_url(self):
-        us = UsageSentinel(api_key="us_test_xxx", base_url="http://localhost:8000")
-        assert us.base_url == "http://localhost:8000"
+        tv = TokVigil(api_key="tv_test_xxx", base_url="http://localhost:8000")
+        assert tv.base_url == "http://localhost:8000"
     
     @responses.activate
     def test_evaluate_allowed(self):
         responses.add(
             responses.POST,
-            "https://api.usagesentinel.com/api/v1/evaluate",
+            "https://api.tokvigil.com/api/v1/evaluate",
             json={
                 "allowed": True,
                 "reason_code": "ALLOWED",
@@ -36,8 +36,8 @@ class TestUsageSentinel:
             status=200,
         )
         
-        us = UsageSentinel(api_key="us_test_xxx")
-        result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
+        tv = TokVigil(api_key="tv_test_xxx")
+        result = tv.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert result.allowed is True
         assert result.reason_code == "ALLOWED"
@@ -47,7 +47,7 @@ class TestUsageSentinel:
     def test_evaluate_blocked(self):
         responses.add(
             responses.POST,
-            "https://api.usagesentinel.com/api/v1/evaluate",
+            "https://api.tokvigil.com/api/v1/evaluate",
             json={
                 "allowed": False,
                 "reason_code": "DAILY_REQUEST_LIMIT_EXCEEDED",
@@ -62,8 +62,8 @@ class TestUsageSentinel:
             status=200,
         )
         
-        us = UsageSentinel(api_key="us_test_xxx")
-        result = us.evaluate(user_id="user_123", model="gpt-4o-mini")
+        tv = TokVigil(api_key="tv_test_xxx")
+        result = tv.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert result.allowed is False
         assert result.reason_code == "DAILY_REQUEST_LIMIT_EXCEEDED"
@@ -72,7 +72,7 @@ class TestUsageSentinel:
     def test_evaluate_invalid_api_key(self):
         responses.add(
             responses.POST,
-            "https://api.usagesentinel.com/api/v1/evaluate",
+            "https://api.tokvigil.com/api/v1/evaluate",
             json={
                 "detail": {
                     "error_code": "INVALID_API_KEY",
@@ -82,10 +82,10 @@ class TestUsageSentinel:
             status=401,
         )
         
-        us = UsageSentinel(api_key="us_test_invalid")
+        tv = TokVigil(api_key="tv_test_invalid")
         
         with pytest.raises(AuthenticationError) as exc:
-            us.evaluate(user_id="user_123", model="gpt-4o-mini")
+            tv.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert exc.value.error_code == "INVALID_API_KEY"
     
@@ -93,7 +93,7 @@ class TestUsageSentinel:
     def test_rate_limit_error(self):
         responses.add(
             responses.POST,
-            "https://api.usagesentinel.com/api/v1/evaluate",
+            "https://api.tokvigil.com/api/v1/evaluate",
             json={
                 "detail": {
                     "error_code": "RATE_LIMIT_EXCEEDED",
@@ -104,10 +104,10 @@ class TestUsageSentinel:
             status=429,
         )
         
-        us = UsageSentinel(api_key="us_test_xxx")
+        tv = TokVigil(api_key="tv_test_xxx")
         
         with pytest.raises(RateLimitError) as exc:
-            us.evaluate(user_id="user_123", model="gpt-4o-mini")
+            tv.evaluate(user_id="user_123", model="gpt-4o-mini")
         
         assert exc.value.retry_after == 30
     
@@ -115,7 +115,7 @@ class TestUsageSentinel:
     def test_log_usage(self):
         responses.add(
             responses.POST,
-            "https://api.usagesentinel.com/api/v1/usage",
+            "https://api.tokvigil.com/api/v1/usage",
             json={
                 "id": 1,
                 "request_id": "req_123",
@@ -125,8 +125,8 @@ class TestUsageSentinel:
             status=201,
         )
         
-        us = UsageSentinel(api_key="us_test_xxx")
-        result = us.log_usage(
+        tv = TokVigil(api_key="tv_test_xxx")
+        result = tv.log_usage(
             request_id="req_123",
             user_id="user_123",
             model="gpt-4o-mini",

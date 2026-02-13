@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import {
-  UsageSentinelConfig,
+  TokVigilConfig,
   EvaluateParams,
   EvaluateResult,
   UsageSummary,
@@ -53,14 +53,14 @@ interface ApiResponse<T> {
   errorCode?: string;
 }
 
-export class UsageSentinelApiClient {
-  private config: UsageSentinelConfig;
+export class TokVigilApiClient {
+  private config: TokVigilConfig;
 
-  constructor(config: UsageSentinelConfig) {
+  constructor(config: TokVigilConfig) {
     this.config = config;
   }
 
-  updateConfig(config: UsageSentinelConfig): void {
+  updateConfig(config: TokVigilConfig): void {
     this.config = config;
   }
 

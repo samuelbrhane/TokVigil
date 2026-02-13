@@ -1,20 +1,20 @@
 import * as vscode from "vscode";
-import { UsageSentinelApiClient } from "../api/client";
+import { TokVigilApiClient } from "../api/client";
 import { getConfig } from "../config/settings";
 import { AI_MODELS } from "../config/constants";
 
 export async function testEvaluate(
-  apiClient: UsageSentinelApiClient,
+  apiClient: TokVigilApiClient,
 ): Promise<void> {
   const config = getConfig();
 
   if (!config.apiKey) {
     const setKey = await vscode.window.showErrorMessage(
-      "UsageSentinel API key not configured",
+      "TokVigil API key not configured",
       "Set API Key",
     );
     if (setKey === "Set API Key") {
-      vscode.commands.executeCommand("usagesentinel.setApiKey");
+      vscode.commands.executeCommand("tokvigil.setApiKey");
     }
     return;
   }
@@ -66,7 +66,7 @@ export async function testEvaluate(
   await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
-      title: "UsageSentinel: Testing evaluate...",
+      title: "TokVigil: Testing evaluate...",
       cancellable: false,
     },
     async () => {
@@ -78,9 +78,7 @@ export async function testEvaluate(
       });
 
       if (response.error) {
-        vscode.window.showErrorMessage(
-          `UsageSentinel Error: ${response.error}`,
-        );
+        vscode.window.showErrorMessage(`TokVigil Error: ${response.error}`);
         return;
       }
 
@@ -127,8 +125,8 @@ export async function testEvaluate(
 
 function showResultDetails(result: any): void {
   const panel = vscode.window.createWebviewPanel(
-    "usagesentinelResult",
-    "UsageSentinel Evaluate Result",
+    "tokvigilResult",
+    "TokVigil Evaluate Result",
     vscode.ViewColumn.Beside,
     {},
   );
@@ -217,7 +215,7 @@ async function insertEvaluateCode(
   let code: string;
 
   if (languageId === "python") {
-    code = `result = us.evaluate(
+    code = `result = tv.evaluate(
     user_id="${userId}",
     model="${model}",
     plan="${plan || "free"}",
@@ -231,7 +229,7 @@ else:
     print(f"Blocked: {result.message}")
 `;
   } else {
-    code = `const result = await us.evaluate({
+    code = `const result = await tv.evaluate({
   userId: "${userId}",
   model: "${model}",
   plan: "${plan || "free"}",

@@ -1,1 +1,1 @@
-export { UsageSentinelApiClient } from "./client";
+export { TokVigilApiClient } from "./client";

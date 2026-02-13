@@ -50,7 +50,7 @@ export default function LoginPage() {
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to your UsageSentinel account"
+      subtitle="Sign in to your TokVigil account"
     >
       <div className="p-6 rounded-xl border border-surface-800/40 bg-surface-900/40">
         {error && (

@@ -1,4 +1,4 @@
-export interface UsageSentinelConfig {
+export interface TokVigilConfig {
   apiKey: string;
   baseUrl?: string;
   timeout?: number;

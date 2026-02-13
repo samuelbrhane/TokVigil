@@ -7,7 +7,7 @@ import {
   USER_AGENT,
 } from "./constants";
 import {
-  UsageSentinelError,
+  TokVigilError,
   AuthenticationError,
   RateLimitError,
   ValidationError,
@@ -17,7 +17,7 @@ import {
   TimeoutError,
 } from "./exceptions";
 import {
-  UsageSentinelConfig,
+  TokVigilConfig,
   EvaluateParams,
   EvaluateResult,
   LogUsageParams,
@@ -31,14 +31,14 @@ import {
   UsageSummaryParams,
 } from "./types";
 
-export class UsageSentinel {
+export class TokVigil {
   private apiKey: string;
   private baseUrl: string;
   private timeout: number;
   private retryCount: number;
   private retryDelay: number;
 
-  constructor(config: UsageSentinelConfig) {
+  constructor(config: TokVigilConfig) {
     if (!config.apiKey) {
       throw new AuthenticationError("API key is required");
     }
@@ -93,7 +93,7 @@ export class UsageSentinel {
         if (error instanceof RateLimitError) {
           throw error;
         }
-        if (error instanceof UsageSentinelError) {
+        if (error instanceof TokVigilError) {
           throw error;
         }
         if (error instanceof Error) {
@@ -103,7 +103,7 @@ export class UsageSentinel {
             );
           } else {
             lastError = new ConnectionError(
-              "Failed to connect to UsageSentinel API",
+              "Failed to connect to TokVigil API",
             );
           }
         }

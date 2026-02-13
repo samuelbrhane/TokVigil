@@ -1,26 +1,26 @@
 {
-  "UsageSentinel Import": {
+  "TokVigil Import": {
     "prefix": "usimport",
-    "body": ["const { UsageSentinel } = require(\"usagesentinel\");", "", "$0"],
-    "description": "Import UsageSentinel SDK",
+    "body": ["const { TokVigil } = require(\"tokvigil\");", "", "$0"],
+    "description": "Import TokVigil SDK",
   },
-  "UsageSentinel Initialize": {
+  "TokVigil Initialize": {
     "prefix": "usinit",
     "body": [
-      "const { UsageSentinel } = require(\"usagesentinel\");",
+      "const { TokVigil } = require(\"tokvigil\");",
       "",
-      "const us =new UsageSentinel({",
+      "const us =new TokVigil({",
       "  apiKey: \"${1:your_api_key}\",",
       "});",
       "",
       "$0",
     ],
-    "description": "Initialize UsageSentinel client",
+    "description": "Initialize TokVigil client",
   },
-  "UsageSentinel Evaluate": {
+  "TokVigil Evaluate": {
     "prefix": "useval",
     "body": [
-      "const result = await us.evaluate({",
+      "const result = await tv.evaluate({",
       "  userId: \"${1:user_id}\",",
       "  model: \"${2:gpt-4o-mini}\",",
       "  plan: \"${3:free}\",",
@@ -35,10 +35,10 @@
     ],
     "description": "Evaluate if request is allowed",
   },
-  "UsageSentinel Log Usage": {
+  "TokVigil Log Usage": {
     "prefix": "uslog",
     "body": [
-      "await us.logUsage({",
+      "await tv.logUsage({",
       "  requestId: \"${1:request_id}\",",
       "  userId: \"${2:user_id}\",",
       "  model: \"${3:gpt-4o-mini}\",",
@@ -52,17 +52,17 @@
     ],
     "description": "Log AI usage after completion",
   },
-  "UsageSentinel Full Flow": {
+  "TokVigil Full Flow": {
     "prefix": "usflow",
     "body": [
-      "const { UsageSentinel } = require(\"usagesentinel\");",
+      "const { TokVigil } = require(\"tokvigil\");",
       "const crypto = require(\"crypto\");",
       "",
-      "const us =new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
+      "const us =new TokVigil({ apiKey: \"${1:your_api_key}\" });",
       "",
       "async function handleAiRequest() {",
       "  // Check if request is allowed",
-      "  const result = await us.evaluate({",
+      "  const result = await tv.evaluate({",
       "    userId: \"${2:user_id}\",",
       "    model: \"${3:gpt-4o-mini}\",",
       "    plan: \"${4:free}\",",
@@ -77,7 +77,7 @@
       "    $0",
       "    ",
       "    // Log the usage",
-      "    await us.logUsage({",
+      "    await tv.logUsage({",
       "      requestId,",
       "      userId: \"${2:user_id}\",",
       "      model: \"${3:gpt-4o-mini}\",",
@@ -94,12 +94,12 @@
       "",
       "handleAiRequest();",
     ],
-    "description": "Complete UsageSentinel flow with evaluate and log",
+    "description": "Complete TokVigil flow with evaluate and log",
   },
-  "UsageSentinel Usage Summary": {
+  "TokVigil Usage Summary": {
     "prefix": "ussummary",
     "body": [
-      "const summary = await us.getUsageSummary();",
+      "const summary = await tv.getUsageSummary();",
       "console.log(`Total requests: ${summary.totalRequests}`);",
       "console.log(`Total tokens: ${summary.totalTokens}`);",
       "console.log(`Total cost: $${summary.totalCostUsd}`);",
@@ -107,15 +107,15 @@
     ],
     "description": "Get usage summary",
   },
-  "UsageSentinel Error Handling": {
+  "TokVigil Error Handling": {
     "prefix": "userror",
     "body": [
-      "const { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } = require(\"usagesentinel\");",
+      "const { TokVigil, RateLimitError, AuthenticationError, TokVigilError } = require(\"tokvigil\");",
       "",
-      "const us =new UsageSentinel({ apiKey: \"${1:your_api_key}\" });",
+      "const us =new TokVigil({ apiKey: \"${1:your_api_key}\" });",
       "",
       "try {",
-      "  const result = await us.evaluate({",
+      "  const result = await tv.evaluate({",
       "    userId: \"${2:user_id}\",",
       "    model: \"${3:gpt-4o-mini}\",",
       "  });",
@@ -125,11 +125,11 @@
       "    console.log(`Invalid API key: ${error.message}`);",
       "  } else if (error instanceof RateLimitError) {",
       "    console.log(`Rate limited. Retry after ${error.retryAfter} seconds`);",
-      "  } else if (error instanceof UsageSentinelError) {",
+      "  } else if (error instanceof TokVigilError) {",
       "    console.log(`Error: ${error.message}`);",
       "  }",
       "}",
     ],
-    "description": "UsageSentinel with error handling",
+    "description": "TokVigil with error handling",
   },
 }

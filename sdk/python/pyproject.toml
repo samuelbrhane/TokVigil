@@ -3,13 +3,13 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "usagesentinel"
+name = "tokvigil"
 version = "0.1.0"
-description = "Python SDK for UsageSentinel - AI usage control platform"
+description = "Python SDK for TokVigil - AI usage control platform"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "UsageSentinel", email = "support@usagesentinel.com"}
+    {name = "TokVigil", email = "support@tokvigil.com"}
 ]
 keywords = ["ai", "llm", "rate-limiting", "usage-control", "openai", "anthropic"]
 classifiers = [
@@ -39,5 +39,5 @@ dev = [
 
 
 [project.urls]
-Homepage = "https://usagesentinel.com"
-Documentation = "https://usagesentinel.com/docs/sdk/python"
+Homepage = "https://tokvigil.com"
+Documentation = "https://tokvigil.com/docs/sdk/python"

@@ -1,5 +1,5 @@
 // API URLs
-export const DEFAULT_BASE_URL = "https://api.usagesentinel.com";
+export const DEFAULT_BASE_URL = "https://api.tokvigil.com";
 export const API_VERSION = "v1";
 
 // Endpoints
@@ -20,5 +20,5 @@ export const DEFAULT_RETRY_DELAY = 1000; // milliseconds
 
 // SDK Info
 export const SDK_VERSION = "0.1.0";
-export const SDK_NAME = "usagesentinel-node";
+export const SDK_NAME = "tokvigil-node";
 export const USER_AGENT = `${SDK_NAME}/${SDK_VERSION}`;

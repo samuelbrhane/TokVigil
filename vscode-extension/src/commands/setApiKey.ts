@@ -1,25 +1,25 @@
 import * as vscode from "vscode";
 import { setApiKey, getConfig } from "../config/settings";
-import { UsageSentinelApiClient } from "../api/client";
+import { TokVigilApiClient } from "../api/client";
 import { SidebarProvider } from "../panels/SidebarProvider";
 
 export async function setApiKeyCommand(
-  apiClient: UsageSentinelApiClient,
+  apiClient: TokVigilApiClient,
   sidebarProvider: SidebarProvider,
 ): Promise<void> {
   const config = getConfig();
 
   const apiKey = await vscode.window.showInputBox({
-    prompt: "Enter your UsageSentinel API key",
-    placeHolder: "us_live_xxxxxxxxxxxxxxxx",
+    prompt: "Enter your TokVigil API key",
+    placeHolder: "tv_live_xxxxxxxxxxxxxxxx",
     value: config.apiKey,
     password: false,
     validateInput: (value) => {
       if (!value) {
         return "API key is required";
       }
-      if (!value.startsWith("us_live_") && !value.startsWith("us_test_")) {
-        return "Invalid API key format. Should start with us_live_ or us_test_";
+      if (!value.startsWith("tv_live_") && !value.startsWith("tv_test_")) {
+        return "Invalid API key format. Should start with tv_live_ or tv_test_";
       }
       return null;
     },
@@ -39,7 +39,7 @@ export async function setApiKeyCommand(
   const testResult = await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
-      title: "UsageSentinel: Testing connection...",
+      title: "TokVigil: Testing connection...",
       cancellable: false,
     },
     async () => {
@@ -53,12 +53,10 @@ export async function setApiKeyCommand(
   );
 
   if (testResult.success) {
-    vscode.window.showInformationMessage(
-      `UsageSentinel: ${testResult.message}`,
-    );
+    vscode.window.showInformationMessage(`TokVigil: ${testResult.message}`);
   } else {
     vscode.window.showWarningMessage(
-      `UsageSentinel: API key saved but connection test failed: ${testResult.message}`,
+      `TokVigil: API key saved but connection test failed: ${testResult.message}`,
     );
   }
 }

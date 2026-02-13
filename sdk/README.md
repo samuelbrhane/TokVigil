@@ -1,24 +1,24 @@
-# UsageSentinel SDKs
+# TokVigil SDKs
 
-Official SDKs for the UsageSentinel platform.
+Official SDKs for the TokVigil platform.
 
 ## Packages
 
-| SDK        | Directory     | Package                     |
-| ---------- | ------------- | --------------------------- |
-| Python     | `python/`     | `pip install usagesentinel` |
-| TypeScript | `typescript/` | `npm install usagesentinel` |
+| SDK        | Directory     | Package                |
+| ---------- | ------------- | ---------------------- |
+| Python     | `python/`     | `pip install tokvigil` |
+| TypeScript | `typescript/` | `npm install tokvigil` |
 
 ## Quick Start
 
 ### Python
 
 ```python
-from usagesentinel import UsageSentinel
+from tokvigil import TokVigil
 
-us = UsageSentinel(api_key="us_live_...")
+tv = TokVigil(api_key="tv_live_...")
 
-result = us.evaluate(
+result = tv.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     feature="chat"
@@ -26,7 +26,7 @@ result = us.evaluate(
 
 if result.allowed:
     # make your AI call, then log it
-    us.log_usage(
+    tv.log_usage(
         request_id="req_123",
         user_id="user_123",
         model="gpt-4o-mini",
@@ -39,11 +39,11 @@ if result.allowed:
 ### TypeScript
 
 ```typescript
-import { UsageSentinel } from "usagesentinel";
+import { TokVigil } from "tokvigil";
 
-const us = new UsageSentinel({ apiKey: "us_live_..." });
+const tv = new TokVigil({ apiKey: "tv_live_..." });
 
-const result = await us.evaluate({
+const result = await tv.evaluate({
   userId: "user_123",
   model: "gpt-4o-mini",
   feature: "chat",
@@ -51,7 +51,7 @@ const result = await us.evaluate({
 
 if (result.allowed) {
   // make your AI call, then log it
-  await us.logUsage({
+  await tv.logUsage({
     requestId: "req_123",
     userId: "user_123",
     model: "gpt-4o-mini",
@@ -64,4 +64,4 @@ if (result.allowed) {
 
 ## Documentation
 
-Full SDK docs at [usagesentinel.com/docs](https://usagesentinel.com/docs).
+Full SDK docs at [tokvigil.com/docs](https://tokvigil.com/docs).

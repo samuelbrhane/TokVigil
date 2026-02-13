@@ -1,5 +1,5 @@
-# UsageSentinel platform plans for developers
-USAGESENTINEL_PLANS = {
+# TokVigil platform plans for developers
+TOKVIGIL_PLANS = {
     "free": {
         "name": "Free",
         "price_monthly": 0,
@@ -52,7 +52,7 @@ USAGESENTINEL_PLANS = {
 
 def get_plan(plan_name: str) -> dict:
     """Get plan details by name."""
-    return USAGESENTINEL_PLANS.get(plan_name, USAGESENTINEL_PLANS["free"])
+    return TOKVIGIL_PLANS.get(plan_name, TOKVIGIL_PLANS["free"])
 
 
 def get_rate_limit(plan_name: str) -> int:
@@ -63,7 +63,7 @@ def get_rate_limit(plan_name: str) -> int:
 
 def get_all_plans() -> dict:
     """Get all available plans."""
-    return USAGESENTINEL_PLANS
+    return TOKVIGIL_PLANS
 
 
 def is_feature_enabled(plan_name: str, feature: str) -> bool:

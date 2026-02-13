@@ -7,20 +7,19 @@ import { CodeBlock } from "@/components/ui";
 const CARDS = [
   {
     title: "Python SDK",
-    description: "Full guide to using UsageSentinel with Python applications.",
+    description: "Full guide to using TokVigil with Python applications.",
     href: "/docs/sdk/python",
     icon: "🐍",
   },
   {
     title: "TypeScript SDK",
-    description:
-      "Full guide to using UsageSentinel with TypeScript/JavaScript.",
+    description: "Full guide to using TokVigil with TypeScript/JavaScript.",
     href: "/docs/sdk/typescript",
     icon: "📘",
   },
   {
     title: "REST API",
-    description: "Use UsageSentinel from any language via HTTP requests.",
+    description: "Use TokVigil from any language via HTTP requests.",
     href: "/docs/rest-api",
     icon: "🌐",
   },
@@ -32,12 +31,12 @@ const CARDS = [
   },
 ];
 
-const QUICK_EXAMPLE = `from usagesentinel import UsageSentinel
+const QUICK_EXAMPLE = `from tokvigil import TokVigil
 
-us = UsageSentinel(api_key="us_live_...")
+tv = TokVigil(api_key="tv_live_...")
 
 # Check if request is allowed
-result = us.evaluate(
+result = tv.evaluate(
     user_id="user_123",
     model="gpt-4o-mini",
     feature="chat"
@@ -45,7 +44,7 @@ result = us.evaluate(
 
 if result.allowed:
     # Make your AI call, then log it
-    us.log_usage(
+    tv.log_usage(
         request_id="req_123",
         user_id="user_123",
         model="gpt-4o-mini",
@@ -62,9 +61,8 @@ export default function DocsPage() {
           Documentation
         </h1>
         <p className="text-lg text-surface-400 max-w-2xl">
-          Everything you need to integrate UsageSentinel into your AI
-          applications. Control usage, enforce limits, and track spending in
-          minutes.
+          Everything you need to integrate TokVigil into your AI applications.
+          Control usage, enforce limits, and track spending in minutes.
         </p>
       </div>
 

@@ -1,29 +1,29 @@
-# UsageSentinel Node.js SDK
+# TokVigil Node.js SDK
 
-Official TypeScript/JavaScript SDK for [UsageSentinel](https://usagesentinel.com) - AI usage control platform.
+Official TypeScript/JavaScript SDK for [TokVigil](https://tokvigil.com) - AI usage control platform.
 
 Manage rate limits, budgets, and policies for your AI-powered applications.
 
 ## Installation
 
 ```bash
-npm install usagesentinel
+npm install tokvigil
 # or
-yarn add usagesentinel
+yarn add tokvigil
 # or
-pnpm add usagesentinel
+pnpm add tokvigil
 ```
 
 ## Quick Start
 
 ```typescript
-import { UsageSentinel } from "usagesentinel";
+import { TokVigil } from "tokvigil";
 
 // Initialize client
-const us = new UsageSentinel({ apiKey: "us_live_xxx" });
+const tv = new TokVigil({ apiKey: "tv_live_xxx" });
 
 // Check if request is allowed
-const result = await us.evaluate({
+const result = await tv.evaluate({
   userId: "user_123",
   plan: "free",
   feature: "chat",
@@ -39,7 +39,7 @@ if (result.allowed) {
   });
 
   // Log the usage
-  await us.logUsage({
+  await tv.logUsage({
     requestId: "req_123",
     userId: "user_123",
     model: "gpt-4o-mini",
@@ -65,7 +65,7 @@ if (result.allowed) {
 ### Evaluate Request
 
 ```typescript
-const result = await us.evaluate({
+const result = await tv.evaluate({
   userId: "user_123",
   model: "gpt-4o-mini",
   plan: "free", // optional
@@ -85,7 +85,7 @@ console.log(result.limitState?.requestsLimitDaily); // 50
 ### Log Usage
 
 ```typescript
-await us.logUsage({
+await tv.logUsage({
   requestId: "req_123",
   userId: "user_123",
   model: "gpt-4o-mini",
@@ -103,7 +103,7 @@ await us.logUsage({
 Automatically evaluate, call AI, and log usage:
 
 ```typescript
-const { result, response } = await us.checkAndCall(
+const { result, response } = await tv.checkAndCall(
   {
     userId: "user_123",
     model: "gpt-4o-mini",
@@ -133,25 +133,25 @@ if (result.allowed && response) {
 
 ```typescript
 // Summary
-const summary = await us.getUsageSummary();
+const summary = await tv.getUsageSummary();
 console.log(summary.totalRequests);
 console.log(summary.totalTokens);
 console.log(summary.totalCostUsd);
 
 // Recent usage
-const recent = await us.getRecentUsage({ page: 1, pageSize: 20 });
+const recent = await tv.getRecentUsage({ page: 1, pageSize: 20 });
 for (const record of recent.items) {
   console.log(`${record.userId}: ${record.totalTokens} tokens`);
 }
 
 // Usage by user
-const byUser = await us.getUsageByUser();
+const byUser = await tv.getUsageByUser();
 for (const group of byUser.items) {
   console.log(`${group.group}: ${group.requests} requests, $${group.costUsd}`);
 }
 
 // Usage by feature
-const byFeature = await us.getUsageByFeature();
+const byFeature = await tv.getUsageByFeature();
 for (const group of byFeature.items) {
   console.log(`${group.group}: ${group.requests} requests`);
 }
@@ -160,16 +160,12 @@ for (const group of byFeature.items) {
 ## Error Handling
 
 ```typescript
-import {
-  UsageSentinel,
-  RateLimitError,
-  AuthenticationError,
-} from "usagesentinel";
+import { TokVigil, RateLimitError, AuthenticationError } from "tokvigil";
 
-const us = new UsageSentinel({ apiKey: "us_live_xxx" });
+const tv = new TokVigil({ apiKey: "tv_live_xxx" });
 
 try {
-  const result = await us.evaluate({
+  const result = await tv.evaluate({
     userId: "user_123",
     model: "gpt-4o-mini",
   });
@@ -178,7 +174,7 @@ try {
     console.log(`Invalid API key: ${error.message}`);
   } else if (error instanceof RateLimitError) {
     console.log(`Rate limited. Retry after ${error.retryAfter} seconds`);
-  } else if (error instanceof UsageSentinelError) {
+  } else if (error instanceof TokVigilError) {
     console.log(`Error: ${error.message}`);
   }
 }
@@ -187,9 +183,9 @@ try {
 ## Configuration
 
 ```typescript
-const us = new UsageSentinel({
-  apiKey: "us_live_xxx",
-  baseUrl: "https://api.usagesentinel.com", // Custom API URL
+const tv = new TokVigil({
+  apiKey: "tv_live_xxx",
+  baseUrl: "https://api.tokvigil.com", // Custom API URL
   timeout: 30000, // Request timeout in milliseconds
   retryCount: 3, // Number of retries
   retryDelay: 1000, // Delay between retries in milliseconds

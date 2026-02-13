@@ -2,7 +2,7 @@ export interface ErrorDetails {
   [key: string]: unknown;
 }
 
-export class UsageSentinelError extends Error {
+export class TokVigilError extends Error {
   public errorCode: string | null;
   public details: ErrorDetails | null;
 
@@ -12,13 +12,13 @@ export class UsageSentinelError extends Error {
     details: ErrorDetails | null = null,
   ) {
     super(message);
-    this.name = "UsageSentinelError";
+    this.name = "TokVigilError";
     this.errorCode = errorCode;
     this.details = details;
   }
 }
 
-export class AuthenticationError extends UsageSentinelError {
+export class AuthenticationError extends TokVigilError {
   constructor(
     message: string = "Unauthorized",
     errorCode: string | null = null,
@@ -29,7 +29,7 @@ export class AuthenticationError extends UsageSentinelError {
   }
 }
 
-export class RateLimitError extends UsageSentinelError {
+export class RateLimitError extends TokVigilError {
   public retryAfter: number | null;
 
   constructor(
@@ -44,7 +44,7 @@ export class RateLimitError extends UsageSentinelError {
   }
 }
 
-export class ValidationError extends UsageSentinelError {
+export class ValidationError extends TokVigilError {
   constructor(
     message: string = "Validation error",
     errorCode: string | null = null,
@@ -55,7 +55,7 @@ export class ValidationError extends UsageSentinelError {
   }
 }
 
-export class NotFoundError extends UsageSentinelError {
+export class NotFoundError extends TokVigilError {
   constructor(
     message: string = "Resource not found",
     errorCode: string | null = null,
@@ -66,7 +66,7 @@ export class NotFoundError extends UsageSentinelError {
   }
 }
 
-export class APIError extends UsageSentinelError {
+export class APIError extends TokVigilError {
   public statusCode: number | null;
 
   constructor(
@@ -81,7 +81,7 @@ export class APIError extends UsageSentinelError {
   }
 }
 
-export class ConnectionError extends UsageSentinelError {
+export class ConnectionError extends TokVigilError {
   constructor(
     message: string = "Connection failed",
     errorCode: string | null = null,
@@ -92,7 +92,7 @@ export class ConnectionError extends UsageSentinelError {
   }
 }
 
-export class TimeoutError extends UsageSentinelError {
+export class TimeoutError extends TokVigilError {
   constructor(
     message: string = "Request timed out",
     errorCode: string | null = null,

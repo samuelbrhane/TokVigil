@@ -10,27 +10,27 @@ interface SnippetOption {
 const snippets: SnippetOption[] = [
   {
     label: "$(file-add) Import",
-    description: "Import UsageSentinel SDK",
-    snippet: `import { UsageSentinel } from "usagesentinel";
+    description: "Import TokVigil SDK",
+    snippet: `import { TokVigil } from "tokvigil";
 
 \$0`,
-    pythonSnippet: `from usagesentinel import UsageSentinel
+    pythonSnippet: `from tokvigil import TokVigil
 
 \$0`,
   },
   {
     label: "$(plug) Initialize Client",
-    description: "Create UsageSentinel client instance",
-    snippet: `import { UsageSentinel } from "usagesentinel";
+    description: "Create TokVigil client instance",
+    snippet: `import { TokVigil } from "tokvigil";
 
-const us =new UsageSentinel({
+const us =new TokVigil({
   apiKey: "\${1:your_api_key}",
 });
 
 \$0`,
-    pythonSnippet: `from usagesentinel import UsageSentinel
+    pythonSnippet: `from tokvigil import TokVigil
 
-us = UsageSentinel(
+tv = TokVigil(
     api_key="\${1:your_api_key}"
 )
 
@@ -39,7 +39,7 @@ us = UsageSentinel(
   {
     label: "$(play) Evaluate Request",
     description: "Check if request is allowed",
-    snippet: `const result = await us.evaluate({
+    snippet: `const result = await tv.evaluate({
   userId: "\${1:user_id}",
   model: "\${2:gpt-4o-mini}",
   plan: "\${3:free}",
@@ -51,7 +51,7 @@ if (result.allowed) {
 } else {
   console.log(\`Blocked: \\\${result.message}\`);
 }`,
-    pythonSnippet: `result = us.evaluate(
+    pythonSnippet: `result = tv.evaluate(
     user_id="\${1:user_id}",
     model="\${2:gpt-4o-mini}",
     plan="\${3:free}",
@@ -66,7 +66,7 @@ else:
   {
     label: "$(history) Log Usage",
     description: "Log AI call after completion",
-    snippet: `await us.logUsage({
+    snippet: `await tv.logUsage({
   requestId: "\${1:request_id}",
   userId: "\${2:user_id}",
   model: "\${3:gpt-4o-mini}",
@@ -78,7 +78,7 @@ else:
 });
 
 \$0`,
-    pythonSnippet: `us.log_usage(
+    pythonSnippet: `tv.log_usage(
     request_id="\${1:request_id}",
     user_id="\${2:user_id}",
     model="\${3:gpt-4o-mini}",
@@ -94,12 +94,12 @@ else:
   {
     label: "$(rocket) Full Flow",
     description: "Complete evaluate, call AI, and log flow",
-    snippet: `import { UsageSentinel } from "usagesentinel";
+    snippet: `import { TokVigil } from "tokvigil";
 
-const us =new UsageSentinel({ apiKey: "\${1:your_api_key}" });
+const us =new TokVigil({ apiKey: "\${1:your_api_key}" });
 
 async function handleAiRequest(userId: string, prompt: string) {
-  const result = await us.evaluate({
+  const result = await tv.evaluate({
     userId,
     model: "\${2:gpt-4o-mini}",
     plan: "\${3:free}",
@@ -116,7 +116,7 @@ async function handleAiRequest(userId: string, prompt: string) {
   // const response = await openai.chat.completions.create({...});
   \$0
 
-  await us.logUsage({
+  await tv.logUsage({
     requestId,
     userId,
     model: "\${2:gpt-4o-mini}",
@@ -129,13 +129,13 @@ async function handleAiRequest(userId: string, prompt: string) {
 
   return { success: true };
 }`,
-    pythonSnippet: `from usagesentinel import UsageSentinel
+    pythonSnippet: `from tokvigil import TokVigil
 import uuid
 
-us = UsageSentinel(api_key="\${1:your_api_key}")
+tv = TokVigil(api_key="\${1:your_api_key}")
 
 def handle_ai_request(user_id: str, prompt: str):
-    result = us.evaluate(
+    result = tv.evaluate(
         user_id=user_id,
         model="\${2:gpt-4o-mini}",
         plan="\${3:free}",
@@ -151,7 +151,7 @@ def handle_ai_request(user_id: str, prompt: str):
     # response = openai.chat.completions.create(...)
     \$0
 
-    us.log_usage(
+    tv.log_usage(
         request_id=request_id,
         user_id=user_id,
         model="\${2:gpt-4o-mini}",
@@ -166,13 +166,13 @@ def handle_ai_request(user_id: str, prompt: str):
   },
   {
     label: "$(shield) Error Handling",
-    description: "UsageSentinel with try/catch error handling",
-    snippet: `import { UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError } from "usagesentinel";
+    description: "TokVigil with try/catch error handling",
+    snippet: `import { TokVigil, RateLimitError, AuthenticationError, TokVigilError } from "tokvigil";
 
-const us =new UsageSentinel({ apiKey: "\${1:your_api_key}" });
+const us =new TokVigil({ apiKey: "\${1:your_api_key}" });
 
 try {
-  const result = await us.evaluate({
+  const result = await tv.evaluate({
     userId: "\${2:user_id}",
     model: "\${3:gpt-4o-mini}",
   });
@@ -185,18 +185,18 @@ try {
     console.error("Invalid API key:", error.message);
   } else if (error instanceof RateLimitError) {
     console.error("Rate limited. Retry after:", error.retryAfter, "seconds");
-  } else if (error instanceof UsageSentinelError) {
-    console.error("UsageSentinel error:", error.message);
+  } else if (error instanceof TokVigilError) {
+    console.error("TokVigil error:", error.message);
   } else {
     throw error;
   }
 }`,
-    pythonSnippet: `from usagesentinel import UsageSentinel, RateLimitError, AuthenticationError, UsageSentinelError
+    pythonSnippet: `from tokvigil import TokVigil, RateLimitError, AuthenticationError, TokVigilError
 
-us = UsageSentinel(api_key="\${1:your_api_key}")
+tv = TokVigil(api_key="\${1:your_api_key}")
 
 try:
-    result = us.evaluate(
+    result = tv.evaluate(
         user_id="\${2:user_id}",
         model="\${3:gpt-4o-mini}"
     )
@@ -207,13 +207,13 @@ except AuthenticationError as e:
     print(f"Invalid API key: {e.message}")
 except RateLimitError as e:
     print(f"Rate limited. Retry after {e.retry_after} seconds")
-except UsageSentinelError as e:
-    print(f"UsageSentinel error: {e.message}")`,
+except TokVigilError as e:
+    print(f"TokVigil error: {e.message}")`,
   },
   {
     label: "$(graph) Usage Summary",
     description: "Get usage summary statistics",
-    snippet: `const summary = await us.getUsageSummary();
+    snippet: `const summary = await tv.getUsageSummary();
 
 console.log("Total requests:", summary.totalRequests);
 console.log("Total tokens:", summary.totalTokens);
@@ -221,7 +221,7 @@ console.log("Total cost: $" + summary.totalCostUsd.toFixed(2));
 console.log("Blocked:", summary.blockedCount);
 
 \$0`,
-    pythonSnippet: `summary = us.get_usage_summary()
+    pythonSnippet: `summary = tv.get_usage_summary()
 
 print(f"Total requests: {summary.total_requests}")
 print(f"Total tokens: {summary.total_tokens}")
@@ -233,7 +233,7 @@ print(f"Blocked: {summary.blocked_count}")
   {
     label: "$(person) Usage By User",
     description: "Get usage grouped by user",
-    snippet: `const byUser = await us.getUsageByUser();
+    snippet: `const byUser = await tv.getUsageByUser();
 
 console.log("Usage by user:");
 for (const user of byUser.items) {
@@ -241,7 +241,7 @@ for (const user of byUser.items) {
 }
 
 \$0`,
-    pythonSnippet: `by_user = us.get_usage_by_user()
+    pythonSnippet: `by_user = tv.get_usage_by_user()
 
 print("Usage by user:")
 for user in by_user.items:
@@ -252,7 +252,7 @@ for user in by_user.items:
   {
     label: "$(symbol-property) Usage By Feature",
     description: "Get usage grouped by feature",
-    snippet: `const byFeature = await us.getUsageByFeature();
+    snippet: `const byFeature = await tv.getUsageByFeature();
 
 console.log("Usage by feature:");
 for (const feature of byFeature.items) {
@@ -260,7 +260,7 @@ for (const feature of byFeature.items) {
 }
 
 \$0`,
-    pythonSnippet: `by_feature = us.get_usage_by_feature()
+    pythonSnippet: `by_feature = tv.get_usage_by_feature()
 
 print("Usage by feature:")
 for feature in by_feature.items:
@@ -271,7 +271,7 @@ for feature in by_feature.items:
   {
     label: "$(error) Blocked Requests",
     description: "Get list of blocked requests",
-    snippet: `const blocked = await us.getBlockedRequests();
+    snippet: `const blocked = await tv.getBlockedRequests();
 
 console.log("Total blocked:", blocked.total);
 for (const record of blocked.items) {
@@ -279,7 +279,7 @@ for (const record of blocked.items) {
 }
 
 \$0`,
-    pythonSnippet: `blocked = us.get_blocked_requests()
+    pythonSnippet: `blocked = tv.get_blocked_requests()
 
 print(f"Total blocked: {blocked.total}")
 for record in blocked.items:
@@ -290,7 +290,7 @@ for record in blocked.items:
   {
     label: "$(zap) Check and Call",
     description: "Evaluate, call AI, and auto-log in one step",
-    snippet: `const { result, response } = await us.checkAndCall(
+    snippet: `const { result, response } = await tv.checkAndCall(
   {
     userId: "\${1:user_id}",
     model: "\${2:gpt-4o-mini}",
@@ -323,7 +323,7 @@ if (result.allowed && response) {
         messages=[{"role": "user", "content": "\${5:Hello}"}]
     )
 
-result, response = us.check_and_call(
+result, response = tv.check_and_call(
     user_id="\${1:user_id}",
     model="\${2:gpt-4o-mini}",
     ai_function=call_ai,
@@ -340,7 +340,7 @@ else:
   {
     label: "$(list-unordered) Recent Usage",
     description: "Get recent usage records with pagination",
-    snippet: `const recent = await us.getRecentUsage({ page: 1, pageSize: 10 });
+    snippet: `const recent = await tv.getRecentUsage({ page: 1, pageSize: 10 });
 
 console.log("Total records:", recent.total);
 console.log("Page:", recent.page, "/", recent.totalPages);
@@ -350,7 +350,7 @@ for (const record of recent.items) {
 }
 
 \$0`,
-    pythonSnippet: `recent = us.get_recent_usage(page=1, page_size=10)
+    pythonSnippet: `recent = tv.get_recent_usage(page=1, page_size=10)
 
 print(f"Total records: {recent.total}")
 print(f"Page: {recent.page} / {recent.total_pages}")
@@ -371,7 +371,7 @@ export async function insertSnippet(): Promise<void> {
 
   const selected = await vscode.window.showQuickPick(snippets, {
     placeHolder: "Select a code snippet to insert",
-    title: "UsageSentinel: Insert Snippet",
+    title: "TokVigil: Insert Snippet",
   });
 
   if (!selected) {

@@ -26,7 +26,7 @@ export default function Logo({
     <div className="flex items-center gap-2.5">
       <img
         src="/logo.png"
-        alt="UsageSentinel"
+        alt="TokVigil"
         className={cn(imgSize[size], "rounded-lg")}
       />
       <span
@@ -35,7 +35,7 @@ export default function Logo({
           "font-bold tracking-tight text-surface-100 font-mono",
         )}
       >
-        Usage<span className="text-brand-500">Sentinel</span>
+        Tok<span className="text-brand-500">Vigil</span>
       </span>
     </div>
   );
