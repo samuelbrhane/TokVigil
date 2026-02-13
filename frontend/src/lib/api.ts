@@ -10,7 +10,7 @@ class ApiError extends Error {
         ? data.detail
         : data?.detail?.message || "Something went wrong";
     super(message);
-    this.stattv = status;
+    this.status = status;
     this.data = data;
   }
 }

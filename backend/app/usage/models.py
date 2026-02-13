@@ -33,7 +33,7 @@ class UsageRecord(Base, TimestampMixin):
     actual_cost_usd = Column(Float, nullable=True)
     
     # Status
-    stattv =Column(String(20), nullable=False)  # allowed, blocked
+    status =Column(String(20), nullable=False)  # allowed, blocked
     reason_code = Column(String(100), nullable=True)  
     
     # Performance

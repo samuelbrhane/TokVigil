@@ -134,8 +134,8 @@ class TokVigil:
         """Handle API response and raise appropriate exceptions."""
         
         # Success
-        if response.stattv_code in (200, 201, 204):
-            if response.stattv_code == 204:
+        if response.status_code in (200, 201, 204):
+            if response.status_code == 204:
                 return {}
             return response.json()
         
@@ -156,23 +156,23 @@ class TokVigil:
             details = None
         
         # Raise appropriate exception
-        if response.stattv_code == 401:
+        if response.status_code == 401:
             raise AuthenticationError(message, error_code=error_code, details=details)
         
-        if response.stattv_code == 403:
+        if response.status_code == 403:
             raise AuthenticationError(message, error_code=error_code, details=details)
         
-        if response.stattv_code == 404:
+        if response.status_code == 404:
             raise NotFoundError(message, error_code=error_code, details=details)
         
-        if response.stattv_code == 422:
+        if response.status_code == 422:
             raise ValidationError(message, error_code=error_code, details=details)
         
-        if response.stattv_code == 429:
+        if response.status_code == 429:
             retry_after = details.get("retry_after") if details else None
             raise RateLimitError(message, retry_after=retry_after, error_code=error_code, details=details)
         
-        raise APIError(message, stattv_code=response.stattv_code, error_code=error_code, details=details)
+        raise APIError(message, status_code=response.status_code, error_code=error_code, details=details)
     
     # ==================== Evaluate ====================
     
