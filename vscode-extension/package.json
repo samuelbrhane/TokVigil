@@ -66,7 +66,7 @@
         {
           "id": "tokvigil-container",
           "title": "TokVigil",
-          "icon": "resources/icons/sidebar.svg"
+          "icon": "resources/icons/logo.png"
         }
       ]
     },
@@ -76,7 +76,7 @@
           "type": "webview",
           "id": "tokvigil-sidebar",
           "name": "TokVigil",
-          "icon": "resources/icons/sidebar.svg"
+          "icon": "resources/icons/logo.png"
         }
       ]
     },
