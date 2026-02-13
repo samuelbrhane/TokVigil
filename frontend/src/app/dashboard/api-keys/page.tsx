@@ -55,6 +55,7 @@ export default function ApiKeysPage() {
     setWorkspaceId(id);
     setPage(1);
     setActiveTab("all");
+    setShowCreate(false);
     setInitialized(true);
   };
 

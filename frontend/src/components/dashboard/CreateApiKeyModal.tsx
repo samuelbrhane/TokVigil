@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, InputField } from "@/components/ui";
 import { createApiKey } from "@/lib/workspaces";
 import { Environment, ApiKeyCreated } from "@/types/workspace";
@@ -21,11 +21,20 @@ export default function CreateApiKeyModal({
   environments,
 }: CreateApiKeyModalProps) {
   const [name, setName] = useState("");
-  const [envId, setEnvId] = useState<number>(environments[0]?.id || 0);
+  const [envId, setEnvId] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [createdKey, setCreatedKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (open && environments.length > 0) {
+      setEnvId((current) => {
+        const stillValid = environments.some((e) => e.id === current);
+        return stillValid ? current : environments[0].id;
+      });
+    }
+  }, [open, environments]);
 
   if (!open) return null;
 
@@ -33,6 +42,12 @@ export default function CreateApiKeyModal({
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    if (!envId) {
+      setError("No environment found. Please create an environment first.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const key = await createApiKey(workspaceId, {
