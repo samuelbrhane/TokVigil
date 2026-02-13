@@ -10,6 +10,129 @@ import Pagination from "@/components/dashboard/Pagination";
 import { getPolicies, updatePolicy } from "@/lib/policies";
 import { Policy, PaginatedPolicies } from "@/types/policy";
 
+function AnimateIn({
+  children,
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  return (
+    <div
+      className={`transition-all duration-400 ease-out ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+      }`}
+    >
+      {children}
+    </div>
+  );
+}
+
+function MobilePolicyCard({
+  policy,
+  workspaceId,
+  delay,
+  onToggle,
+  onDelete,
+}: {
+  policy: Policy;
+  workspaceId: number;
+  delay: number;
+  onToggle: () => void;
+  onDelete: () => void;
+}) {
+  const formatLimit = (val: number | null) =>
+    val === null ? "—" : val === -1 ? "∞" : val.toLocaleString();
+
+  const formatBudget = (val: number | null) =>
+    val === null ? "—" : `$${val.toFixed(2)}`;
+
+  return (
+    <AnimateIn delay={delay}>
+      <div className="border-b border-surface-800/20 last:border-0 px-4 py-3 hover:bg-surface-900/40 transition-colors">
+        {/* Top: name + status */}
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-mono text-surface-200 font-medium truncate flex-1">
+            {policy.name}
+          </span>
+          <Badge variant={policy.is_active ? "success" : "default"}>
+            {policy.is_active ? "active" : "inactive"}
+          </Badge>
+        </div>
+
+        {/* Tags */}
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant="brand">{policy.plan || "any"}</Badge>
+          <span className="text-[11px] font-mono text-surface-400">
+            {policy.feature || "all features"}
+          </span>
+        </div>
+
+        {/* Limits grid */}
+        <div className="grid grid-cols-3 gap-x-3 gap-y-1 mb-3">
+          <div>
+            <span className="text-[10px] font-mono text-surface-500 block">
+              Daily Req
+            </span>
+            <span className="text-[11px] font-mono text-surface-300">
+              {formatLimit(policy.requests_per_day)}
+            </span>
+          </div>
+          <div>
+            <span className="text-[10px] font-mono text-surface-500 block">
+              Monthly Req
+            </span>
+            <span className="text-[11px] font-mono text-surface-300">
+              {formatLimit(policy.requests_per_month)}
+            </span>
+          </div>
+          <div>
+            <span className="text-[10px] font-mono text-surface-500 block">
+              Daily Budget
+            </span>
+            <span className="text-[11px] font-mono text-surface-300">
+              {formatBudget(policy.budget_per_day_usd)}
+            </span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onToggle}
+            className={`text-xs font-mono transition-colors ${
+              policy.is_active
+                ? "text-surface-500 hover:text-yellow-400"
+                : "text-surface-500 hover:text-green-400"
+            }`}
+          >
+            {policy.is_active ? "Disable" : "Enable"}
+          </button>
+          <Link
+            href={`/dashboard/policies/${policy.id}/edit?workspace=${workspaceId}`}
+            className="text-xs font-mono text-surface-500 hover:text-brand-400 transition-colors"
+          >
+            Edit
+          </Link>
+          <button
+            onClick={onDelete}
+            className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </AnimateIn>
+  );
+}
+
 export default function PoliciesPage() {
   const [workspaceId, setWorkspaceId] = useState<number | null>(null);
   const [initialized, setInitialized] = useState(false);
@@ -64,6 +187,15 @@ export default function PoliciesPage() {
     setDeleteTarget(null);
   };
 
+  const handleTogglePolicy = async (policy: Policy) => {
+    try {
+      await updatePolicy(workspaceId!, policy.id, {
+        is_active: !policy.is_active,
+      });
+      fetchPolicies(workspaceId!, page, activeSearch);
+    } catch {}
+  };
+
   const policies = data?.items || [];
 
   const formatLimit = (val: number | null) =>
@@ -75,7 +207,7 @@ export default function PoliciesPage() {
   return (
     <div className="space-y-6">
       {/* Workspace selector */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="text-xs text-surface-500 font-mono">Workspace:</span>
           <WorkspaceSelector
@@ -116,33 +248,39 @@ export default function PoliciesPage() {
       ) : (
         <>
           {/* Action bar */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-800/40">
-              <span className="text-surface-600 text-xs">⌕</span>
-              <input
-                placeholder="Search policies... (Enter)"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={handleSearch}
-                className="bg-transparent text-xs text-surface-300 placeholder-surface-600 font-mono outline-none w-48"
-              />
-              {activeSearch && (
-                <button
-                  onClick={handleClearSearch}
-                  className="text-surface-500 hover:text-white text-xs"
+          <AnimateIn delay={0}>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-900/60 border border-surface-800/40">
+                <span className="text-surface-600 text-xs">⌕</span>
+                <input
+                  placeholder="Search policies... (Enter)"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={handleSearch}
+                  className="bg-transparent text-xs text-surface-300 placeholder-surface-600 font-mono outline-none w-full sm:w-48"
+                />
+                {activeSearch && (
+                  <button
+                    onClick={handleClearSearch}
+                    className="text-surface-500 hover:text-white text-xs"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+              <Link href={`/dashboard/policies/new?workspace=${workspaceId}`}>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="w-full sm:w-auto"
                 >
-                  ✕
-                </button>
-              )}
+                  + Create Policy
+                </Button>
+              </Link>
             </div>
-            <Link href={`/dashboard/policies/new?workspace=${workspaceId}`}>
-              <Button variant="primary" size="sm">
-                + Create Policy
-              </Button>
-            </Link>
-          </div>
+          </AnimateIn>
 
-          {/* Table */}
+          {/* Content */}
           {policies.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-4xl mb-4">⬡</div>
@@ -167,104 +305,116 @@ export default function PoliciesPage() {
               )}
             </div>
           ) : (
-            <Card className="animate-fade-in">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-surface-800/30">
-                      {[
-                        "Name",
-                        "Plan",
-                        "Feature",
-                        "Daily Requests",
-                        "Monthly Requests",
-                        "Daily Budget",
-                        "Status",
-                        "Actions",
-                      ].map((h) => (
-                        <th
-                          key={h}
-                          className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-500 uppercase tracking-wider"
-                        >
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {policies.map((policy) => (
-                      <tr
-                        key={policy.id}
-                        className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors"
-                      >
-                        <td className="px-4 py-3 text-sm font-mono text-surface-200 font-medium">
-                          {policy.name}
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge variant="brand">{policy.plan || "any"}</Badge>
-                        </td>
-                        <td className="px-4 py-3 text-xs font-mono text-surface-400">
-                          {policy.feature || "all"}
-                        </td>
-                        <td className="px-4 py-3 text-xs font-mono text-surface-400">
-                          {formatLimit(policy.requests_per_day)}
-                        </td>
-                        <td className="px-4 py-3 text-xs font-mono text-surface-400">
-                          {formatLimit(policy.requests_per_month)}
-                        </td>
-                        <td className="px-4 py-3 text-xs font-mono text-surface-400">
-                          {formatBudget(policy.budget_per_day_usd)}
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge
-                            variant={policy.is_active ? "success" : "default"}
+            <AnimateIn delay={100}>
+              <Card>
+                {/* Desktop table */}
+                <div className="hidden lg:block">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-surface-800/30">
+                          {[
+                            "Name",
+                            "Plan",
+                            "Feature",
+                            "Daily Requests",
+                            "Monthly Requests",
+                            "Daily Budget",
+                            "Status",
+                            "Actions",
+                          ].map((h) => (
+                            <th
+                              key={h}
+                              className="px-4 py-3 text-left text-[11px] font-mono font-bold text-surface-500 uppercase tracking-wider"
+                            >
+                              {h}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {policies.map((policy) => (
+                          <tr
+                            key={policy.id}
+                            className="border-b border-surface-800/15 hover:bg-surface-900/40 transition-colors"
                           >
-                            {policy.is_active ? "active" : "inactive"}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3">
-                          <div className="flex gap-2">
-                            <button
-                              onClick={async () => {
-                                try {
-                                  await updatePolicy(workspaceId!, policy.id, {
-                                    is_active: !policy.is_active,
-                                  });
-                                  fetchPolicies(
-                                    workspaceId!,
-                                    page,
-                                    activeSearch,
-                                  );
-                                } catch {}
-                              }}
-                              className={`text-xs font-mono transition-colors ${
-                                policy.is_active
-                                  ? "text-surface-500 hover:text-yellow-400"
-                                  : "text-surface-500 hover:text-green-400"
-                              }`}
-                            >
-                              {policy.is_active ? "Disable" : "Enable"}
-                            </button>
-                            <Link
-                              href={`/dashboard/policies/${policy.id}/edit?workspace=${workspaceId}`}
-                              className="text-xs font-mono text-surface-500 hover:text-brand-400 transition-colors"
-                            >
-                              Edit
-                            </Link>
-                            <button
-                              onClick={() => setDeleteTarget(policy)}
-                              className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
+                            <td className="px-4 py-3 text-sm font-mono text-surface-200 font-medium">
+                              {policy.name}
+                            </td>
+                            <td className="px-4 py-3">
+                              <Badge variant="brand">
+                                {policy.plan || "any"}
+                              </Badge>
+                            </td>
+                            <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                              {policy.feature || "all"}
+                            </td>
+                            <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                              {formatLimit(policy.requests_per_day)}
+                            </td>
+                            <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                              {formatLimit(policy.requests_per_month)}
+                            </td>
+                            <td className="px-4 py-3 text-xs font-mono text-surface-400">
+                              {formatBudget(policy.budget_per_day_usd)}
+                            </td>
+                            <td className="px-4 py-3">
+                              <Badge
+                                variant={
+                                  policy.is_active ? "success" : "default"
+                                }
+                              >
+                                {policy.is_active ? "active" : "inactive"}
+                              </Badge>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleTogglePolicy(policy)}
+                                  className={`text-xs font-mono transition-colors ${
+                                    policy.is_active
+                                      ? "text-surface-500 hover:text-yellow-400"
+                                      : "text-surface-500 hover:text-green-400"
+                                  }`}
+                                >
+                                  {policy.is_active ? "Disable" : "Enable"}
+                                </button>
+                                <Link
+                                  href={`/dashboard/policies/${policy.id}/edit?workspace=${workspaceId}`}
+                                  className="text-xs font-mono text-surface-500 hover:text-brand-400 transition-colors"
+                                >
+                                  Edit
+                                </Link>
+                                <button
+                                  onClick={() => setDeleteTarget(policy)}
+                                  className="text-xs font-mono text-surface-500 hover:text-red-400 transition-colors"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Mobile cards */}
+                <div className="lg:hidden">
+                  {policies.map((policy, i) => (
+                    <MobilePolicyCard
+                      key={policy.id}
+                      policy={policy}
+                      workspaceId={workspaceId!}
+                      delay={50 + i * 60}
+                      onToggle={() => handleTogglePolicy(policy)}
+                      onDelete={() => setDeleteTarget(policy)}
+                    />
+                  ))}
+                </div>
+              </Card>
+            </AnimateIn>
           )}
 
           {/* Pagination */}
