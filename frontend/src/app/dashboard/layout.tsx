@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { DashboardSidebar, DashboardHeader } from "@/components/layout";
@@ -8,6 +8,7 @@ import { DashboardSidebar, DashboardHeader } from "@/components/layout";
 function DashboardGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -30,10 +31,15 @@ function DashboardGuard({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen">
-      <DashboardSidebar />
-      <div className="ml-60">
-        <DashboardHeader />
-        <main className="p-8">{children}</main>
+      <DashboardSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+
+      {/* Main content: pushed right on desktop, full width on mobile */}
+      <div className="lg:ml-60">
+        <DashboardHeader onMenuToggle={() => setSidebarOpen(true)} />
+        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

@@ -48,7 +48,13 @@ const titleMap: Record<
   },
 };
 
-export default function DashboardHeader() {
+interface DashboardHeaderProps {
+  onMenuToggle?: () => void;
+}
+
+export default function DashboardHeader({
+  onMenuToggle,
+}: DashboardHeaderProps) {
   const pathname = usePathname();
   const page = titleMap[pathname] || {
     title: "Dashboard",
@@ -57,8 +63,31 @@ export default function DashboardHeader() {
   };
 
   return (
-    <header className="h-16 border-b border-surface-700/50 bg-surface-900/60 backdrop-blur-sm flex items-center justify-between px-8">
+    <header className="h-16 border-b border-surface-700/50 bg-surface-900/60 backdrop-blur-sm flex items-center justify-between px-4 sm:px-6 lg:px-8">
       <div className="flex items-center gap-3">
+        {/* Hamburger — mobile only */}
+        {onMenuToggle && (
+          <button
+            onClick={onMenuToggle}
+            className="lg:hidden text-surface-400 hover:text-surface-200 transition-colors p-1 -ml-1"
+            aria-label="Open sidebar"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        )}
+
         <div className="w-8 h-8 rounded-lg bg-brand-500/15 border border-brand-500/30 flex items-center justify-center">
           <span className="text-sm text-brand-400">{page.icon}</span>
         </div>
@@ -71,19 +100,6 @@ export default function DashboardHeader() {
           </p>
         </div>
       </div>
-
-      {/* <div className="flex items-center gap-3">
-        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/60 border border-surface-700/50 hover:border-brand-500/30 transition-colors">
-          <span className="text-brand-400 text-xs">⌕</span>
-          <input
-            placeholder="Search..."
-            className="bg-transparent text-xs text-white placeholder-surface-400 font-mono outline-none w-40"
-          />
-          <kbd className="text-[10px] text-surface-300 font-mono px-1.5 py-0.5 rounded bg-surface-700/60 border border-surface-600/40">
-            ⌘K
-          </kbd>
-        </div>
-      </div> */}
     </header>
   );
 }
