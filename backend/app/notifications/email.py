@@ -3,6 +3,7 @@ from app.core.config import settings
 
 POSTMARK_SEND_URL = "https://api.postmarkapp.com/email"
 
+
 async def send_postmark_email(
     to: str,
     subject: str,
@@ -20,7 +21,7 @@ async def send_postmark_email(
     }
 
     payload = {
-        "From": settings.mail_from,
+        "From": f"TokVigil <{settings.mail_from}>",
         "To": to,
         "Subject": subject,
         "HtmlBody": html,
@@ -33,4 +34,11 @@ async def send_postmark_email(
 
     async with httpx.AsyncClient(timeout=15) as client:
         r = await client.post(POSTMARK_SEND_URL, headers=headers, json=payload)
+
+        if r.status_code >= 400:
+            print("POSTMARK ERROR")
+            print("Status:", r.status_code)
+            print("Response:", r.text)
+            print("Payload:", payload)
+
         r.raise_for_status()
