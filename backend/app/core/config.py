@@ -37,6 +37,12 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = 7
     jwt_algorithm: str = "HS256"
     
+    # Email / Postmark
+    postmark_token: str
+    mail_from: str = "noreply@tokvigil.com"
+    frontend_url: str = "https://tokvigil.com"
+
+    
     # Rate limiting
     rate_limit_evaluate_per_minute: int = 1000
     rate_limit_usage_per_minute: int = 1000

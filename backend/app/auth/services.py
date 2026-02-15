@@ -84,14 +84,7 @@ def register_user(db: Session, data: UserRegister, ip_address: str = None) -> Op
         ip_address=ip_address
     )
     
-    # TODO: Send verification email
-    print(f"\n{'='*50}")
-    print(f"EMAIL VERIFICATION TOKEN for {user.email}")
-    print(f"Token: {user.email_verification_token}")
-    print(f"{'='*50}\n")
-    
     return user
-    
 
 
 def authenticate_user(db: Session, email: str, password: str, ip_address: str = None) -> Optional[User]:
@@ -114,7 +107,7 @@ def authenticate_user(db: Session, email: str, password: str, ip_address: str = 
         return None
     
     if not user.email_verified:
-        raise EmailNotVerifiedError()  # new exception
+        raise EmailNotVerifiedError()  
     
     create_audit_log(
         db=db,
@@ -211,13 +204,7 @@ def request_password_reset(db: Session, email: str) -> bool:
         resource_name=user.email
     )
     
-    # TODO: Send password reset email
-    print(f"\n{'='*50}")
-    print(f"PASSWORD RESET TOKEN for {user.email}")
-    print(f"Token: {user.password_reset_token}")
-    print(f"{'='*50}\n")
-    
-    return True
+    return user.password_reset_token
 
 
 
@@ -277,18 +264,16 @@ def verify_email(db: Session, token: str) -> bool:
     return True
 
 
-def send_verification_email(db: Session, user_id: int) -> bool:
+def send_verification_email(db: Session, user_id: int) -> Optional[str]:
     user = get_user_by_id(db, user_id)
-    
-    if user.email_verified:
-        return False
-    
+    if not user or user.email_verified:
+        return None
+
     user.email_verification_token = secrets.token_urlsafe(32)
     db.commit()
-    
-    # TODO: Send verification email
-    
-    return True
+    db.refresh(user)
+    return user.email_verification_token
+
 
 
 def delete_user(db: Session, user_id: int) -> bool:

@@ -1,5 +1,5 @@
 import secrets
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, BackgroundTasks
 from sqlalchemy.orm import Session
 from app.core.auth import get_api_key_auth, AuthenticatedRequest
 from app.db.session import get_db
@@ -7,17 +7,27 @@ from app.core.auth import get_current_user
 from app.auth.models import User
 from app.auth import services
 from app.auth.schemas import *
+from app.notifications.auth_emails import send_verification_email, send_password_reset_email
 from app.core.exceptions import EmailAlreadyExistsError, InvalidPasswordError, BadRequestError, InvalidTokenError, UserNotFoundError
 router = APIRouter()
 
 
+
+
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def register(data: UserRegister, request: Request, db: Session = Depends(get_db)):
-    """Register a new user."""
+async def register(
+    data: UserRegister,
+    request: Request,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
     user = services.register_user(db, data, ip_address=request.client.host)
     if not user:
         raise EmailAlreadyExistsError()
+
+    background_tasks.add_task(send_verification_email, user.email, user.email_verification_token)
     return user
+
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -84,11 +94,17 @@ def change_password(
 
 
 @router.post("/forgot-password", response_model=MessageResponse)
-def forgot_password(data: ForgotPassword, db: Session = Depends(get_db)):
-    """Request password reset email."""
-    services.request_password_reset(db, data.email)
-    # Always return success to prevent email enumeration
+async def forgot_password(
+    data: ForgotPassword,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
+    token = services.request_password_reset(db, data.email)
+    if token:
+        background_tasks.add_task(send_password_reset_email, data.email, token)
+
     return MessageResponse(message="If the email exists, a reset link has been sent")
+
 
 
 @router.post("/reset-password", response_model=MessageResponse)
@@ -111,13 +127,17 @@ def verify_email(data: VerifyEmail, db: Session = Depends(get_db)):
 
 
 @router.post("/resend-verification", response_model=MessageResponse)
-def resend_verification(
+async def resend_verification(
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    background_tasks: BackgroundTasks = None,
+    db: Session = Depends(get_db),
 ):
-    """Resend email verification."""
-    services.send_verification_email(db, current_user.id)
+    token = services.send_verification_email(db, current_user.id)
+    if token:
+        background_tasks.add_task(send_verification_email, current_user.email, token)
+
     return MessageResponse(message="Verification email sent")
+
 
 
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
@@ -166,24 +186,25 @@ def get_api_key_info(
     
     
 @router.post("/resend-verification-public", response_model=MessageResponse)
-def resend_verification_public(data: ForgotPassword, db: Session = Depends(get_db)):
-    """Resend email verification (public, no auth required)."""
+async def resend_verification_public(
+    data: ForgotPassword,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
     user = db.query(User).filter(
         User.email == data.email,
         User.is_active == True,
         User.is_deleted == False
     ).first()
-    
+
     if user and not user.email_verified:
         user.email_verification_token = secrets.token_urlsafe(32)
         db.commit()
-        
-        print(f"\n{'='*50}")
-        print(f"EMAIL VERIFICATION TOKEN for {user.email}")
-        print(f"Token: {user.email_verification_token}")
-        print(f"{'='*50}\n")
+        db.refresh(user)
+        background_tasks.add_task(send_verification_email, user.email, user.email_verification_token)
 
     return MessageResponse(message="If the email exists, a verification link has been sent")
+
 
 
 
