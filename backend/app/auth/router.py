@@ -8,6 +8,7 @@ from app.auth.models import User
 from app.auth import services
 from app.auth.schemas import *
 from app.notifications.auth_emails import send_verification_email, send_password_reset_email
+from app.notifications.contact_emails import send_contact_notification
 from app.core.exceptions import EmailAlreadyExistsError, InvalidPasswordError, BadRequestError, InvalidTokenError, UserNotFoundError
 router = APIRouter()
 
@@ -209,8 +210,19 @@ async def resend_verification_public(
 
 
 @router.post("/contact", response_model=ContactMessageResponse)
-def submit_contact(
+async def submit_contact(
     data: ContactMessageRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
-    return services.create_contact_message(db, data.model_dump())
+    message = services.create_contact_message(db, data.model_dump())
+
+    background_tasks.add_task(
+        send_contact_notification,
+        data.name,
+        data.email,
+        data.subject,
+        data.message
+    )
+
+    return message
