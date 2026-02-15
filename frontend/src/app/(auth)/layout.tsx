@@ -1,10 +1,19 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/layout";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 
 function AuthContent({ children }: { children: React.ReactNode }) {
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace("/dashboard");
+    }
+  }, [loading, user, router]);
 
   if (loading) {
     return (
@@ -16,6 +25,8 @@ function AuthContent({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
+
+  if (user) return null;
 
   return (
     <>
