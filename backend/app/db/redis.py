@@ -70,7 +70,7 @@ def cache_delete_pattern(pattern: str) -> bool:
         return False
     
     
-def close_redis():
+async def close_redis():
     """Close Redis connection."""
     global redis_client
     if redis_client:
