@@ -1,7 +1,10 @@
 import httpx
+import logging
 from app.core.config import settings
 
 POSTMARK_SEND_URL = "https://api.postmarkapp.com/email"
+
+logger = logging.getLogger("tokvigil.email")
 
 
 async def send_postmark_email(
@@ -32,13 +35,19 @@ async def send_postmark_email(
     if reply_to:
         payload["ReplyTo"] = reply_to
 
-    async with httpx.AsyncClient(timeout=15) as client:
-        r = await client.post(POSTMARK_SEND_URL, headers=headers, json=payload)
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            r = await client.post(POSTMARK_SEND_URL, headers=headers, json=payload)
 
-        if r.status_code >= 400:
-            print("POSTMARK ERROR")
-            print("Status:", r.status_code)
-            print("Response:", r.text)
-            print("Payload:", payload)
+            # 👇 Always log response body if not success
+            if r.status_code >= 400:
+                logger.error("POSTMARK FAILED")
+                logger.error("Status: %s", r.status_code)
+                logger.error("Body: %s", r.text)
+                logger.error("Payload: %s", payload)
 
-        r.raise_for_status()
+            r.raise_for_status()
+
+    except Exception as e:
+        logger.exception("POSTMARK EXCEPTION: %s", e)
+        raise
