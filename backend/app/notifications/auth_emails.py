@@ -1,8 +1,8 @@
 from app.core.config import settings
-from app.notifications.email import send_postmark_email  # your file
+from app.notifications.email import send_postmark_email  
 
 async def send_verification_email(to_email: str, token: str):
-    verify_url = f"{frontend_base}/verify-email/confirm?token={token}"
+    verify_url = f"{settings.frontend_url}/verify-email/confirm?token={token}"
 
     subject = "Verify your TokVigil email"
     text = f"Verify your email: {verify_url}"
