@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     yield
 
     print("Shutting down...")
-    await close_redis()
+    close_redis()
 
 
 # Create FastAPI app
