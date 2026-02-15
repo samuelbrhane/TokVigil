@@ -22,20 +22,14 @@ async def register(
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
-    print("REGISTER ENDPOINT HIT", flush=True)
 
     user = services.register_user(db, data, ip_address=request.client.host)
 
     if not user:
-        print("USER ALREADY EXISTS", flush=True)
         raise EmailAlreadyExistsError()
-
-    print("USER CREATED:", user.email, flush=True)
-    print("ADDING BACKGROUND TASK", flush=True)
 
     background_tasks.add_task(send_verification_email, user.email, user.email_verification_token)
 
-    print("RESPONSE RETURNED", flush=True)
     return user
 
 
