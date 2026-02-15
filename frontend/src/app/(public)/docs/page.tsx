@@ -3,6 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { CodeBlock } from "@/components/ui";
+import { AnimatePresence, motion } from "framer-motion";
+import { authMotion } from "@/lib/motion/auth";
 
 const CARDS = [
   {
@@ -53,10 +55,45 @@ if result.allowed:
         status="allowed"
     )`;
 
+const fadeUp = {
+  initial: { opacity: 0, y: 10 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: "easeOut" },
+  },
+} as const;
+
+const listStagger = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.06, delayChildren: 0.06 } },
+} as const;
+
+const cardIn = {
+  initial: { opacity: 0, y: 12, scale: 0.98 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.28, ease: "easeOut" },
+  },
+} as const;
+
 export default function DocsPage() {
   return (
-    <div>
-      <div className="mb-12">
+    <motion.div
+      variants={authMotion.page}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      {/* Header */}
+      <motion.div
+        className="mb-12"
+        variants={fadeUp}
+        initial="initial"
+        animate="animate"
+      >
         <h1 className="text-4xl font-bold font-mono text-surface-100 tracking-tight mb-4">
           Documentation
         </h1>
@@ -64,38 +101,59 @@ export default function DocsPage() {
           Everything you need to integrate TokVigil into your AI applications.
           Control usage, enforce limits, and track spending in minutes.
         </p>
-      </div>
+      </motion.div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16"
+        variants={listStagger}
+        initial="initial"
+        animate="animate"
+      >
         {CARDS.map((card) => (
-          <Link
-            key={card.href}
-            href={card.href}
-            className="group p-6 bg-surface-900/50 border border-surface-800 rounded-lg hover:border-brand-500/50 transition-colors"
-          >
-            <div className="text-2xl mb-3">{card.icon}</div>
-            <h3 className="font-mono font-semibold text-surface-100 group-hover:text-brand-400 transition-colors mb-2">
-              {card.title}
-            </h3>
-            <p className="text-sm text-surface-500">{card.description}</p>
-          </Link>
+          <motion.div key={card.href} variants={cardIn}>
+            <Link
+              href={card.href}
+              className="group block p-6 bg-surface-900/50 border border-surface-800 rounded-lg hover:border-brand-500/50 transition-colors"
+            >
+              <div className="text-2xl mb-3">{card.icon}</div>
+              <h3 className="font-mono font-semibold text-surface-100 group-hover:text-brand-400 transition-colors mb-2">
+                {card.title}
+              </h3>
+              <p className="text-sm text-surface-500">{card.description}</p>
+            </Link>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Quick Start */}
       <section id="quick-start" className="scroll-mt-28">
-        <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-6">
-          Quick Start
-        </h2>
-        <p className="text-surface-400 mb-6">
-          Three steps: evaluate the request, make your AI call, log the usage.
-        </p>
-        <CodeBlock code={QUICK_EXAMPLE} language="python" />
+        <motion.div variants={fadeUp} initial="initial" animate="animate">
+          <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-6">
+            Quick Start
+          </h2>
+          <p className="text-surface-400 mb-6">
+            Three steps: evaluate the request, make your AI call, log the usage.
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
+          className="p-4 bg-surface-900/30 border border-surface-800/60 rounded-lg"
+        >
+          <CodeBlock code={QUICK_EXAMPLE} language="python" />
+        </motion.div>
       </section>
 
       {/* Next Steps */}
-      <div className="mt-8 p-6 bg-surface-900/50 border border-surface-800 rounded-lg">
+      <motion.div
+        className="mt-8 p-6 bg-surface-900/50 border border-surface-800 rounded-lg"
+        variants={authMotion.panel}
+        initial="initial"
+        animate="animate"
+      >
         <h3 className="font-mono font-semibold text-surface-100 mb-4">
           Next Steps
         </h3>
@@ -139,7 +197,7 @@ export default function DocsPage() {
             </Link>
           </li>
         </ul>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

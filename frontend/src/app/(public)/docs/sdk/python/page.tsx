@@ -4,6 +4,22 @@ import DocHeader from "@/components/docs/DocHeader";
 import DocTableOfContents from "@/components/docs/DocTableOfContents";
 import DocSection from "@/components/docs/DocSection";
 import DocNote from "@/components/docs/DocNote";
+import { motion } from "framer-motion";
+import { authMotion } from "@/lib/motion/auth";
+
+const fadeUp = {
+  initial: { opacity: 0, y: 10 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.32, ease: "easeOut" },
+  },
+} as const;
+
+const sectionStagger = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+} as const;
 
 const TOC = [
   { id: "installation", title: "Installation" },
@@ -167,95 +183,172 @@ if not result.allowed:
 
 export default function PythonSDKPage() {
   return (
-    <div>
-      <DocHeader
-        icon="🐍"
-        title="Python SDK"
-        description="Complete guide to using the TokVigil Python SDK in your applications."
-      />
-
-      <DocTableOfContents items={TOC} />
-
-      <div className="space-y-16">
-        <DocSection
-          id="installation"
-          title="Installation"
-          description="Install the TokVigil Python SDK using pip:"
-          code={CODE_INSTALL}
-          language="bash"
-        >
-          <DocNote type="info">
-            Requires Python 3.8 or higher. The SDK has no external dependencies
-            beyond <code className="text-brand-400">requests</code>.
-          </DocNote>
-        </DocSection>
-
-        <DocSection
-          id="initialization"
-          title="Initialization"
-          description="Create a client instance with your API key. You can find your API key in the dashboard under Workspaces → API Keys."
-          code={CODE_INIT}
-        >
-          <DocNote type="tip">
-            Use environment variables for your API key in production:{" "}
-            <code className="text-brand-400">
-              TokVigil(api_key=os.environ[&quot;TOKVIGIL_API_KEY &quot;])
-            </code>
-          </DocNote>
-        </DocSection>
-
-        <DocSection
-          id="evaluate"
-          title="Evaluate Requests"
-          description="Before making an AI call, check if the request is allowed by your policies. This checks rate limits, budgets, and model restrictions."
-          code={CODE_EVALUATE}
+    <motion.div
+      variants={authMotion.page}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      <motion.div variants={fadeUp} initial="initial" animate="animate">
+        <DocHeader
+          icon="🐍"
+          title="Python SDK"
+          description="Complete guide to using the TokVigil Python SDK in your applications."
         />
+      </motion.div>
 
-        <DocSection
-          id="log-usage"
-          title="Log Usage"
-          description="After making an AI call, log the actual usage. This updates your analytics and is used to enforce budget limits."
-          code={CODE_LOG}
+      <motion.div variants={fadeUp} initial="initial" animate="animate">
+        <DocTableOfContents items={TOC} />
+      </motion.div>
+
+      <motion.div
+        className="space-y-16"
+        variants={sectionStagger}
+        initial="initial"
+        animate="animate"
+      >
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
         >
-          <DocNote type="warning">
-            Always log usage after each AI call — even blocked ones. This keeps
-            your analytics accurate and ensures budget tracking works correctly.
-          </DocNote>
-        </DocSection>
+          <DocSection
+            id="installation"
+            title="Installation"
+            description="Install the TokVigil Python SDK using pip:"
+            code={CODE_INSTALL}
+            language="bash"
+          >
+            <DocNote type="info">
+              Requires Python 3.8 or higher. The SDK has no external
+              dependencies beyond{" "}
+              <code className="text-brand-400">requests</code>.
+            </DocNote>
+          </DocSection>
+        </motion.div>
 
-        <DocSection
-          id="check-and-call"
-          title="Check and Call"
-          description="The simplest way to integrate. Pass your AI function and TokVigil handles evaluate → call → log automatically."
-          code={CODE_CHECK_AND_CALL}
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
         >
-          <DocNote type="tip">
-            This is the recommended approach for most use cases. It handles the
-            full flow including error handling and automatic usage logging.
-          </DocNote>
-        </DocSection>
+          <DocSection
+            id="initialization"
+            title="Initialization"
+            description="Create a client instance with your API key. You can find your API key in the dashboard under Workspaces → API Keys."
+            code={CODE_INIT}
+          >
+            <DocNote type="tip">
+              <div className="text-surface-400">
+                Use environment variables for your API key in production:
+              </div>
 
-        <DocSection
-          id="usage-analytics"
-          title="Usage Analytics"
-          description="Query your usage data programmatically. All data is also available in the dashboard."
-          code={CODE_ANALYTICS}
-        />
+              <div
+                className="mt-2 w-full max-w-full rounded-md bg-surface-800/70 p-3"
+                style={{
+                  whiteSpace: "pre-wrap",
+                  overflowWrap: "anywhere",
+                  wordBreak: "break-word",
+                }}
+              >
+                <code className="text-brand-400">
+                  {`TokVigil(api_key=os.environ["TOKVIGIL_API_KEY"])`}
+                </code>
+              </div>
+            </DocNote>
+          </DocSection>
+        </motion.div>
 
-        <DocSection
-          id="error-handling"
-          title="Error Handling"
-          description="The SDK provides specific exception classes for different error types. Always wrap calls in try/except for production use."
-          code={CODE_ERRORS}
-        />
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
+        >
+          <DocSection
+            id="evaluate"
+            title="Evaluate Requests"
+            description="Before making an AI call, check if the request is allowed by your policies. This checks rate limits, budgets, and model restrictions."
+            code={CODE_EVALUATE}
+          />
+        </motion.div>
 
-        <DocSection
-          id="reason-codes"
-          title="Reason Codes"
-          description="When a request is blocked, the reason_code tells you exactly why. Use this to show appropriate messages to your users or implement fallback logic."
-          code={CODE_REASON_CODES}
-        />
-      </div>
-    </div>
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
+        >
+          <DocSection
+            id="log-usage"
+            title="Log Usage"
+            description="After making an AI call, log the actual usage. This updates your analytics and is used to enforce budget limits."
+            code={CODE_LOG}
+          >
+            <DocNote type="warning">
+              Always log usage after each AI call — even blocked ones. This
+              keeps your analytics accurate and ensures budget tracking works
+              correctly.
+            </DocNote>
+          </DocSection>
+        </motion.div>
+
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
+        >
+          <DocSection
+            id="check-and-call"
+            title="Check and Call"
+            description="The simplest way to integrate. Pass your AI function and TokVigil handles evaluate → call → log automatically."
+            code={CODE_CHECK_AND_CALL}
+          >
+            <DocNote type="tip">
+              This is the recommended approach for most use cases. It handles
+              the full flow including error handling and automatic usage
+              logging.
+            </DocNote>
+          </DocSection>
+        </motion.div>
+
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
+        >
+          <DocSection
+            id="usage-analytics"
+            title="Usage Analytics"
+            description="Query your usage data programmatically. All data is also available in the dashboard."
+            code={CODE_ANALYTICS}
+          />
+        </motion.div>
+
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
+        >
+          <DocSection
+            id="error-handling"
+            title="Error Handling"
+            description="The SDK provides specific exception classes for different error types. Always wrap calls in try/except for production use."
+            code={CODE_ERRORS}
+          />
+        </motion.div>
+
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
+        >
+          <DocSection
+            id="reason-codes"
+            title="Reason Codes"
+            description="When a request is blocked, the reason_code tells you exactly why. Use this to show appropriate messages to your users or implement fallback logic."
+            code={CODE_REASON_CODES}
+          />
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }

@@ -2,6 +2,32 @@
 
 import React from "react";
 import { CodeBlock } from "@/components/ui";
+import { motion } from "framer-motion";
+import { authMotion } from "@/lib/motion/auth";
+
+const fadeUp = {
+  initial: { opacity: 0, y: 10 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.32, ease: "easeOut" },
+  },
+} as const;
+
+const listStagger = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+} as const;
+
+const endpointCard = {
+  initial: { opacity: 0, y: 14, scale: 0.99 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.28, ease: "easeOut" },
+  },
+} as const;
 
 const ENDPOINTS = [
   {
@@ -202,9 +228,19 @@ const ERROR_CODES = [
 
 export default function APIReferencePage() {
   return (
-    <div>
+    <motion.div
+      variants={authMotion.page}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       {/* Header */}
-      <div className="mb-12">
+      <motion.div
+        className="mb-12"
+        variants={fadeUp}
+        initial="initial"
+        animate="animate"
+      >
         <div className="flex items-center gap-3 mb-4">
           <span className="text-3xl">📚</span>
           <h1 className="text-4xl font-bold font-mono text-surface-100 tracking-tight">
@@ -214,18 +250,28 @@ export default function APIReferencePage() {
         <p className="text-lg text-surface-400 max-w-2xl">
           Complete REST API documentation for TokVigil.
         </p>
-      </div>
+      </motion.div>
 
       {/* Base URL */}
-      <section className="mb-12">
+      <motion.section
+        className="mb-12"
+        variants={authMotion.panel}
+        initial="initial"
+        animate="animate"
+      >
         <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-4">
           Base URL
         </h2>
         <CodeBlock code="https://api.tokvigil.com" language="bash" />
-      </section>
+      </motion.section>
 
       {/* Authentication */}
-      <section className="mb-12">
+      <motion.section
+        className="mb-12"
+        variants={authMotion.panel}
+        initial="initial"
+        animate="animate"
+      >
         <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-4">
           Authentication
         </h2>
@@ -243,66 +289,91 @@ export default function APIReferencePage() {
   -d '{"user_id": "user_123", "model": "gpt-4o-mini"}'`}
           language="bash"
         />
-      </section>
+      </motion.section>
 
       {/* Endpoints */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-6">
+        <motion.h2
+          className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-6"
+          variants={fadeUp}
+          initial="initial"
+          animate="animate"
+        >
           Endpoints
-        </h2>
-        <div className="space-y-12">
+        </motion.h2>
+
+        <motion.div
+          className="space-y-12"
+          variants={listStagger}
+          initial="initial"
+          animate="animate"
+        >
           {ENDPOINTS.map((endpoint) => (
-            <div
+            <motion.div
               key={endpoint.path}
+              variants={endpointCard}
               id={endpoint.path.replace(/\//g, "-")}
               className="scroll-mt-28"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <span
-                  className={`px-2 py-1 text-xs font-mono font-bold rounded ${
-                    endpoint.method === "GET"
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-blue-500/20 text-blue-400"
-                  }`}
-                >
-                  {endpoint.method}
-                </span>
-                <code className="text-surface-200 font-mono">
-                  {endpoint.path}
-                </code>
-              </div>
-              <h3 className="text-xl font-semibold text-surface-100 mb-2">
-                {endpoint.title}
-              </h3>
-              <p className="text-surface-400 mb-6">{endpoint.description}</p>
+              <motion.div
+                className="p-6 rounded-xl border border-surface-800/40 bg-surface-900/40"
+                variants={authMotion.panel}
+                initial="initial"
+                animate="animate"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span
+                    className={`px-2 py-1 text-xs font-mono font-bold rounded ${
+                      endpoint.method === "GET"
+                        ? "bg-green-500/20 text-green-400"
+                        : "bg-blue-500/20 text-blue-400"
+                    }`}
+                  >
+                    {endpoint.method}
+                  </span>
+                  <code className="text-surface-200 font-mono">
+                    {endpoint.path}
+                  </code>
+                </div>
 
-              <div className="space-y-4">
-                <div>
-                  <h4 className="text-sm font-semibold text-surface-300 mb-2">
-                    Headers
-                  </h4>
-                  <CodeBlock code={endpoint.headers} language="bash" />
+                <h3 className="text-xl font-semibold text-surface-100 mb-2">
+                  {endpoint.title}
+                </h3>
+                <p className="text-surface-400 mb-6">{endpoint.description}</p>
+
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-semibold text-surface-300 mb-2">
+                      Headers
+                    </h4>
+                    <CodeBlock code={endpoint.headers} language="bash" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-surface-300 mb-2">
+                      Request
+                    </h4>
+                    <CodeBlock code={endpoint.request} language="json" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-surface-300 mb-2">
+                      Response
+                    </h4>
+                    <CodeBlock code={endpoint.response} language="json" />
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-surface-300 mb-2">
-                    Request
-                  </h4>
-                  <CodeBlock code={endpoint.request} language="json" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-surface-300 mb-2">
-                    Response
-                  </h4>
-                  <CodeBlock code={endpoint.response} language="json" />
-                </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Reason Codes */}
-      <section className="mb-12">
+      <motion.section
+        className="mb-12"
+        variants={authMotion.panel}
+        initial="initial"
+        animate="animate"
+      >
         <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-4">
           Reason Codes
         </h2>
@@ -313,6 +384,7 @@ export default function APIReferencePage() {
           </code>{" "}
           indicates why it was allowed or blocked:
         </p>
+
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -339,10 +411,14 @@ export default function APIReferencePage() {
             </tbody>
           </table>
         </div>
-      </section>
+      </motion.section>
 
       {/* Error Codes */}
-      <section>
+      <motion.section
+        variants={authMotion.panel}
+        initial="initial"
+        animate="animate"
+      >
         <h2 className="text-2xl font-bold font-mono text-surface-100 tracking-tight mb-4">
           Error Codes
         </h2>
@@ -353,6 +429,7 @@ export default function APIReferencePage() {
           </code>{" "}
           containing the error:
         </p>
+
         <CodeBlock
           code={`{
   "detail": {
@@ -362,6 +439,7 @@ export default function APIReferencePage() {
 }`}
           language="json"
         />
+
         <div className="overflow-x-auto mt-6">
           <table className="w-full text-sm">
             <thead>
@@ -394,7 +472,7 @@ export default function APIReferencePage() {
             </tbody>
           </table>
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }

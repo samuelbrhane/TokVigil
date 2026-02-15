@@ -7,6 +7,8 @@ import DocNote from "@/components/docs/DocNote";
 import DocSteps from "@/components/docs/DocSteps";
 import DocTable from "@/components/docs/DocTable";
 import DocFeature from "@/components/docs/DocFeature";
+import { motion } from "framer-motion";
+import { authMotion } from "@/lib/motion/auth";
 
 const TOC = [
   { id: "installation", title: "Installation" },
@@ -45,136 +47,200 @@ const CODE_SETTINGS = `{
   "tokvigil.baseUrl": "https://api.tokvigil.com"
 }`;
 
+const fadeUp = {
+  initial: { opacity: 0, y: 10 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.32, ease: "easeOut" },
+  },
+} as const;
+
+const sectionStagger = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+} as const;
+
 export default function VSCodeExtensionPage() {
   return (
-    <div>
-      <DocHeader
-        icon="💻"
-        title="VS Code Extension"
-        description="Autocomplete, snippets, and usage stats directly in your editor."
-      />
+    <motion.div
+      variants={authMotion.page}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      <motion.div variants={fadeUp} initial="initial" animate="animate">
+        <DocHeader
+          icon="💻"
+          title="VS Code Extension"
+          description="Autocomplete, snippets, and usage stats directly in your editor."
+        />
+      </motion.div>
 
-      <DocTableOfContents items={TOC} />
+      <motion.div variants={fadeUp} initial="initial" animate="animate">
+        <DocTableOfContents items={TOC} />
+      </motion.div>
 
-      <div className="space-y-16">
+      <motion.div
+        className="space-y-16"
+        variants={sectionStagger}
+        initial="initial"
+        animate="animate"
+      >
         {/* Installation */}
-        <DocSection
-          id="installation"
-          title="Installation"
-          description="Install from the VS Code Marketplace:"
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
         >
-          <DocSteps
-            steps={[
-              "Open VS Code",
-              'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+X</code> to open Extensions',
-              'Search for <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil</code>',
-              "Click Install",
-            ]}
-          />
-        </DocSection>
+          <DocSection
+            id="installation"
+            title="Installation"
+            description="Install from the VS Code Marketplace:"
+          >
+            <DocSteps
+              steps={[
+                "Open VS Code",
+                'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+X</code> to open Extensions',
+                'Search for <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil</code>',
+                "Click Install",
+              ]}
+            />
+          </DocSection>
+        </motion.div>
 
         {/* Setup */}
-        <DocSection
-          id="setup"
-          title="Setup"
-          description="Configure your API key to enable all features:"
-          code={CODE_SETTINGS}
-          language="json"
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
         >
-          <DocSteps
-            steps={[
-              'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code> to open Command Palette',
-              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil: Set API Key</code>',
-              'Enter your API key (starts with <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">tv_live_</code>)',
-            ]}
-          />
-          <p className="text-surface-400 mb-4">
-            Or set it directly in VS Code settings:
-          </p>
-        </DocSection>
+          <DocSection
+            id="setup"
+            title="Setup"
+            description="Configure your API key to enable all features:"
+            code={CODE_SETTINGS}
+            language="json"
+          >
+            <DocSteps
+              steps={[
+                'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code> to open Command Palette',
+                'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil: Set API Key</code>',
+                'Enter your API key (starts with <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">tv_live_</code>)',
+              ]}
+            />
+            <p className="text-surface-400 mb-4">
+              Or set it directly in VS Code settings:
+            </p>
+          </DocSection>
+        </motion.div>
 
         {/* Features */}
-        <DocSection id="features" title="Features">
-          <DocFeature
-            icon="📊"
-            title="Sidebar Panel"
-            description="View your usage stats directly in VS Code:"
-            items={[
-              "Workspace and environment info",
-              "Total requests, tokens, and cost",
-              "Top users and features",
-              "Quick actions (Test, Snippet, Dashboard)",
-            ]}
-          />
-          <DocFeature
-            icon="⚡"
-            title="Autocomplete"
-            description="Get intelligent suggestions when typing us. in your code:"
-            items={[
-              "All SDK methods with documentation",
-              "Parameter hints and types",
-              "Works in Python, TypeScript, and JavaScript",
-            ]}
-          />
-          <DocFeature
-            icon="📚"
-            title="Hover Documentation"
-            description="Hover over any TokVigil method to see documentation, parameters, and examples."
-          />
-          <DocFeature
-            icon="⚠️"
-            title="Inline Validation"
-            description="Get real-time warnings for common issues:"
-            items={[
-              "Missing TokVigil import",
-              "Empty or placeholder API keys",
-              "Missing required parameters",
-            ]}
-          />
-        </DocSection>
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
+        >
+          <DocSection id="features" title="Features">
+            <DocFeature
+              icon="📊"
+              title="Sidebar Panel"
+              description="View your usage stats directly in VS Code:"
+              items={[
+                "Workspace and environment info",
+                "Total requests, tokens, and cost",
+                "Top users and features",
+                "Quick actions (Test, Snippet, Dashboard)",
+              ]}
+            />
+            <DocFeature
+              icon="⚡"
+              title="Autocomplete"
+              description="Get intelligent suggestions when typing us. in your code:"
+              items={[
+                "All SDK methods with documentation",
+                "Parameter hints and types",
+                "Works in Python, TypeScript, and JavaScript",
+              ]}
+            />
+            <DocFeature
+              icon="📚"
+              title="Hover Documentation"
+              description="Hover over any TokVigil method to see documentation, parameters, and examples."
+            />
+            <DocFeature
+              icon="⚠️"
+              title="Inline Validation"
+              description="Get real-time warnings for common issues:"
+              items={[
+                "Missing TokVigil import",
+                "Empty or placeholder API keys",
+                "Missing required parameters",
+              ]}
+            />
+          </DocSection>
+        </motion.div>
 
         {/* Snippets */}
-        <DocSection
-          id="snippets"
-          title="Code Snippets"
-          description="Type a prefix and press Tab to insert a snippet:"
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
         >
-          <DocTable headers={["Prefix", "Description"]} rows={SNIPPET_ROWS} />
-        </DocSection>
+          <DocSection
+            id="snippets"
+            title="Code Snippets"
+            description="Type a prefix and press Tab to insert a snippet:"
+          >
+            <DocTable headers={["Prefix", "Description"]} rows={SNIPPET_ROWS} />
+          </DocSection>
+        </motion.div>
 
         {/* Commands */}
-        <DocSection
-          id="commands"
-          title="Commands"
-          description="Access via Command Palette (Ctrl+Shift+P):"
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
         >
-          <DocTable
-            headers={["Command", "Description"]}
-            rows={COMMAND_ROWS}
-            highlightFirst={false}
-          />
-        </DocSection>
+          <DocSection
+            id="commands"
+            title="Commands"
+            description="Access via Command Palette (Ctrl+Shift+P):"
+          >
+            <DocTable
+              headers={["Command", "Description"]}
+              rows={COMMAND_ROWS}
+              highlightFirst={false}
+            />
+          </DocSection>
+        </motion.div>
 
         {/* Test Evaluate */}
-        <DocSection
-          id="test-evaluate"
-          title="Test Evaluate"
-          description="Test your policies directly from VS Code without writing any code:"
+        <motion.div
+          variants={authMotion.panel}
+          initial="initial"
+          animate="animate"
         >
-          <DocSteps
-            steps={[
-              'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code>',
-              'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil: Test Evaluate</code>',
-              "Enter user ID, select model, and set feature",
-              "See the result: allowed or blocked with reason code",
-            ]}
-          />
-          <DocNote type="info">
-            Test requests are logged to your usage stats, so you can verify
-            everything works end-to-end.
-          </DocNote>
-        </DocSection>
-      </div>
-    </div>
+          <DocSection
+            id="test-evaluate"
+            title="Test Evaluate"
+            description="Test your policies directly from VS Code without writing any code:"
+          >
+            <DocSteps
+              steps={[
+                'Press <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">Ctrl+Shift+P</code>',
+                'Type <code class="px-2 py-0.5 bg-surface-800 rounded text-sm">TokVigil: Test Evaluate</code>',
+                "Enter user ID, select model, and set feature",
+                "See the result: allowed or blocked with reason code",
+              ]}
+            />
+            <DocNote type="info">
+              Test requests are logged to your usage stats, so you can verify
+              everything works end-to-end.
+            </DocNote>
+          </DocSection>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
