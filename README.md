@@ -4,7 +4,7 @@
 
 TokVigil is a production-ready application-layer control plane that enforces limits, budgets, and governance policies for AI usage directly inside application code.
 
-It ensures consistent enforcement of business rules across users, features, plans, and environments — without relying on infrastructure-level proxies.
+It ensures consistent enforcement of business rules across users, features, plans, and environments without relying on infrastructure-level proxies.
 
 ---
 
@@ -71,7 +71,7 @@ TokVigil is built around four principles:
 
 ### 1. Application-Layer Control
 
-Enforcement happens inside application code via SDK integration — not at network level.
+Enforcement happens inside application code via SDK integration not at network level.
 
 ### 2. Policy Specificity Resolution
 
