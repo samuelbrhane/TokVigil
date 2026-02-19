@@ -51,17 +51,45 @@ Enforcement decisions include structured reason codes and limit states.
 
 ## Core Capabilities
 
+### Enforcement & Governance
+
 - Per-user request limits
 - Per-plan budgets (Free / Pro / Enterprise)
-- Per-feature enforcement (chat vs summarize vs extract)
+- Per-feature enforcement (chat vs summarize vs extraction)
 - Per-request cost caps
-- Token limits
+- Token limits (daily/monthly)
 - Model allow/deny lists
 - Environment isolation (dev / staging / prod)
 - Redis-backed counters for real-time enforcement
-- Audit logging of policy and key changes
+- Deterministic reason codes for all decisions
+- Audit logging of policy and API key changes
 - Graceful degradation modes (fail-open or fail-closed)
-- SDK-based integration (no proxy required)
+
+### SDK Integration
+
+- Python SDK
+- TypeScript SDK
+- Automatic token counting and cost estimation
+- Structured enforcement exceptions (`AIUsageBlockedError`)
+- Idempotent usage logging
+- BYOK (Bring Your Own Key) support
+
+### Developer Tooling (VS Code Extension)
+
+- In-editor usage visibility
+- Blocked request inspection with reason codes
+- Policy viewer inside VS Code
+- Usage meter (requests / tokens / budget)
+- Quick config snippet generation
+- Workspace and environment switching
+- Real-time governance without leaving the editor
+
+### Analytics & Visibility
+
+- Usage tracking per user / feature / model
+- Budget consumption tracking
+- Limit state reporting
+- Monthly plan enforcement
 
 ---
 
