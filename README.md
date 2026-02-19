@@ -145,7 +145,7 @@ Application → SDK → TokVigil API → Policy Engine
 │   │   ├── staging.env
 │   │   └── prod.env
 │   │
-│   ├── terraform/                 # or cdk/ if using CDK
+│   ├── terraform/
 │   │   ├── modules/
 │   │   ├── api.tf
 │   │   ├── redis.tf
@@ -153,7 +153,7 @@ Application → SDK → TokVigil API → Policy Engine
 │   │   ├── networking.tf
 │   │   └── variables.tf
 │   │
-│   ├── k8s/                       # optional if Kubernetes
+│   ├── k8s/
 │   │   ├── api-deployment.yaml
 │   │   ├── redis.yaml
 │   │   └── ingress.yaml
